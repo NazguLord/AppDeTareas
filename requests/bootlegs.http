@@ -1,0 +1,19 @@
+@baseUrl = http://localhost:8800
+
+POST {{baseUrl}}/form
+Content-Type: application/json
+
+{
+  "nombreBanda": "Angra",
+  "lugar": "Tegucigalpa, Honduras",
+  "fecha": "2026-03-25",
+  "tipo": "Audience",
+  "cantidadDiscos": 2,
+  "formato": "FLAC",
+  "version": "Demo local",
+  "almacenamiento": "BR 999",
+  "comentario": "Registro de prueba desde requests",
+  "categoria": "Audio",
+  "peso": "650",
+  "negociable": "No"
+}
