@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import { AuthContext } from '../context/authContext';
 import Logo from '../img/As.png';
 
@@ -8,6 +8,14 @@ import { ColorModeContext } from '../theme';
 
 import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
+
+const navItems = [
+  { to: '/', label: 'Tareas', end: true },
+  { to: '/registros', label: 'Registros' },
+  { to: '/contactos', label: 'Contactos' },
+  { to: '/bootlegs', label: 'Bootlegs' },
+  { to: '/medicamentos', label: 'Medicina' },
+];
 
 const Navbar = () => {
   const { currentUser, logout } = useContext(AuthContext);
@@ -30,17 +38,24 @@ const Navbar = () => {
             {theme.palette.mode === 'dark' ? <DarkModeIcon /> : <LightModeIcon />}
           </IconButton>
 
-          <Link className="link nav-pill" to="/">Tareas</Link>
-          <Link className="link nav-pill" to="/registros">Registros</Link>
-          <Link className="link nav-pill" to="/contactos">Contactos</Link>
-          <Link className="link nav-pill" to="/bootlegs">Bootlegs</Link>
-          <Link className="link nav-pill" to="/medicamentos">Medicina</Link>
+          {navItems.map((item) => (
+            <NavLink
+              key={item.to}
+              className={({ isActive }) => `link nav-pill ${isActive ? 'is-active' : ''}`}
+              to={item.to}
+              end={item.end}
+            >
+              {item.label}
+            </NavLink>
+          ))}
 
           <span className="user-pill">{currentUser?.username || 'Invitado'}</span>
           {currentUser ? (
             <span className="nav-pill nav-action" onClick={logout}>Salir</span>
           ) : (
-            <Link className="link nav-pill nav-action" to="/login">Login</Link>
+            <NavLink className={({ isActive }) => `link nav-pill nav-action ${isActive ? 'is-active' : ''}`} to="/login">
+              Login
+            </NavLink>
           )}
           <Link className="link write" to="/add">Nueva</Link>
         </nav>

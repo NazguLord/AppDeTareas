@@ -1,9 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import api from '../api';
 import Total from './Total';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { Button, Card, CardActions, CardContent, Chip, Divider, Typography } from '@mui/material';
+import TaskModal from '../Components/TaskModal';
 
 const formatDate = (value) => {
   if (!value) return 'Sin fecha';
@@ -21,24 +22,41 @@ const formatDate = (value) => {
 const Tareas = () => {
   const [tareas, setTareas] = useState([]);
   const [total, setTotal] = useState('0.00');
+  const [openTaskModal, setOpenTaskModal] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const loadDashboard = async () => {
+    try {
+      const [tareasRes, totalRes] = await Promise.all([
+        api.get('/tareas'),
+        api.get('/total'),
+      ]);
+
+      setTareas(tareasRes.data);
+      setTotal(totalRes.data?.[0]?.Total || '0.00');
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   useEffect(() => {
-    const loadDashboard = async () => {
-      try {
-        const [tareasRes, totalRes] = await Promise.all([
-          api.get('/tareas'),
-          api.get('/total'),
-        ]);
-
-        setTareas(tareasRes.data);
-        setTotal(totalRes.data?.[0]?.Total || '0.00');
-      } catch (err) {
-        console.log(err);
-      }
-    };
-
     loadDashboard();
   }, []);
+
+  useEffect(() => {
+    if (searchParams.get('new') === '1') {
+      setOpenTaskModal(true);
+    }
+  }, [searchParams]);
+
+  const closeTaskModal = () => {
+    setOpenTaskModal(false);
+    if (searchParams.get('new') === '1') {
+      const next = new URLSearchParams(searchParams);
+      next.delete('new');
+      setSearchParams(next, { replace: true });
+    }
+  };
 
   const stats = useMemo(() => {
     const amounts = tareas.map((item) => Number(item.cantidad || 0));
@@ -104,6 +122,8 @@ const Tareas = () => {
 
   return (
     <section className="task-page">
+      <TaskModal open={openTaskModal} onClose={closeTaskModal} onCreated={loadDashboard} />
+
       <div className="task-hero">
         <div className="task-hero-copy">
           <span className="eyebrow">Inicio</span>
@@ -114,7 +134,7 @@ const Tareas = () => {
           </p>
         </div>
         <div className="task-hero-actions">
-          <Button component={Link} to="/add" variant="contained" className="primary-cta">
+          <Button variant="contained" className="primary-cta" onClick={() => setOpenTaskModal(true)}>
             Agregar tarea
           </Button>
           <Button component={Link} to="/registros" variant="outlined" className="secondary-cta">
