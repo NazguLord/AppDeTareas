@@ -1,59 +1,157 @@
-import { Card, CardActionArea, CardContent, CardMedia, Typography, Button } from '@mui/material'
-import React from 'react'
-import '../App.css';
+import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import {
+  Button,
+  Card,
+  CardActionArea,
+  CardActions,
+  CardContent,
+  CardMedia,
+  Chip,
+  Typography,
+} from '@mui/material';
+import HeadphonesOutlinedIcon from '@mui/icons-material/HeadphonesOutlined';
+import VideoLibraryOutlinedIcon from '@mui/icons-material/VideoLibraryOutlined';
+import LibraryMusicOutlinedIcon from '@mui/icons-material/LibraryMusicOutlined';
+import AlbumOutlinedIcon from '@mui/icons-material/AlbumOutlined';
+import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
+import '../pages/Bootlegs.scss';
 
 export const Bootlegs = () => {
+  const categories = useMemo(
+    () => [
+      {
+        title: 'Audios',
+        copy:
+          'Grabaciones lossless de heavy, power y otras ramas del metal desde fuentes como audiencia, soundboard y FM.',
+        image: require('../uploads/Audio.jpg'),
+        tag: 'Lossless',
+        icon: <HeadphonesOutlinedIcon fontSize="small" />,
+        to: '/audios',
+        action: 'Explorar audios',
+        available: true,
+      },
+      {
+        title: 'Videos',
+        copy:
+          'Coleccion de conciertos en DVD, Blu-ray y capturas en vivo desde fuentes como audience, pro-shot y streaming.',
+        image: require('../uploads/Concierto.jpg'),
+        tag: 'En expansion',
+        icon: <VideoLibraryOutlinedIcon fontSize="small" />,
+        to: '#',
+        action: 'Disponible pronto',
+        available: false,
+      },
+    ],
+    []
+  );
+
+  const stats = useMemo(
+    () => [
+      {
+        icon: <LibraryMusicOutlinedIcon fontSize="small" />,
+        label: 'Categorias',
+        value: `${categories.length}`,
+        copy: 'Secciones principales del archivo bootleg',
+      },
+      {
+        icon: <AlbumOutlinedIcon fontSize="small" />,
+        label: 'Activas',
+        value: `${categories.filter((item) => item.available).length}`,
+        copy: 'Rutas listas para explorar desde esta vista',
+      },
+      {
+        icon: <AddCircleOutlineOutlinedIcon fontSize="small" />,
+        label: 'Carga rapida',
+        value: '1',
+        copy: 'Acceso directo para agregar nuevas entradas',
+      },
+    ],
+    [categories]
+  );
 
   return (
-    <div className=''>
-        <h1>BOOTLEGS</h1>
+    <section className="bootlegs-page task-page">
+      <div className="bootlegs-hero task-hero">
+        <div className="task-hero-copy">
+          <span className="eyebrow">Bootlegs</span>
+          <h1>Archivo multimedia</h1>
+          <p>Una portada mas limpia para navegar tu coleccion de audios y videos sin que la vista se sienta vieja o vacia.</p>
+        </div>
+        <div className="task-hero-actions">
+          <Button variant="contained" className="primary-cta" component={Link} to="/form">
+            Agregar bootleg
+          </Button>
+          <Chip label={`${categories.length} categorias`} className="task-chip" />
+        </div>
+      </div>
 
-<div className='BootlegGrid'>
-   <Card sx={{ maxWidth: 345 }}>
-    <CardActionArea component={Link} to={`/audios`}>
-      <CardMedia 
-        component="img"
-        height="140"
-        src={require(`../uploads/Audio.jpg`)}      
-        alt="green iguana"
-      />
-      <CardContent>
-        <Typography gutterBottom variant="h5" component="div">
-          Audios
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          Todos los audios en formato lossless de bandas de heavy, power, mental entro otros de varias fuentes
-          como Audiencia, soundboard, FM, etc...
-        </Typography>
-      </CardContent>
-    </CardActionArea >
-  </Card>
+      <div className="bootlegs-stats task-metrics">
+        {stats.map((stat) => (
+          <div className="metric-card" key={stat.label}>
+            <span className="metric-icon">{stat.icon}</span>
+            <span className="metric-label">{stat.label}</span>
+            <strong className="metric-value">{stat.value}</strong>
+            <p className="metric-copy">{stat.copy}</p>
+          </div>
+        ))}
+      </div>
 
-<Card sx={{ maxWidth: 345 }}>
-<CardActionArea>
-  <CardMedia
-    component="img"
-    height="140"
-    src={require(`../uploads/Concierto.jpg`)}
-    alt="green iguana"
-  />
-  <CardContent>
-    <Typography gutterBottom variant="h5" component="div">
-      Vídeos
-    </Typography>
-    <Typography variant="body2" color="text.secondary">
-      Todos los vídeos de bandas de heavy, power y otros generos de metal 
-      en formato DvD, BR, de varias fuentes como Audiencia, Pro-shot, LiveStreaming, etc...
-    </Typography>
-  </CardContent>  
-</CardActionArea>
-</Card>
- </div> 
- <div><Button style={{ marginLeft: '0px', marginTop: '30px' }} variant="outlined" ><Link to='/form'>Agregar Bootelgs</Link></Button></div>
-</div>
- 
-)}
+      <div className="bootlegs-section-head task-section-head">
+        <div>
+          <span className="section-kicker">Biblioteca</span>
+          <h2>Explora por formato</h2>
+        </div>
+        <p>Tarjetas principales con mejor presencia visual, mejor texto y acciones mas claras para cada tipo de material.</p>
+      </div>
 
+      <div className="bootlegs-grid">
+        {categories.map((category) => {
+          const cardBody = (
+            <>
+              <CardMedia component="img" className="bootlegs-card-media" image={category.image} alt={category.title} />
+              <CardContent className="bootlegs-card-content">
+                <div className="bootlegs-card-topline">
+                  <span className="bootlegs-card-icon">{category.icon}</span>
+                  <span className="bootlegs-card-tag">{category.tag}</span>
+                </div>
+                <Typography className="bootlegs-card-title" component="h2">
+                  {category.title}
+                </Typography>
+                <Typography className="bootlegs-card-copy" component="p">
+                  {category.copy}
+                </Typography>
+              </CardContent>
+            </>
+          );
 
-export default Bootlegs
+          return (
+            <Card className={`bootlegs-card ${category.available ? '' : 'is-disabled'}`.trim()} key={category.title} elevation={0}>
+              {category.available ? (
+                <CardActionArea component={Link} to={category.to} className="bootlegs-card-link">
+                  {cardBody}
+                </CardActionArea>
+              ) : (
+                <div className="bootlegs-card-link">{cardBody}</div>
+              )}
+
+              <CardActions className="bootlegs-card-actions">
+                {category.available ? (
+                  <Button variant="contained" component={Link} to={category.to}>
+                    {category.action}
+                  </Button>
+                ) : (
+                  <Button variant="outlined" disabled>
+                    {category.action}
+                  </Button>
+                )}
+              </CardActions>
+            </Card>
+          );
+        })}
+      </div>
+    </section>
+  );
+};
+
+export default Bootlegs;

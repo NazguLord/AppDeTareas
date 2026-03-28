@@ -130,16 +130,16 @@ const Registros = () => {
   };
 
   return (
-    <section className="records-page">
-      <div className="records-hero">
-        <div>
+    <section className="records-page task-page">
+      <div className="records-hero task-hero">
+        <div className="task-hero-copy">
           <span className="eyebrow">Registros</span>
           <h1>Historial de tareas</h1>
           <p>Una vista completa para revisar movimientos, fechas y variaciones sin perder legibilidad.</p>
         </div>
       </div>
 
-      <div className="records-stats">
+      <div className="records-stats task-metrics">
         {dashboardStats.map((stat) => (
           <div className="metric-card" key={stat.label}>
             <span className="metric-icon">{stat.icon}</span>

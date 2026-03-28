@@ -1,0 +1,203 @@
+.metric-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  margin-bottom: 14px;
+  border-radius: 14px;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.contacts-page {
+  .contacts-stats {
+    margin-bottom: 28px;
+  }
+
+  .contacts-section-head {
+    margin-bottom: 18px;
+  }
+
+  .contacts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+  }
+
+  .contact-card {
+    &.MuiPaper-root {
+      overflow: hidden;
+      border-radius: 26px;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 42%),
+        var(--surface);
+      border: 1px solid var(--border);
+      box-shadow: 0 22px 46px var(--shadow);
+      transition: transform 0.22s ease, box-shadow 0.22s ease;
+
+      &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 28px 52px var(--shadow);
+      }
+    }
+  }
+
+  .contact-card-media {
+    position: relative;
+    height: 210px;
+    object-fit: cover;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(135deg, rgba(15, 118, 110, 0.22), rgba(29, 78, 216, 0.16));
+  }
+
+  .contact-card-media-fallback {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    color: var(--title-soft);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+
+  .contact-card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding: 22px;
+  }
+
+  .contact-card-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .contact-avatar {
+    &.MuiAvatar-root {
+      width: 52px;
+      height: 52px;
+      background: linear-gradient(135deg, #0f766e 0%, #1d4ed8 100%);
+      color: #f8fafc;
+      font-weight: 800;
+      box-shadow: 0 12px 24px rgba(15, 118, 110, 0.2);
+    }
+  }
+
+  .contact-avatar-large {
+    &.MuiAvatar-root {
+      width: 72px;
+      height: 72px;
+      font-size: 1.8rem;
+    }
+  }
+
+  .contact-name {
+    &.MuiTypography-root {
+      margin: 0;
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--title-soft);
+      text-align: left;
+    }
+  }
+
+  .contact-tag {
+    display: inline-flex;
+    align-items: center;
+    margin-top: 6px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .contact-list {
+    display: grid;
+    gap: 12px;
+  }
+
+  .contact-line {
+    display: grid;
+    grid-template-columns: 18px minmax(0, 1fr);
+    gap: 12px;
+    align-items: start;
+    padding: 14px 16px;
+    border-radius: 18px;
+    background: var(--surface-soft);
+    border: 1px solid var(--border);
+    color: var(--copy-strong);
+
+    svg {
+      margin-top: 4px;
+      color: var(--accent);
+    }
+
+    small {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--copy);
+    }
+
+    span {
+      display: block;
+      font-size: 0.97rem;
+      line-height: 1.45;
+      color: var(--title-soft);
+      word-break: break-word;
+    }
+  }
+
+  .contact-card-actions {
+    &.MuiCardActions-root {
+      display: flex;
+      gap: 12px;
+      padding: 0 22px 22px;
+
+      .MuiButton-root {
+        flex: 1;
+        min-height: 44px;
+        border-radius: 14px;
+        font-weight: 700;
+        text-transform: none;
+      }
+
+      .MuiButton-contained {
+        background: linear-gradient(135deg, #0f766e 0%, #1d4ed8 100%);
+        box-shadow: 0 14px 28px rgba(29, 78, 216, 0.22);
+      }
+    }
+  }
+}
+
+@media (max-width: 900px) {
+  .contacts-page {
+    .contacts-grid {
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  .contacts-page {
+    .contact-card-media {
+      height: 188px;
+    }
+
+    .contact-card-content,
+    .contact-card-actions.MuiCardActions-root {
+      padding-left: 18px;
+      padding-right: 18px;
+    }
+  }
+}

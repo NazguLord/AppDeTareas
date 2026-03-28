@@ -1,162 +1,83 @@
+import { ResponsivePie } from '@nivo/pie';
+import { useTheme } from '@mui/material';
 
-import { ResponsivePie } from "@nivo/pie";
-import { tokens } from "../theme";
-import {  useTheme } from "@mui/material";
-import { useState, useEffect } from "react";
-import api from '../api';
+const PieChart = ({ data = [] }) => {
+  const theme = useTheme();
+  const isDark = theme.palette.mode === 'dark';
+  const textColor = isDark ? '#cbd5e1' : '#475569';
+  const hoverTextColor = isDark ? '#f8fafc' : '#111827';
 
-const PieChart = () => {
-const theme = useTheme();
-const colors = tokens(theme.palette.mode);
-const [data, setData] =  useState([]);
-//const [total, setTotal] = useState(0); 
-
-useEffect(() => { 
-  const fetchAllData = async () =>{
-      try {
-          const res = await api.get(`/audios`);
-          const bootlegs = res.data;
-          // Contar la cantidad de bootlegs en cada categoría
-          const categoryCounts = {};
-          bootlegs.forEach((bootleg) => {
-            const tipo = bootleg.tipo;
-            if (tipo in categoryCounts) {
-              categoryCounts[tipo]++;
-            } else {
-              categoryCounts[tipo] = 1;
-            }
-          });  
-          // Convertir los datos en el formato requerido para el pie chart
-          const pieChartData = Object.keys(categoryCounts).map((tipo) => ({
-            id: tipo,
-            label: tipo,
-            value: categoryCounts[tipo],            
-          }));
-  
-          //const totalValue = pieChartData.reduce((acc, curr) => acc + curr.value, 0);
-         // setTotal(totalValue);
-           //console.log("Total",total)
-          setData(pieChartData);
-
-      } catch (error) {
-          console.log(error);
-      }
+  if (!data.length) {
+    return <div className="audio-chart-empty">Sin datos para graficar.</div>;
   }
-  fetchAllData();
-}, []);
 
-const formatteData = data;
-console.log('FormattData Es:', formatteData);
-
-    return(     
-    
+  return (
     <ResponsivePie
-        data={formatteData}
-        colors={{ scheme: 'dark2' }}        
-        theme={{
-          axis: {
-            domain: {
-              line: {
-                stroke: colors.grey[100],
+      data={data}
+      colors={['#0f766e', '#1d4ed8', '#f97316', '#14b8a6', '#8b5cf6', '#f43f5e']}
+      theme={{
+        legends: {
+          text: {
+            fill: textColor,
+          },
+        },
+        tooltip: {
+          container: {
+            color: '#0f172a',
+            background: '#f8fafc',
+            borderRadius: '12px',
+          },
+        },
+      }}
+      margin={{ top: 36, right: 120, bottom: 88, left: 120 }}
+      innerRadius={0.62}
+      padAngle={0.7}
+      cornerRadius={4}
+      activeOuterRadiusOffset={10}
+      borderWidth={1}
+      borderColor={{
+        from: 'color',
+        modifiers: [['darker', 0.25]],
+      }}
+      arcLinkLabel={(entry) => `${entry.id} (${entry.formattedValue})`}
+      arcLinkLabelsSkipAngle={8}
+      arcLinkLabelsTextColor={textColor}
+      arcLinkLabelsThickness={2}
+      arcLinkLabelsColor={{ from: 'color' }}
+      enableArcLabels
+      arcLabelsRadiusOffset={0.58}
+      arcLabelsSkipAngle={8}
+      arcLabelsTextColor={{
+        from: 'color',
+        modifiers: [['darker', 2.6]],
+      }}
+      legends={[
+        {
+          anchor: 'bottom',
+          direction: 'row',
+          justify: false,
+          translateX: 0,
+          translateY: 62,
+          itemsSpacing: 10,
+          itemWidth: 110,
+          itemHeight: 18,
+          itemTextColor: textColor,
+          itemDirection: 'left-to-right',
+          itemOpacity: 1,
+          symbolSize: 16,
+          symbolShape: 'circle',
+          effects: [
+            {
+              on: 'hover',
+              style: {
+                itemTextColor: hoverTextColor,
               },
             },
-            legend: {
-              text: {
-                fill: colors.grey[100],
-              },
-            },
-            ticks: {
-              line: {
-                stroke: colors.grey[100],
-                strokeWidth: 1,
-              },
-              text: {
-                fill: colors.grey[100],
-              },
-            },
-          },
-          legends: {
-            text: {
-              fill: colors.grey[100],
-            },
-          },
-          tooltip: {
-            container: {
-              color: theme.palette.primary.main,
-            },
-          },
-        }}
-        margin={{ top: 40, right: 80, bottom: 80, left: 80 }}
-        innerRadius={0.5}
-        padAngle={0.7}
-        cornerRadius={3}        
-        radialLabelsTextXOffset={15}
-        radialLabelsLinkOffset={0}
-        activeOuterRadiusOffset={8}
-        borderColor={{
-          from: "color",
-          modifiers: [["darker", 0.2]],
-        }}
-        arcLinkLabel={d => `${d.id} (${d.formattedValue})`}
-        arcLinkLabelsSkipAngle={10}
-        arcLinkLabelsTextColor={colors.grey[100]}
-        arcLinkLabelsThickness={2}
-        arcLinkLabelsColor={{ from: "color" }}
-        enableArcLabels={true}
-        arcLabelsRadiusOffset={0.4}
-        arcLabelsSkipAngle={7}
-        arcLabelsTextColor={{
-          from: "color",
-          modifiers: [["darker", 2]],
-        }}
-        defs={[
-          {
-            id: "dots",
-            type: "patternDots",
-            background: "inherit",
-            color: "rgba(255, 255, 255, 0.3)",
-            size: 4,
-            padding: 1,
-            stagger: true,
-          },
-          {
-            id: "lines",
-            type: "patternLines",
-            background: "inherit",
-            color: "rgba(255, 255, 255, 0.3)",
-            rotation: -45,
-            lineWidth: 6,
-            spacing: 10,
-          },
-        ]}
-        legends={[
-          {
-            anchor: "bottom",
-            direction: "row",
-            justify: false,
-            translateX: 0,
-            translateY: 56,
-            itemsSpacing: 0,
-            itemWidth: 100,
-            itemHeight: 18,
-            itemTextColor: "#999",
-            itemDirection: "left-to-right",
-            itemOpacity: 1,
-            symbolSize: 18,
-            symbolShape: "circle",
-            effects: [
-              {
-                on: "hover",
-                style: {
-                  itemTextColor: "#000",
-                },
-              },
-            ],
-          },
-        ]}
-      />     
-    );   
+          ],
+        },
+      ]}
+    />
+  );
 };
-
 
 export default PieChart;

@@ -1,146 +1,76 @@
-
 import { ResponsiveChoropleth } from '@nivo/geo';
-//import { tokens } from "../theme";
-import {  Box, useTheme,  } from "@mui/material";
-import {useState, useEffect } from 'react';
+import { useTheme } from '@mui/material';
 import { geoData } from '../state/geoData';
-import api from '../api';
-import { countryToAlpha3  } from "country-to-iso";
 
+const GeoMap = ({ data = [] }) => {
+  const theme = useTheme();
+  const isDark = theme.palette.mode === 'dark';
+  const textColor = isDark ? '#e2e8f0' : '#334155';
+  const hoverTextColor = isDark ? '#f8fafc' : '#0f172a';
+  const maxValue = Math.max(1, ...data.map((item) => Number(item.value || 0)));
 
-const GeoMap = () => {
- const theme = useTheme();
- //const colors = tokens(theme.palette.mode);
- const [data, setData] =  useState([]);
+  if (!data.length) {
+    return <div className="audio-chart-empty">Sin datos para mapear.</div>;
+  }
 
-
-console.log(geoData);
- useEffect(() => {
-    const fetchAllAudios = async () => {
-      try {
-        const res = await api.get('/audios');
-        // Mapea tus datos para obtener solo el país a partir de la propiedad 'lugar'
-        const lugares = res.data; 
-        const countryCount  = {};
-        lugares.forEach(item => {
-            const lugarParts = item.lugar.split(', ');
-            const pais = countryToAlpha3(lugarParts[lugarParts.length - 1]);            
-            // Incrementa el recuento del país correspondiente
-            if (countryCount[pais]) {
-                countryCount[pais]++;
-            } else {
-                countryCount[pais] = 1;
-            }
-          });
-          const mappedData = Object.keys(countryCount).map(id => ({
-            id,
-            value: countryCount[id],
-          }));
-  
-          setData(mappedData);
-          console.log('mappedData:', mappedData)
-          console.log(res);    
-        
-       
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchAllAudios();
-  }, []);
-
-  const formatData = data; 
-  console.log("FormatData",data)
-
- return (
-     <Box m="1.5rem 2.5rem">
-      
-      <Box
-        mt="40px"
-        height="75vh"
-        border={`1px solid ${theme.palette.secondary[200]}`}
-        borderRadius="4px"
-      >
-        {data ? (
-          <ResponsiveChoropleth
-            data={formatData}
-            theme={{
-              axis: {
-                domain: {
-                  line: {
-                    stroke: theme.palette.secondary[200],
-                  },
-                },
-                legend: {
-                  text: {
-                    fill: theme.palette.secondary[200],
-                  },
-                },
-                ticks: {
-                  line: {
-                    stroke: theme.palette.secondary[200],
-                    strokeWidth: 1,
-                  },
-                  text: {
-                    fill: theme.palette.secondary[200],
-                  },
-                },
+  return (
+    <ResponsiveChoropleth
+      data={data}
+      features={geoData.features}
+      theme={{
+        legends: {
+          text: {
+            fill: textColor,
+            fontSize: 12,
+            fontWeight: 700,
+          },
+        },
+        tooltip: {
+          container: {
+            color: '#0f172a',
+            background: '#f8fafc',
+            borderRadius: '12px',
+          },
+        },
+      }}
+      margin={{ top: 6, right: 24, bottom: 50, left: 20 }}
+      colors="spectral"
+      domain={[0, maxValue]}
+      unknownColor={isDark ? 'rgba(51, 65, 85, 0.85)' : '#d6d3d1'}
+      label="properties.name"
+      valueFormat=".0f"
+      projectionScale={136}
+      projectionTranslation={[0.48, 0.59]}
+      projectionRotation={[0, 0, 0]}
+      borderWidth={1.1}
+      borderColor="#ffffff"
+      legends={[
+        {
+          anchor: 'bottom-right',
+          direction: 'column',
+          justify: false,
+          translateX: -18,
+          translateY: -18,
+          itemsSpacing: 4,
+          itemWidth: 72,
+          itemHeight: 18,
+          itemDirection: 'left-to-right',
+          itemTextColor: textColor,
+          itemOpacity: 1,
+          symbolSize: 16,
+          effects: [
+            {
+              on: 'hover',
+              style: {
+                itemTextColor: hoverTextColor,
+                itemOpacity: 1,
               },
-              legends: {
-                text: {
-                  fill: theme.palette.secondary[200],
-                },
-              },
-              tooltip: {
-                container: {
-                  color: theme.palette.primary.main,
-                },
-              },
-            }}
-            features={geoData.features}
-            margin={{ top: 0, right: 0, bottom: 0, left: -50 }}
-            domain={[0, 20]}
-            unknownColor="#666666"
-            label="properties.name"
-            valueFormat=".2s"
-            projectionScale={120}
-            projectionTranslation={[0.45, 0.6]}
-            projectionRotation={[0, 0, 0]}
-            borderWidth={1.3}
-            borderColor="#ffffff"
-            legends={[
-              {
-                anchor: "bottom-right",
-                direction: "column",
-                justify: true,
-                translateX: 50,
-                translateY: -45,
-                itemsSpacing: 0,
-                itemWidth: 94,
-                itemHeight: 18,
-                itemDirection: "left-to-right",
-                itemTextColor: theme.palette.secondary[200],
-                itemOpacity: 0.85,
-                symbolSize: 18,
-                effects: [
-                  {
-                    on: "hover",
-                    style: {
-                      itemTextColor: theme.palette.background.alt,
-                      itemOpacity: 1,
-                    },
-                  },
-                ],
-              },
-            ]}
-          />
-        ) : (
-          <>Loading...</>
-        )}
-      </Box>
-    </Box>
-  )
-}
+            },
+          ],
+        },
+      ]}
+    />
+  );
+};
 
-export default GeoMap
+export default GeoMap;
