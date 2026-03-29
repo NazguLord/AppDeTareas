@@ -7,6 +7,23 @@
     margin-bottom: 18px;
   }
 
+  .bootlegs-hero-actions {
+    .secondary-cta {
+      min-height: 46px;
+      border-radius: 16px;
+      border-color: var(--border);
+      color: var(--title-soft);
+      background: rgba(255, 255, 255, 0.04);
+      text-transform: none;
+      font-weight: 700;
+
+      &:hover {
+        border-color: var(--accent);
+        background: var(--accent-soft);
+      }
+    }
+  }
+
   .bootlegs-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));

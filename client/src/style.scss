@@ -1,4 +1,6 @@
 .app {
+  display: flex;
+  flex-direction: column;
   --page-text: #1c1917;
   --page-bg:
     radial-gradient(circle at top left, rgba(14, 165, 233, 0.18), transparent 28%),
@@ -8,7 +10,7 @@
   --surface: rgba(255, 255, 255, 0.84);
   --surface-strong: linear-gradient(135deg, rgba(255, 255, 255, 0.88), rgba(255, 248, 240, 0.72));
   --surface-soft: rgba(255, 255, 255, 0.78);
-  --surface-footer: rgba(255, 255, 255, 0.44);
+  --surface-footer: rgba(255, 255, 255, 0.86);
   --border: rgba(28, 25, 23, 0.08);
   --shadow: rgba(28, 25, 23, 0.08);
   --title: #111827;
@@ -38,7 +40,7 @@
     --surface: rgba(15, 23, 42, 0.82);
     --surface-strong: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(30, 41, 59, 0.76));
     --surface-soft: rgba(17, 24, 39, 0.82);
-    --surface-footer: rgba(15, 23, 42, 0.68);
+    --surface-footer: rgba(15, 23, 42, 0.88);
     --border: rgba(148, 163, 184, 0.16);
     --shadow: rgba(2, 6, 23, 0.34);
     --title: #f8fafc;
@@ -56,7 +58,7 @@
   }
 
   .container {
-    width: min(1180px, calc(100% - 32px));
+    width: calc(100% - 32px);
     margin: 0 auto;
 
     .link {
@@ -64,7 +66,26 @@
       color: inherit;
     }
   }
+  .app-shell {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
 
+  .app-main {
+    flex: 1 0 auto;
+    display: flex;
+    flex-direction: column;
+    width: calc(100% - 32px);
+    margin: 0 auto;
+    padding-bottom: 28px;
+  }
+
+
+  .navbar .container,
+  .footer-shell .container {
+    width: calc(100% - 20px);
+  }
   .navbar {
     position: sticky;
     top: 0;
@@ -486,7 +507,8 @@
   }
 
   .footer-shell {
-    margin-top: 54px;
+    margin-top: auto;
+    box-shadow: 0 -10px 30px rgba(28, 25, 23, 0.04);
     padding: 24px 0 34px;
     background: var(--surface-footer);
     border-top: 1px solid var(--border);
@@ -574,10 +596,14 @@
 
   @media (max-width: 640px) {
     .container {
-      width: min(100% - 20px, 1180px);
+      width: calc(100% - 20px);
     }
 
-    .navbar {
+    .navbar .container,
+    .footer-shell .container {
+      width: calc(100% - 20px);
+    }
+  .navbar {
       padding-top: 12px;
 
       .brand {
@@ -642,3 +668,14 @@
     }
   }
 }
+
+
+
+
+
+
+
+
+
+
+

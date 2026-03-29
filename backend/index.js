@@ -7,6 +7,7 @@ import jwt from "jsonwebtoken";
 import cookieParser from "cookie-parser";
 import multer from "multer";
 import dotenv from "dotenv";
+import XLSX from "xlsx";
 
 dotenv.config();
 
@@ -23,7 +24,7 @@ const db = mysql.createConnection({
   port: Number(process.env.DB_PORT || 3306),
 });
 
-app.use(express.json());
+app.use(express.json({ limit: "10mb" }));
 app.use(cors({ origin: CLIENT_URL, credentials: true }));
 app.use(cookieParser());
 
@@ -37,11 +38,7 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
-
-app.post("/upload", upload.single("file"), function (req, res) {
-  const file = req.file;
-  res.status(200).json(file.filename);
-});
+const uploadXlsx = multer({ storage: multer.memoryStorage() });
 
 const storageB = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -53,6 +50,226 @@ const storageB = multer.diskStorage({
 });
 
 const uploadB = multer({ storage: storageB });
+const AUDIO_BOOTLEGS_TABLE = "bootlegs_backup_20260328";
+const AUDIO_FORMATS_TABLE = "catalogo_audio_formatos";
+const AUDIO_TYPES_TABLE = "catalogo_audio_tipos";
+
+const mapCatalogRows = (rows = []) =>
+  rows.map((row) => ({
+    id: row.id,
+    codigo: row.codigo,
+    nombre: row.nombre,
+    descripcion: row.descripcion,
+  }));
+
+const BOOTLEG_IMPORT_FIELDS = [
+  "nombreBanda",
+  "lugar",
+  "fecha",
+  "tipo",
+  "cantidadDiscos",
+  "formato",
+  "version",
+  "almacenamiento",
+  "comentario",
+  "categoria",
+  "peso",
+  "negociable",
+];
+
+const BOOTLEG_IMPORT_REQUIRED_FIELDS = [
+  "nombreBanda",
+  "lugar",
+  "fecha",
+  "tipo",
+  "cantidadDiscos",
+  "formato",
+  "almacenamiento",
+  "categoria",
+  "peso",
+  "negociable",
+];
+
+const BOOTLEG_IMPORT_HEADER_MAP = {
+  band: "nombreBanda",
+  venuecitycountry: "lugar",
+  dateyearmonthday: "fecha",
+  source: "tipo",
+  ncdr: "cantidadDiscos",
+  formato: "formato",
+  version: "version",
+  almacenamiento: "almacenamiento",
+  comentario: "comentario",
+  categoria: "categoria",
+  tradeable: "negociable",
+  traedable: "negociable",
+  peso: "peso",
+};
+
+const normalizeImportHeader = (header = "") =>
+  header
+    .toString()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, "");
+
+const parseImportValue = (value) => {
+  if (value === undefined || value === null) return "";
+  return typeof value === "string" ? value.trim() : value;
+};
+
+const normalizeBootlegDate = (value) => {
+  const rawValue = parseImportValue(value);
+
+  if (!rawValue) {
+    return { value: "", adjusted: false, original: "" };
+  }
+
+  const normalizedValue = rawValue.toString().replace(/[./]/g, "-").trim();
+  const exactDate = moment(normalizedValue, ["YYYY-MM-DD", "YYYY-M-D"], true);
+
+  if (exactDate.isValid()) {
+    return {
+      value: exactDate.format("YYYY-MM-DD"),
+      adjusted: exactDate.format("YYYY-MM-DD") !== normalizedValue,
+      original: rawValue,
+    };
+  }
+
+  const partialMatch = normalizedValue.match(/^(\d{4})(?:-(\d{1,2}|00))?(?:-(\d{1,2}|00))?$/);
+
+  if (!partialMatch) {
+    return { value: "", adjusted: true, original: rawValue };
+  }
+
+  const year = Number(partialMatch[1]);
+  const monthValue = partialMatch[2] ? Number(partialMatch[2]) : 1;
+  const dayValue = partialMatch[3] ? Number(partialMatch[3]) : 1;
+  const month = Math.min(Math.max(monthValue || 1, 1), 12);
+  const monthSeed = `${year}-${String(month).padStart(2, "0")}-01`;
+  const maxDay = moment(monthSeed, "YYYY-MM-DD", true).daysInMonth();
+  const day = Math.min(Math.max(dayValue || 1, 1), maxDay);
+  const safeDate = `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+
+  return {
+    value: safeDate,
+    adjusted: safeDate !== normalizedValue,
+    original: rawValue,
+  };
+};
+
+const parseBootlegsWorkbook = (buffer) => {
+  const workbook = XLSX.read(buffer, { type: "buffer", cellDates: false });
+  const firstSheet = workbook.SheetNames[0];
+
+  if (!firstSheet) {
+    throw new Error("El archivo no contiene hojas para importar.");
+  }
+
+  const worksheet = workbook.Sheets[firstSheet];
+  const rawRows = XLSX.utils.sheet_to_json(worksheet, { defval: "", raw: false });
+
+  if (!rawRows.length) {
+    throw new Error("El archivo no contiene filas para importar.");
+  }
+
+  const detectedFields = new Set();
+  const dateAdjustments = [];
+  const rows = rawRows
+    .map((row, index) => {
+      const mappedRow = BOOTLEG_IMPORT_FIELDS.reduce((acc, field) => ({ ...acc, [field]: "" }), {});
+
+      Object.entries(row).forEach(([header, value]) => {
+        const normalizedHeader = normalizeImportHeader(header);
+        const targetField = BOOTLEG_IMPORT_HEADER_MAP[normalizedHeader];
+
+        if (!targetField) return;
+
+        detectedFields.add(targetField);
+        mappedRow[targetField] = parseImportValue(value);
+      });
+
+      const normalizedDate = normalizeBootlegDate(mappedRow.fecha);
+      mappedRow.fecha = normalizedDate.value;
+      mappedRow.cantidadDiscos = mappedRow.cantidadDiscos ? Number(mappedRow.cantidadDiscos) : "";
+      mappedRow.__rowNumber = index + 2;
+
+      if (normalizedDate.adjusted) {
+        dateAdjustments.push({
+          rowNumber: mappedRow.__rowNumber,
+          original: normalizedDate.original,
+          normalized: normalizedDate.value,
+        });
+      }
+
+      return mappedRow;
+    })
+    .filter((row) => BOOTLEG_IMPORT_FIELDS.some((field) => `${row[field] ?? ""}`.trim() !== ""));
+
+  const missingFields = BOOTLEG_IMPORT_REQUIRED_FIELDS.filter((field) => !detectedFields.has(field));
+
+  return {
+    rows,
+    sheetName: firstSheet,
+    totalRows: rows.length,
+    detectedFields: Array.from(detectedFields),
+    missingFields,
+    dateAdjustments,
+  };
+};
+
+const isAllowedBootlegsTargetTable = (tableName = "") => /^bootlegs(?:_[A-Za-z0-9]+)*$/.test(tableName);
+
+const trimToColumnLimit = (value, maxLength, field, rowNumber, truncations) => {
+  if (value === undefined || value === null || value === "" || !maxLength) {
+    return value;
+  }
+
+  const stringValue = `${value}`;
+  if (stringValue.length <= maxLength) {
+    return value;
+  }
+
+  truncations.push({
+    field,
+    rowNumber,
+    originalLength: stringValue.length,
+    maxLength,
+  });
+
+  return stringValue.slice(0, maxLength);
+};
+
+const prepareBootlegImportValues = (rows = [], columnLimits = {}) => {
+  const truncations = [];
+
+  const values = rows.map((row) => {
+    const normalizedDate = normalizeBootlegDate(row.fecha);
+    const rowNumber = row.__rowNumber || null;
+
+    return [
+      trimToColumnLimit(row.nombreBanda || "", columnLimits.nombreBanda, "nombreBanda", rowNumber, truncations),
+      trimToColumnLimit(row.lugar || "", columnLimits.lugar, "lugar", rowNumber, truncations),
+      normalizedDate.value || null,
+      trimToColumnLimit(row.tipo || "", columnLimits.tipo, "tipo", rowNumber, truncations),
+      row.cantidadDiscos === "" ? null : Number(row.cantidadDiscos),
+      trimToColumnLimit(row.formato || "", columnLimits.formato, "formato", rowNumber, truncations),
+      trimToColumnLimit(row.version || null, columnLimits.version, "version", rowNumber, truncations),
+      trimToColumnLimit(row.almacenamiento || "", columnLimits.almacenamiento, "almacenamiento", rowNumber, truncations),
+      trimToColumnLimit(row.comentario || null, columnLimits.comentario, "comentario", rowNumber, truncations),
+      trimToColumnLimit(row.categoria || "", columnLimits.categoria, "categoria", rowNumber, truncations),
+      trimToColumnLimit(row.peso || "", columnLimits.peso, "peso", rowNumber, truncations),
+      trimToColumnLimit(row.negociable || "", columnLimits.negociable, "negociable", rowNumber, truncations),
+    ];
+  });
+
+  return { values, truncations };
+};
+app.post("/upload", upload.single("file"), function (req, res) {
+  const file = req.file;
+  res.status(200).json(file.filename);
+});
 
 app.post("/medicamentos", uploadB.single("imagen"), function (req, res) {
   const imagen = req.file.filename;
@@ -140,11 +357,120 @@ app.get("/registros", (req, res) => {
   });
 });
 
+app.get("/catalogos/audio-formatos", (req, res) => {
+  const q = `SELECT id, codigo, nombre, descripcion FROM ${AUDIO_FORMATS_TABLE} WHERE activo = 1 ORDER BY orden, nombre`;
+  db.query(q, (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json(mapCatalogRows(data));
+  });
+});
+
+app.get("/catalogos/audio-tipos", (req, res) => {
+  const q = `SELECT id, codigo, nombre, descripcion FROM ${AUDIO_TYPES_TABLE} WHERE activo = 1 ORDER BY orden, nombre`;
+  db.query(q, (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json(mapCatalogRows(data));
+  });
+});
 app.get("/audios", (req, res) => {
-  const q = "SELECT idbootlegs, nombreBanda, lugar, DATE_FORMAT(fecha, '%Y-%m-%d') AS fecha, tipo, cantidadDiscos, formato, version, almacenamiento, comentario, categoria, peso, negociable FROM bootlegs ORDER BY nombreBanda, fecha";
+  const q = `SELECT idbootlegs, nombreBanda, lugar, DATE_FORMAT(fecha, '%Y-%m-%d') AS fecha, tipo, cantidadDiscos, formato, version, almacenamiento, comentario, categoria, peso, negociable FROM ${AUDIO_BOOTLEGS_TABLE} ORDER BY nombreBanda, fecha`;
   db.query(q, (err, data) => {
     if (err) return res.json(err);
     return res.json(data);
+  });
+});
+
+app.put("/audios/:id", (req, res) => {
+  const audioId = req.params.id;
+  const normalizedDate = normalizeBootlegDate(req.body.fecha);
+  const q = `UPDATE ${AUDIO_BOOTLEGS_TABLE} SET \`nombreBanda\` = ?, \`lugar\` = ?, \`fecha\` = ?, \`tipo\` = ?, \`cantidadDiscos\` = ?, \`formato\` = ?, \`version\` = ?, \`almacenamiento\` = ?, \`comentario\` = ?, \`categoria\` = ?, \`peso\` = ?, \`negociable\` = ? WHERE idbootlegs = ?`;
+  const values = [
+    req.body.nombreBanda || "",
+    req.body.lugar || "",
+    normalizedDate.value || null,
+    req.body.tipo || "",
+    req.body.cantidadDiscos === "" || req.body.cantidadDiscos === undefined ? null : Number(req.body.cantidadDiscos),
+    req.body.formato || "",
+    req.body.version || null,
+    req.body.almacenamiento || "",
+    req.body.comentario || null,
+    req.body.categoria || "",
+    req.body.peso || "",
+    req.body.negociable || "",
+  ];
+
+  db.query(q, [...values, audioId], (err) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json({ message: "El audio se actualizo correctamente." });
+  });
+});
+
+app.post("/bootlegs/import/preview", uploadXlsx.single("file"), (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: "Debes seleccionar un archivo XLSX." });
+    }
+
+    const preview = parseBootlegsWorkbook(req.file.buffer);
+
+    return res.status(200).json({
+      ...preview,
+      previewRows: preview.rows.slice(0, 8),
+      adjustedDatesCount: preview.dateAdjustments.length,
+    });
+  } catch (error) {
+    return res.status(400).json({ message: error.message || "No se pudo leer el archivo XLSX." });
+  }
+});
+
+app.post("/bootlegs/import", (req, res) => {
+  const { targetTable, rows } = req.body;
+
+  if (!targetTable || !isAllowedBootlegsTargetTable(targetTable)) {
+    return res.status(400).json({ message: "La tabla destino no es valida. Usa un nombre como bootlegs_import_20260328." });
+  }
+
+  if (!Array.isArray(rows) || rows.length === 0) {
+    return res.status(400).json({ message: "No hay filas para importar." });
+  }
+
+  const insertQuery =
+    "INSERT INTO ?? (`nombreBanda`, `lugar`, `fecha`, `tipo`, `cantidadDiscos`, `formato`, `version`, `almacenamiento`, `comentario`, `categoria`, `peso`, `negociable`) VALUES ?";
+
+  db.query("SHOW TABLES LIKE ?", [targetTable], (tableErr, tableData) => {
+    if (tableErr) return res.status(500).json(tableErr);
+    if (!tableData.length) {
+      return res.status(400).json({ message: `La tabla ${targetTable} no existe.` });
+    }
+
+    const columnQuery = `
+      SELECT COLUMN_NAME, CHARACTER_MAXIMUM_LENGTH
+      FROM INFORMATION_SCHEMA.COLUMNS
+      WHERE TABLE_SCHEMA = ?
+        AND TABLE_NAME = ?
+        AND COLUMN_NAME IN ('nombreBanda', 'lugar', 'tipo', 'formato', 'version', 'almacenamiento', 'comentario', 'categoria', 'peso', 'negociable')
+    `;
+
+    db.query(columnQuery, [process.env.DB_NAME || "sistemahogar", targetTable], (columnErr, columnData) => {
+      if (columnErr) return res.status(500).json(columnErr);
+
+      const columnLimits = (columnData || []).reduce((acc, column) => {
+        acc[column.COLUMN_NAME] = column.CHARACTER_MAXIMUM_LENGTH || null;
+        return acc;
+      }, {});
+
+      const { values, truncations } = prepareBootlegImportValues(rows, columnLimits);
+
+      db.query(insertQuery, [targetTable, values], (insertErr, insertData) => {
+        if (insertErr) return res.status(500).json(insertErr);
+        return res.status(200).json({
+          message: `Importacion completada en ${targetTable}.`,
+          insertedRows: insertData.affectedRows,
+          truncatedFields: truncations.length,
+          truncationPreview: truncations.slice(0, 10),
+        });
+      });
+    });
   });
 });
 
@@ -269,3 +595,11 @@ app.post("/logout", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Conectado al backend en el puerto ${PORT}`);
 });
+
+
+
+
+
+
+
+

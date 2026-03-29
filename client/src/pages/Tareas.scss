@@ -1,0 +1,56 @@
+.home-page {
+  .home-hero {
+    min-height: 174px;
+  }
+
+  .home-dashboard-grid {
+    align-items: stretch;
+  }
+
+  .home-summary {
+    .total-card {
+      min-height: 100%;
+    }
+  }
+
+  .home-section-head {
+    margin-top: 8px;
+  }
+
+  .home-task-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    align-items: stretch;
+  }
+}
+
+@media (max-width: 1600px) {
+  .home-page {
+    .home-task-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+}
+
+@media (max-width: 1280px) {
+  .home-page {
+    .home-task-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+}
+
+@media (max-width: 900px) {
+  .home-page {
+    .home-task-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  .home-page {
+    .home-task-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+}

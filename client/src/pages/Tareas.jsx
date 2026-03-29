@@ -3,8 +3,20 @@ import api from '../api';
 import Total from './Total';
 import { Link, useSearchParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import { Button, Card, CardActions, CardContent, Chip, Divider, Typography } from '@mui/material';
+import {
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  Chip,
+  Divider,
+  Typography,
+} from '@mui/material';
 import TaskModal from '../Components/TaskModal';
+import QueryStatsOutlinedIcon from '@mui/icons-material/QueryStatsOutlined';
+import HistoryOutlinedIcon from '@mui/icons-material/HistoryOutlined';
+import PlaylistAddCheckOutlinedIcon from '@mui/icons-material/PlaylistAddCheckOutlined';
+import './Tareas.scss';
 
 const formatDate = (value) => {
   if (!value) return 'Sin fecha';
@@ -27,11 +39,7 @@ const Tareas = () => {
 
   const loadDashboard = async () => {
     try {
-      const [tareasRes, totalRes] = await Promise.all([
-        api.get('/tareas'),
-        api.get('/total'),
-      ]);
-
+      const [tareasRes, totalRes] = await Promise.all([api.get('/tareas'), api.get('/total')]);
       setTareas(tareasRes.data);
       setTotal(totalRes.data?.[0]?.Total || '0.00');
     } catch (err) {
@@ -66,16 +74,19 @@ const Tareas = () => {
 
     return [
       {
+        icon: <PlaylistAddCheckOutlinedIcon fontSize="small" />,
         label: 'Tareas recientes',
         value: `${tareas.length}`,
         copy: 'Registros visibles en esta vista',
       },
       {
+        icon: <HistoryOutlinedIcon fontSize="small" />,
         label: 'Ultimo movimiento',
         value: latestDate,
         copy: 'Fecha de la tarea mas reciente',
       },
       {
+        icon: <QueryStatsOutlinedIcon fontSize="small" />,
         label: 'Balance de tarjetas',
         value: `${positiveCount}/${negativeCount}`,
         copy: 'Positivas frente a egresos',
@@ -111,7 +122,7 @@ const Tareas = () => {
           showConfirmButton: false,
           timer: 1100,
         });
-        setTimeout(() => window.location.reload(), 1200);
+        await loadDashboard();
       } else {
         Swal.fire('Eliminar tarea', 'Error al eliminar la tarea', 'error');
       }
@@ -121,10 +132,10 @@ const Tareas = () => {
   };
 
   return (
-    <section className="task-page">
+    <section className="task-page home-page">
       <TaskModal open={openTaskModal} onClose={closeTaskModal} onCreated={loadDashboard} />
 
-      <div className="task-hero">
+      <div className="task-hero home-hero">
         <div className="task-hero-copy">
           <span className="eyebrow">Inicio</span>
           <h1>Ultimas tareas</h1>
@@ -144,10 +155,11 @@ const Tareas = () => {
         </div>
       </div>
 
-      <div className="task-dashboard-grid">
-        <div className="task-metrics">
+      <div className="task-dashboard-grid home-dashboard-grid">
+        <div className="task-metrics home-metrics">
           {stats.map((stat) => (
             <div className="metric-card" key={stat.label}>
+              <span className="metric-icon">{stat.icon}</span>
               <span className="metric-label">{stat.label}</span>
               <strong className="metric-value">{stat.value}</strong>
               <p className="metric-copy">{stat.copy}</p>
@@ -155,20 +167,20 @@ const Tareas = () => {
           ))}
         </div>
 
-        <div className="task-summary task-summary-top">
+        <div className="task-summary task-summary-top home-summary">
           <Total total={total} />
         </div>
       </div>
 
-      <div className="task-section-head">
+      <div className="task-section-head home-section-head">
         <div>
           <span className="section-kicker">Vista principal</span>
           <h2>Movimientos recientes</h2>
         </div>
-        <p>Tarjetas mas compactas, con mejor lectura y acciones mas claras.</p>
+        <p>Una sola fila principal, mejor orden visual y acciones directas sin bloques que distraigan.</p>
       </div>
 
-      <div className="task-grid">
+      <div className="task-grid home-task-grid">
         {tareas.map((tarea) => {
           const amount = Number(tarea.cantidad || 0);
           const isNegative = amount < 0;

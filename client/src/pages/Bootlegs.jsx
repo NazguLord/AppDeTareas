@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Button,
@@ -15,9 +15,13 @@ import VideoLibraryOutlinedIcon from '@mui/icons-material/VideoLibraryOutlined';
 import LibraryMusicOutlinedIcon from '@mui/icons-material/LibraryMusicOutlined';
 import AlbumOutlinedIcon from '@mui/icons-material/AlbumOutlined';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
+import UploadFileOutlinedIcon from '@mui/icons-material/UploadFileOutlined';
+import BootlegsImportModal from '../Components/BootlegsImportModal';
 import '../pages/Bootlegs.scss';
 
 export const Bootlegs = () => {
+  const [isImportOpen, setIsImportOpen] = useState(false);
+
   const categories = useMemo(
     () => [
       {
@@ -71,86 +75,93 @@ export const Bootlegs = () => {
   );
 
   return (
-    <section className="bootlegs-page task-page">
-      <div className="bootlegs-hero task-hero">
-        <div className="task-hero-copy">
-          <span className="eyebrow">Bootlegs</span>
-          <h1>Archivo multimedia</h1>
-          <p>Una portada mas limpia para navegar tu coleccion de audios y videos sin que la vista se sienta vieja o vacia.</p>
-        </div>
-        <div className="task-hero-actions">
-          <Button variant="contained" className="primary-cta" component={Link} to="/form">
-            Agregar bootleg
-          </Button>
-          <Chip label={`${categories.length} categorias`} className="task-chip" />
-        </div>
-      </div>
-
-      <div className="bootlegs-stats task-metrics">
-        {stats.map((stat) => (
-          <div className="metric-card" key={stat.label}>
-            <span className="metric-icon">{stat.icon}</span>
-            <span className="metric-label">{stat.label}</span>
-            <strong className="metric-value">{stat.value}</strong>
-            <p className="metric-copy">{stat.copy}</p>
+    <>
+      <section className="bootlegs-page task-page">
+        <div className="bootlegs-hero task-hero">
+          <div className="task-hero-copy">
+            <span className="eyebrow">Bootlegs</span>
+            <h1>Archivo multimedia</h1>
+            <p>Una portada mas limpia para navegar tu coleccion de audios y videos sin que la vista se sienta vieja o vacia.</p>
           </div>
-        ))}
-      </div>
-
-      <div className="bootlegs-section-head task-section-head">
-        <div>
-          <span className="section-kicker">Biblioteca</span>
-          <h2>Explora por formato</h2>
+          <div className="task-hero-actions bootlegs-hero-actions">
+            <Button variant="contained" className="primary-cta" component={Link} to="/form">
+              Agregar bootleg
+            </Button>
+            <Button variant="outlined" className="secondary-cta" startIcon={<UploadFileOutlinedIcon />} onClick={() => setIsImportOpen(true)}>
+              Importar XLSX
+            </Button>
+            <Chip label={`${categories.length} categorias`} className="task-chip" />
+          </div>
         </div>
-        <p>Tarjetas principales con mejor presencia visual, mejor texto y acciones mas claras para cada tipo de material.</p>
-      </div>
 
-      <div className="bootlegs-grid">
-        {categories.map((category) => {
-          const cardBody = (
-            <>
-              <CardMedia component="img" className="bootlegs-card-media" image={category.image} alt={category.title} />
-              <CardContent className="bootlegs-card-content">
-                <div className="bootlegs-card-topline">
-                  <span className="bootlegs-card-icon">{category.icon}</span>
-                  <span className="bootlegs-card-tag">{category.tag}</span>
-                </div>
-                <Typography className="bootlegs-card-title" component="h2">
-                  {category.title}
-                </Typography>
-                <Typography className="bootlegs-card-copy" component="p">
-                  {category.copy}
-                </Typography>
-              </CardContent>
-            </>
-          );
+        <div className="bootlegs-stats task-metrics">
+          {stats.map((stat) => (
+            <div className="metric-card" key={stat.label}>
+              <span className="metric-icon">{stat.icon}</span>
+              <span className="metric-label">{stat.label}</span>
+              <strong className="metric-value">{stat.value}</strong>
+              <p className="metric-copy">{stat.copy}</p>
+            </div>
+          ))}
+        </div>
 
-          return (
-            <Card className={`bootlegs-card ${category.available ? '' : 'is-disabled'}`.trim()} key={category.title} elevation={0}>
-              {category.available ? (
-                <CardActionArea component={Link} to={category.to} className="bootlegs-card-link">
-                  {cardBody}
-                </CardActionArea>
-              ) : (
-                <div className="bootlegs-card-link">{cardBody}</div>
-              )}
+        <div className="bootlegs-section-head task-section-head">
+          <div>
+            <span className="section-kicker">Biblioteca</span>
+            <h2>Explora por formato</h2>
+          </div>
+          <p>Tarjetas principales con mejor presencia visual, mejor texto y acciones mas claras para cada tipo de material.</p>
+        </div>
 
-              <CardActions className="bootlegs-card-actions">
+        <div className="bootlegs-grid">
+          {categories.map((category) => {
+            const cardBody = (
+              <>
+                <CardMedia component="img" className="bootlegs-card-media" image={category.image} alt={category.title} />
+                <CardContent className="bootlegs-card-content">
+                  <div className="bootlegs-card-topline">
+                    <span className="bootlegs-card-icon">{category.icon}</span>
+                    <span className="bootlegs-card-tag">{category.tag}</span>
+                  </div>
+                  <Typography className="bootlegs-card-title" component="h2">
+                    {category.title}
+                  </Typography>
+                  <Typography className="bootlegs-card-copy" component="p">
+                    {category.copy}
+                  </Typography>
+                </CardContent>
+              </>
+            );
+
+            return (
+              <Card className={`bootlegs-card ${category.available ? '' : 'is-disabled'}`.trim()} key={category.title} elevation={0}>
                 {category.available ? (
-                  <Button variant="contained" component={Link} to={category.to}>
-                    {category.action}
-                  </Button>
+                  <CardActionArea component={Link} to={category.to} className="bootlegs-card-link">
+                    {cardBody}
+                  </CardActionArea>
                 ) : (
-                  <Button variant="outlined" disabled>
-                    {category.action}
-                  </Button>
+                  <div className="bootlegs-card-link">{cardBody}</div>
                 )}
-              </CardActions>
-            </Card>
-          );
-        })}
-      </div>
-    </section>
+
+                <CardActions className="bootlegs-card-actions">
+                  {category.available ? (
+                    <Button variant="contained" component={Link} to={category.to}>
+                      {category.action}
+                    </Button>
+                  ) : (
+                    <Button variant="outlined" disabled>
+                      {category.action}
+                    </Button>
+                  )}
+                </CardActions>
+              </Card>
+            );
+          })}
+        </div>
+      </section>
+
+      <BootlegsImportModal open={isImportOpen} onClose={() => setIsImportOpen(false)} />
+    </>
   );
 };
 

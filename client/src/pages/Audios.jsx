@@ -2,10 +2,13 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import DataTable from 'react-data-table-component';
 import {
+  Alert,
   Box,
   Button,
   Chip,
+  MenuItem,
   Modal,
+  TextField,
   Typography,
   useTheme,
 } from '@mui/material';
@@ -24,26 +27,112 @@ import GroupsOutlinedIcon from '@mui/icons-material/GroupsOutlined';
 import CommentOutlinedIcon from '@mui/icons-material/CommentOutlined';
 import NotesOutlinedIcon from '@mui/icons-material/NotesOutlined';
 import LaunchOutlinedIcon from '@mui/icons-material/LaunchOutlined';
+import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
 import './Audios.scss';
+
+const createAudioForm = (audio) => ({
+  nombreBanda: audio?.nombreBanda || '',
+  lugar: audio?.lugar || '',
+  fecha: audio?.fecha || '',
+  tipo: audio?.tipo || '',
+  cantidadDiscos: audio?.cantidadDiscos ?? '',
+  formato: audio?.formato || '',
+  version: audio?.version || '',
+  almacenamiento: audio?.almacenamiento || '',
+  comentario: audio?.comentario || '',
+  categoria: audio?.categoria || '',
+  peso: audio?.peso || '',
+  negociable: audio?.negociable || '',
+});
 
 const Audios = () => {
   const theme = useTheme();
   const isDark = theme.palette.mode === 'dark';
   const [audios, setAudios] = useState([]);
   const [selectedAudio, setSelectedAudio] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [isEditing, setIsEditing] = useState(false);
+  const [audioForm, setAudioForm] = useState(createAudioForm(null));
+  const [isSaving, setIsSaving] = useState(false);
+  const [formError, setFormError] = useState('');
+  const [formSuccess, setFormSuccess] = useState('');
+  const [audioFormats, setAudioFormats] = useState([]);
+  const [audioTypes, setAudioTypes] = useState([]);
+
+  const fetchAllAudios = async () => {
+    try {
+      const res = await api.get('/audios');
+      setAudios(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
-    const fetchAllAudios = async () => {
+    fetchAllAudios();
+  }, []);
+
+  useEffect(() => {
+    const fetchCatalogs = async () => {
       try {
-        const res = await api.get('/audios');
-        setAudios(res.data);
+        const [formatsRes, typesRes] = await Promise.all([
+          api.get('/catalogos/audio-formatos'),
+          api.get('/catalogos/audio-tipos'),
+        ]);
+
+        setAudioFormats(formatsRes.data || []);
+        setAudioTypes(typesRes.data || []);
       } catch (error) {
         console.log(error);
       }
     };
 
-    fetchAllAudios();
+    fetchCatalogs();
   }, []);
+
+  const buildSelectOptions = (catalog, currentValue) => {
+    const normalizedCatalog = Array.isArray(catalog) ? catalog : [];
+    const hasCurrentValue = currentValue && normalizedCatalog.some((option) => option.nombre === currentValue);
+
+    if (hasCurrentValue || !currentValue) {
+      return normalizedCatalog;
+    }
+
+    return [{ id: `current-${currentValue}`, codigo: currentValue, nombre: currentValue }, ...normalizedCatalog];
+  };
+
+  const tipoOptions = useMemo(() => buildSelectOptions(audioTypes, audioForm.tipo), [audioTypes, audioForm.tipo]);
+  const formatoOptions = useMemo(() => buildSelectOptions(audioFormats, audioForm.formato), [audioFormats, audioForm.formato]);
+  const filteredAudios = useMemo(() => {
+    const term = searchTerm.trim().toLowerCase();
+
+    if (!term) {
+      return audios;
+    }
+
+    return audios.filter((item) => {
+      const haystack = [
+        item.nombreBanda,
+        item.lugar,
+        item.fecha,
+        item.tipo,
+        item.formato,
+        item.version,
+        item.almacenamiento,
+        item.comentario,
+        item.categoria,
+        item.peso,
+        item.negociable,
+      ]
+        .filter(Boolean)
+        .join(' ')
+        .toLowerCase();
+
+      return haystack.includes(term);
+    });
+  }, [audios, searchTerm]);
 
   const stats = useMemo(() => {
     const uniqueBands = new Set(audios.map((item) => item.nombreBanda).filter(Boolean)).size;
@@ -93,11 +182,7 @@ const Audios = () => {
   );
 
   const customStyles = {
-    table: {
-      style: {
-        backgroundColor: 'transparent',
-      },
-    },
+    table: { style: { backgroundColor: 'transparent' } },
     headRow: {
       style: {
         backgroundColor: 'transparent',
@@ -126,11 +211,7 @@ const Audios = () => {
         color: 'var(--copy-strong)',
       },
     },
-    cells: {
-      style: {
-        fontSize: '0.95rem',
-      },
-    },
+    cells: { style: { fontSize: '0.95rem' } },
     pagination: {
       style: {
         backgroundColor: 'transparent',
@@ -138,6 +219,60 @@ const Audios = () => {
         borderTop: '1px solid var(--border)',
       },
     },
+  };
+
+  const openAudioDetail = (audio) => {
+    setSelectedAudio(audio);
+    setAudioForm(createAudioForm(audio));
+    setIsEditing(false);
+    setFormError('');
+    setFormSuccess('');
+  };
+
+  const closeAudioDetail = () => {
+    setSelectedAudio(null);
+    setIsEditing(false);
+    setAudioForm(createAudioForm(null));
+    setFormError('');
+    setFormSuccess('');
+    setIsSaving(false);
+  };
+
+  const handleFormChange = (field) => (event) => {
+    setAudioForm((current) => ({
+      ...current,
+      [field]: event.target.value,
+    }));
+  };
+
+  const handleSaveAudio = async () => {
+    if (!selectedAudio?.idbootlegs) {
+      return;
+    }
+
+    setIsSaving(true);
+    setFormError('');
+    setFormSuccess('');
+
+    try {
+      await api.put(`/audios/${selectedAudio.idbootlegs}`, audioForm);
+      const updatedAudio = {
+        ...selectedAudio,
+        ...audioForm,
+        cantidadDiscos: audioForm.cantidadDiscos,
+      };
+
+      setAudios((current) =>
+        current.map((item) => (item.idbootlegs === selectedAudio.idbootlegs ? updatedAudio : item))
+      );
+      setSelectedAudio(updatedAudio);
+      setIsEditing(false);
+      setFormSuccess('Cambios guardados correctamente.');
+    } catch (error) {
+      setFormError(error?.response?.data?.message || 'No se pudo actualizar este audio.');
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const columns = [
@@ -171,7 +306,7 @@ const Audios = () => {
       button: true,
       center: true,
       cell: (row) => (
-        <Button variant="outlined" className="audio-detail-trigger" onClick={() => setSelectedAudio(row)}>
+        <Button variant="outlined" className="audio-detail-trigger" onClick={() => openAudioDetail(row)}>
           Ver ficha
         </Button>
       ),
@@ -224,10 +359,21 @@ const Audios = () => {
             <span className="section-kicker">Coleccion</span>
             <h2>Biblioteca de audios</h2>
           </div>
-          <p>Tabla paginada con mejor lectura, botones mas claros y acceso directo a la ficha detallada de cada grabacion.</p>
+          <div className="audio-table-tools">
+            <TextField
+              value={searchTerm}
+              onChange={(event) => setSearchTerm(event.target.value)}
+              placeholder="Buscar por banda, lugar, fecha o formato"
+              className="audio-search"
+              InputProps={{
+                startAdornment: <SearchOutlinedIcon fontSize="small" className="audio-search-icon" />,
+              }}
+            />
+            <p>Busqueda rapida para encontrar y luego corregir cualquier registro sin ir directo a la base.</p>
+          </div>
         </div>
 
-        <DataTable columns={columns} data={audios} pagination highlightOnHover customStyles={customStyles} />
+        <DataTable columns={columns} data={filteredAudios} pagination highlightOnHover customStyles={customStyles} />
       </div>
 
       <div className="audio-section-head task-section-head">
@@ -244,41 +390,93 @@ const Audios = () => {
         ))}
       </div>
 
-      <Modal open={Boolean(selectedAudio)} onClose={() => setSelectedAudio(null)}>
+      <Modal open={Boolean(selectedAudio)} onClose={closeAudioDetail}>
         <Box className={`audio-detail-modal ${isDark ? 'is-dark' : 'is-light'}`}>
           <div className="audio-detail-head">
-            <span className="audio-detail-kicker">Informacion completa</span>
-            <Typography className="audio-detail-title" component="h2">
-              {selectedAudio?.nombreBanda || 'Sin nombre'}
-            </Typography>
-            <p>Ficha ampliada con los datos principales del bootleg seleccionado.</p>
-          </div>
-
-          <div className="audio-detail-grid">
-            {detailItems.map((item) => (
-              <div className={`audio-detail-item ${item.full ? 'is-wide' : ''}`.trim()} key={item.label}>
-                <span className="audio-detail-icon">{item.icon}</span>
-                <div>
-                  <small>{item.label}</small>
-                  <span className={!item.value ? 'is-empty' : ''}>{item.value || 'Sin dato registrado'}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="audio-detail-note">
-            <div className="audio-detail-item is-wide full-width">
-              <span className="audio-detail-icon">
-                <CommentOutlinedIcon fontSize="small" />
-              </span>
-              <div>
-                <small>Comentario</small>
-                <span className={!selectedAudio?.comentario ? 'is-empty' : ''}>
-                  {selectedAudio?.comentario || 'Sin comentario registrado'}
-                </span>
-              </div>
+            <div>
+              <span className="audio-detail-kicker">Informacion completa</span>
+              <Typography className="audio-detail-title" component="h2">
+                {selectedAudio?.nombreBanda || 'Sin nombre'}
+              </Typography>
+              <p>{isEditing ? 'Edita los campos principales y guarda los cambios desde esta misma ficha.' : 'Ficha ampliada con los datos principales del bootleg seleccionado.'}</p>
+            </div>
+            <div className="audio-detail-actions">
+              {isEditing ? (
+                <>
+                  <Button variant="outlined" onClick={() => { setIsEditing(false); setAudioForm(createAudioForm(selectedAudio)); setFormError(''); setFormSuccess(''); }}>
+                    Cancelar
+                  </Button>
+                  <Button variant="contained" onClick={handleSaveAudio} disabled={isSaving} startIcon={<SaveOutlinedIcon fontSize="small" />}>
+                    Guardar cambios
+                  </Button>
+                </>
+              ) : (
+                <Button variant="contained" onClick={() => setIsEditing(true)} startIcon={<EditOutlinedIcon fontSize="small" />}>
+                  Editar ficha
+                </Button>
+              )}
             </div>
           </div>
+
+          {formError ? <Alert severity="error" className="audio-detail-alert">{formError}</Alert> : null}
+          {formSuccess ? <Alert severity="success" className="audio-detail-alert">{formSuccess}</Alert> : null}
+
+          {isEditing ? (
+            <div className="audio-edit-grid">
+              <TextField label="Nombre de banda" value={audioForm.nombreBanda} onChange={handleFormChange('nombreBanda')} fullWidth />
+              <TextField label="Fecha" type="date" value={audioForm.fecha} onChange={handleFormChange('fecha')} InputLabelProps={{ shrink: true }} fullWidth />
+              <TextField label="Lugar" value={audioForm.lugar} onChange={handleFormChange('lugar')} fullWidth className="is-wide" />
+              <TextField select label="Tipo" value={audioForm.tipo} onChange={handleFormChange('tipo')} fullWidth>
+                {tipoOptions.map((option) => (
+                  <MenuItem key={option.id || option.codigo} value={option.nombre}>
+                    {option.nombre}
+                  </MenuItem>
+                ))}
+              </TextField>
+              <TextField select label="Formato" value={audioForm.formato} onChange={handleFormChange('formato')} fullWidth>
+                {formatoOptions.map((option) => (
+                  <MenuItem key={option.id || option.codigo} value={option.nombre}>
+                    {option.nombre}
+                  </MenuItem>
+                ))}
+              </TextField>
+              <TextField label="Cantidad de discos" type="number" value={audioForm.cantidadDiscos} onChange={handleFormChange('cantidadDiscos')} fullWidth />
+              <TextField label="Version" value={audioForm.version} onChange={handleFormChange('version')} fullWidth />
+              <TextField label="Almacenamiento" value={audioForm.almacenamiento} onChange={handleFormChange('almacenamiento')} fullWidth />
+              <TextField label="Categoria" value={audioForm.categoria} onChange={handleFormChange('categoria')} fullWidth />
+              <TextField label="Peso" value={audioForm.peso} onChange={handleFormChange('peso')} fullWidth />
+              <TextField label="Negociable" value={audioForm.negociable} onChange={handleFormChange('negociable')} fullWidth />
+              <TextField label="Comentario" value={audioForm.comentario} onChange={handleFormChange('comentario')} fullWidth multiline minRows={3} className="is-wide" />
+            </div>
+          ) : (
+            <>
+              <div className="audio-detail-grid">
+                {detailItems.map((item) => (
+                  <div className={`audio-detail-item ${item.full ? 'is-wide' : ''}`.trim()} key={item.label}>
+                    <span className="audio-detail-icon">{item.icon}</span>
+                    <div>
+                      <small>{item.label}</small>
+                      <span className={!item.value ? 'is-empty' : ''}>{item.value || 'Sin dato registrado'}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="audio-detail-note">
+                <div className="audio-detail-item is-wide full-width">
+                  <span className="audio-detail-icon">
+                    <CommentOutlinedIcon fontSize="small" />
+                  </span>
+                  <div>
+                    <small>Comentario</small>
+                    <span className={!selectedAudio?.comentario ? 'is-empty' : ''}>
+                      {selectedAudio?.comentario || 'Sin comentario registrado'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
         </Box>
       </Modal>
     </section>
@@ -298,3 +496,4 @@ const CardLink = ({ title, copy, to, icon, action }) => (
 );
 
 export default Audios;
+
