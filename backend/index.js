@@ -50,6 +50,7 @@ const storageB = multer.diskStorage({
 });
 
 const uploadB = multer({ storage: storageB });
+const MEDICAMENTOS_TABLE = "medicamentos";
 const AUDIO_BOOTLEGS_TABLE = "bootlegs_backup_20260328";
 const AUDIO_FORMATS_TABLE = "catalogo_audio_formatos";
 const AUDIO_TYPES_TABLE = "catalogo_audio_tipos";
@@ -61,6 +62,45 @@ const mapCatalogRows = (rows = []) =>
     nombre: row.nombre,
     descripcion: row.descripcion,
   }));
+
+const getMedicineColumns = (callback) => {
+  db.query(`SHOW COLUMNS FROM ${MEDICAMENTOS_TABLE}`, (err, columns = []) => {
+    if (err) return callback(err);
+    return callback(null, columns);
+  });
+};
+
+const getMedicineIdColumn = (callback) => {
+  getMedicineColumns((err, columns = []) => {
+    if (err) return callback(err);
+
+    const prioritized = ["id", "idmedicamentos", "idMedicamentos", "id_medicamentos", "idmedicamento", "idMedicamento", "id_medicamento"];
+    const priorityMatch = prioritized.find((candidate) => columns.some((column) => column.Field === candidate));
+    const primaryMatch = columns.find((column) => column.Key === "PRI");
+    const fallback = columns[0]?.Field;
+
+    return callback(null, priorityMatch || primaryMatch?.Field || fallback || "id");
+  });
+};
+
+const normalizeMedicineNumber = (value) => {
+  if (value === "" || value === undefined || value === null) return null;
+  const parsed = Number(value);
+  return Number.isNaN(parsed) ? null : parsed;
+};
+
+const buildMedicinePayload = (body = {}, imagen = null, includeFecha = false) => ({
+  nombreMedicamento: body.nombreMedicamento || "",
+  descripcion: body.descripcion || "",
+  cantidad: normalizeMedicineNumber(body.dosisCantidad ?? body.cantidad),
+  unidadMedida: body.dosisUnidad || body.unidadMedida || "",
+  cantidadPresentacion: normalizeMedicineNumber(body.cantidadPresentacion),
+  unidadPresentacion: body.unidadPresentacion || "",
+  dosisCantidad: normalizeMedicineNumber(body.dosisCantidad ?? body.cantidad),
+  dosisUnidad: body.dosisUnidad || body.unidadMedida || "",
+  imagen,
+  ...(includeFecha ? { fecha: moment(Date.now()).format("YYYY-MM-DD HH:mm:ss") } : {}),
+});
 
 const BOOTLEG_IMPORT_FIELDS = [
   "nombreBanda",
@@ -272,29 +312,51 @@ app.post("/upload", upload.single("file"), function (req, res) {
 });
 
 app.post("/medicamentos", uploadB.single("imagen"), function (req, res) {
-  const imagen = req.file.filename;
-  const fecha = moment(Date.now()).format("YYYY-MM-DD HH:mm:ss");
-  const q = "INSERT INTO medicamentos (`nombreMedicamento`, `descripcion`, `cantidad`, `unidadMedida`, `imagen`, `fecha`) VALUES (?)";
-  const values = [
-    req.body.nombreMedicamento,
-    req.body.descripcion,
-    req.body.cantidad,
-    req.body.unidadMedida,
-    imagen,
-    fecha,
-  ];
+  const imagen = req.file?.filename || null;
 
-  db.query(q, [values], (err, data) => {
+  getMedicineColumns((columnsErr, columns = []) => {
+    if (columnsErr) return res.status(500).json(columnsErr);
+
+    const payload = buildMedicinePayload(req.body, imagen, true);
+    const availableEntries = Object.entries(payload).filter(([field]) => columns.some((column) => column.Field === field));
+    const q = `INSERT INTO ${MEDICAMENTOS_TABLE} (${availableEntries.map(([field]) => `\`${field}\``).join(", ")}) VALUES (?)`;
+    const values = availableEntries.map(([, value]) => value);
+
+    db.query(q, [values], (err, data) => {
+      if (err) return res.json(err);
+      return res.json(data);
+    });
+  });
+});
+
+app.get("/medicamentos", (req, res) => {
+  const q = `SELECT * FROM ${MEDICAMENTOS_TABLE} ORDER BY fecha DESC, nombreMedicamento ASC`;
+  db.query(q, (err, data) => {
     if (err) return res.json(err);
     return res.json(data);
   });
 });
 
-app.get("/medicamentos", (req, res) => {
-  const q = "SELECT * FROM medicamentos";
-  db.query(q, (err, data) => {
-    if (err) return res.json(err);
-    return res.json(data);
+app.put("/medicamentos/:id", uploadB.single("imagen"), (req, res) => {
+  const medicamentoId = req.params.id;
+
+  getMedicineColumns((columnsErr, columns = []) => {
+    if (columnsErr) return res.status(500).json(columnsErr);
+
+    getMedicineIdColumn((idErr, idColumn) => {
+      if (idErr) return res.status(500).json(idErr);
+
+      const imagen = req.file?.filename || req.body.imagenActual || null;
+      const payload = buildMedicinePayload(req.body, imagen, false);
+      const availableEntries = Object.entries(payload).filter(([field]) => columns.some((column) => column.Field === field));
+      const q = `UPDATE ${MEDICAMENTOS_TABLE} SET ${availableEntries.map(([field]) => `\`${field}\` = ?`).join(", ")} WHERE \`${idColumn}\` = ?`;
+      const values = availableEntries.map(([, value]) => value);
+
+      db.query(q, [...values, medicamentoId], (err) => {
+        if (err) return res.status(500).json(err);
+        return res.status(200).json({ message: "El medicamento se actualizo correctamente.", imagen });
+      });
+    });
   });
 });
 
@@ -595,6 +657,14 @@ app.post("/logout", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Conectado al backend en el puerto ${PORT}`);
 });
+
+
+
+
+
+
+
+
 
 
 
