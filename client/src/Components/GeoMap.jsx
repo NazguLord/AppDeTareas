@@ -39,8 +39,8 @@ const GeoMap = ({ data = [] }) => {
       unknownColor={isDark ? 'rgba(51, 65, 85, 0.85)' : '#d6d3d1'}
       label="properties.name"
       valueFormat=".0f"
-      projectionScale={136}
-      projectionTranslation={[0.48, 0.59]}
+      projectionScale={142}
+      projectionTranslation={[0.46, 0.55]}
       projectionRotation={[0, 0, 0]}
       borderWidth={1.1}
       borderColor="#ffffff"
@@ -49,10 +49,10 @@ const GeoMap = ({ data = [] }) => {
           anchor: 'bottom-right',
           direction: 'column',
           justify: false,
-          translateX: -18,
-          translateY: -18,
-          itemsSpacing: 4,
-          itemWidth: 72,
+          translateX: -54,
+          translateY: -118,
+          itemsSpacing: 5,
+          itemWidth: 82,
           itemHeight: 18,
           itemDirection: 'left-to-right',
           itemTextColor: textColor,
@@ -74,3 +74,4 @@ const GeoMap = ({ data = [] }) => {
 };
 
 export default GeoMap;
+

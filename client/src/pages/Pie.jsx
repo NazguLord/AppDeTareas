@@ -5,6 +5,7 @@ import LibraryMusicOutlinedIcon from '@mui/icons-material/LibraryMusicOutlined';
 import PieChartOutlineOutlinedIcon from '@mui/icons-material/PieChartOutlineOutlined';
 import InsightsOutlinedIcon from '@mui/icons-material/InsightsOutlined';
 import PieChart from '../Components/PieChart';
+import CategoryBarChart from '../Components/CategoryBarChart';
 import api from '../api';
 import './AudioCharts.scss';
 
@@ -96,11 +97,25 @@ const Pie = () => {
             <span className="section-kicker">Visualizacion</span>
             <h2>Distribucion por categoria</h2>
           </div>
-          <p>El grafico se muestra dentro de un contenedor estable para evitar que el footer se mezcle con la visualizacion.</p>
+          <p></p>
         </div>
 
-        <div className="audio-chart-canvas pie-view">
-          <PieChart data={chartData} />
+        <div className="audio-chart-grid">
+          <div className="audio-chart-canvas pie-view audio-chart-panel">
+            <div className="audio-chart-panel-head">
+              <strong>Vista general</strong>
+              <span>Participacion por tipo</span>
+            </div>
+            <PieChart data={chartData} />
+          </div>
+
+          <div className="audio-chart-canvas bar-view audio-chart-panel">
+            <div className="audio-chart-panel-head">
+              <strong>Lectura comparativa</strong>
+              <span>Registros ordenados de mayor a menor</span>
+            </div>
+            <CategoryBarChart data={chartData} />
+          </div>
         </div>
       </div>
     </section>

@@ -114,9 +114,9 @@ const Map = () => {
         <div className="audio-chart-shell-head task-section-head">
           <div>
             <span className="section-kicker">Visualizacion</span>
-            <h2>Mapa por pais</h2>
+            <h2>Mapa de conciertos por país</h2>
           </div>
-          <p>Contenedor amplio y estable para que el mapa respire mejor y no compita con el footer o el fondo general.</p>
+          <p></p>
         </div>
 
         <div className="audio-chart-canvas map-view">

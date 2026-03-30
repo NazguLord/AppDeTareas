@@ -27,6 +27,13 @@
     margin-bottom: 18px;
   }
 
+  .audio-chart-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
+    gap: 18px;
+    align-items: stretch;
+  }
+
   .audio-chart-canvas {
     position: relative;
     border-radius: 24px;
@@ -35,9 +42,35 @@
     overflow: hidden;
   }
 
+  .audio-chart-panel {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .audio-chart-panel-head {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    strong {
+      color: var(--title-soft);
+      font-size: 1rem;
+    }
+
+    span {
+      color: var(--copy);
+      font-size: 0.92rem;
+    }
+  }
+
   .pie-view {
-    height: 620px;
-    padding: 12px;
+    height: 640px;
+  }
+
+  .bar-view {
+    min-height: 640px;
   }
 
   .map-view {
@@ -56,12 +89,22 @@
   font-weight: 700;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1100px) {
   .audio-chart-page {
-    .pie-view {
-      height: 540px;
+    .audio-chart-grid {
+      grid-template-columns: 1fr;
     }
 
+    .pie-view,
+    .bar-view {
+      height: auto;
+      min-height: 560px;
+    }
+  }
+}
+
+@media (max-width: 900px) {
+  .audio-chart-page {
     .map-view {
       height: 700px;
       padding: 8px;
@@ -75,9 +118,14 @@
       padding: 18px;
     }
 
-    .pie-view {
-      height: 500px;
-      padding: 6px;
+    .audio-chart-panel {
+      padding: 12px;
+    }
+
+    .pie-view,
+    .bar-view {
+      height: auto;
+      min-height: 500px;
     }
 
     .map-view {
@@ -86,3 +134,4 @@
     }
   }
 }
+
