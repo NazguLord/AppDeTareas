@@ -23,6 +23,8 @@ import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import './Contactos.scss';
 
+const contactImages = import.meta.glob('../uploads/*', { eager: true, import: 'default' });
+
 const Contactos = () => {
   const [open, setOpen] = useState(false);
   const [openUpdateModal, setOpenUpdateModal] = useState(false);
@@ -69,12 +71,7 @@ const Contactos = () => {
 
   const getContactImage = (image) => {
     if (!image) return null;
-
-    try {
-      return require(`../uploads/${image}`);
-    } catch (error) {
-      return null;
-    }
+    return contactImages[`../uploads/${image}`] || null;
   };
 
   const addContacto = () => {

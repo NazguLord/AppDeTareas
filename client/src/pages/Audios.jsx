@@ -8,6 +8,7 @@ import {
   Chip,
   MenuItem,
   Modal,
+  Pagination,
   TextField,
   Typography,
   useTheme,
@@ -37,6 +38,8 @@ const createAudioForm = (audio) => ({
   lugar: audio?.lugar || '',
   fecha: audio?.fecha || '',
   tipo: audio?.tipo || '',
+  genero_id: audio?.genero_id ?? '',
+  genero: audio?.genero || '',
   cantidadDiscos: audio?.cantidadDiscos ?? '',
   formato: audio?.formato || '',
   version: audio?.version || '',
@@ -60,11 +63,12 @@ const Audios = () => {
   const [formSuccess, setFormSuccess] = useState('');
   const [audioFormats, setAudioFormats] = useState([]);
   const [audioTypes, setAudioTypes] = useState([]);
+  const [audioGenres, setAudioGenres] = useState([]);
 
   const fetchAllAudios = async () => {
     try {
       const res = await api.get('/audios');
-      setAudios(res.data);
+      setAudios(res.data || []);
     } catch (error) {
       console.log(error);
     }
@@ -77,13 +81,15 @@ const Audios = () => {
   useEffect(() => {
     const fetchCatalogs = async () => {
       try {
-        const [formatsRes, typesRes] = await Promise.all([
+        const [formatsRes, typesRes, genresRes] = await Promise.all([
           api.get('/catalogos/audio-formatos'),
           api.get('/catalogos/audio-tipos'),
+          api.get('/catalogos/audio-generos'),
         ]);
 
         setAudioFormats(formatsRes.data || []);
         setAudioTypes(typesRes.data || []);
+        setAudioGenres(genresRes.data || []);
       } catch (error) {
         console.log(error);
       }
@@ -105,6 +111,8 @@ const Audios = () => {
 
   const tipoOptions = useMemo(() => buildSelectOptions(audioTypes, audioForm.tipo), [audioTypes, audioForm.tipo]);
   const formatoOptions = useMemo(() => buildSelectOptions(audioFormats, audioForm.formato), [audioFormats, audioForm.formato]);
+  const generoOptions = useMemo(() => (Array.isArray(audioGenres) ? audioGenres : []), [audioGenres]);
+
   const filteredAudios = useMemo(() => {
     const term = searchTerm.trim().toLowerCase();
 
@@ -118,6 +126,7 @@ const Audios = () => {
         item.lugar,
         item.fecha,
         item.tipo,
+        item.genero,
         item.formato,
         item.version,
         item.almacenamiento,
@@ -256,9 +265,12 @@ const Audios = () => {
 
     try {
       await api.put(`/audios/${selectedAudio.idbootlegs}`, audioForm);
+      const selectedGenero = generoOptions.find((option) => `${option.id}` === `${audioForm.genero_id}`);
       const updatedAudio = {
         ...selectedAudio,
         ...audioForm,
+        genero: selectedGenero?.nombre || '',
+        genero_id: audioForm.genero_id === '' ? null : Number(audioForm.genero_id),
         cantidadDiscos: audioForm.cantidadDiscos,
       };
 
@@ -320,6 +332,7 @@ const Audios = () => {
         { icon: <CalendarMonthOutlinedIcon fontSize="small" />, label: 'Fecha', value: selectedAudio.fecha },
         { icon: <StorageOutlinedIcon fontSize="small" />, label: 'Almacenamiento', value: selectedAudio.almacenamiento },
         { icon: <SourceOutlinedIcon fontSize="small" />, label: 'Tipo', value: selectedAudio.tipo },
+        { icon: <LibraryMusicOutlinedIcon fontSize="small" />, label: 'Genero', value: selectedAudio.genero || 'Sin genero asignado' },
         { icon: <AudioFileOutlinedIcon fontSize="small" />, label: 'Formato', value: selectedAudio.formato },
         { icon: <DiscFullOutlinedIcon fontSize="small" />, label: 'Cantidad de discos', value: selectedAudio.cantidadDiscos },
         { icon: <NotesOutlinedIcon fontSize="small" />, label: 'Version', value: selectedAudio.version || 'Sin version registrada' },
@@ -363,7 +376,7 @@ const Audios = () => {
             <TextField
               value={searchTerm}
               onChange={(event) => setSearchTerm(event.target.value)}
-              placeholder="Buscar por banda, lugar, fecha o formato"
+              placeholder="Buscar por banda, lugar, fecha, genero o formato"
               className="audio-search"
               InputProps={{
                 startAdornment: <SearchOutlinedIcon fontSize="small" className="audio-search-icon" />,
@@ -440,6 +453,14 @@ const Audios = () => {
                   </MenuItem>
                 ))}
               </TextField>
+              <TextField select label="Genero" value={audioForm.genero_id} onChange={handleFormChange('genero_id')} fullWidth>
+                <MenuItem value="">Sin genero</MenuItem>
+                {generoOptions.map((option) => (
+                  <MenuItem key={option.id || option.codigo} value={option.id}>
+                    {option.nombre}
+                  </MenuItem>
+                ))}
+              </TextField>
               <TextField label="Cantidad de discos" type="number" value={audioForm.cantidadDiscos} onChange={handleFormChange('cantidadDiscos')} fullWidth />
               <TextField label="Version" value={audioForm.version} onChange={handleFormChange('version')} fullWidth />
               <TextField label="Almacenamiento" value={audioForm.almacenamiento} onChange={handleFormChange('almacenamiento')} fullWidth />
@@ -496,4 +517,3 @@ const CardLink = ({ title, copy, to, icon, action }) => (
 );
 
 export default Audios;
-

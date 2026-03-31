@@ -20,10 +20,10 @@ const PieChart = ({ data = [] }) => {
       style={{
         display: 'flex',
         flexDirection: 'column',
-        height: '100%',
+        height: 'auto',
       }}
     >
-      <div style={{ height: '430px' }}>
+      <div style={{ height: '388px' }}>
         <ResponsivePie
           data={data}
           colors={PIE_COLORS}
@@ -41,7 +41,7 @@ const PieChart = ({ data = [] }) => {
               },
             },
           }}
-          margin={{ top: 44, right: 150, bottom: 24, left: 150 }}
+          margin={{ top: 24, right: 150, bottom: 42, left: 150 }}
           innerRadius={0.62}
           padAngle={0.7}
           cornerRadius={4}
@@ -76,7 +76,7 @@ const PieChart = ({ data = [] }) => {
           flexWrap: 'wrap',
           justifyContent: 'center',
           gap: '10px 14px',
-          padding: '12px 12px 0',
+          padding: '8px 12px 0',
         }}
       >
         {data.map((item, index) => (

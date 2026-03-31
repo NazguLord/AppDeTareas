@@ -28,6 +28,8 @@ import PreviewFile from '../Components/PreviewFile';
 import api from '../api';
 import './Medicamentos.scss';
 
+const medicineImages = import.meta.glob('../img/*', { eager: true, import: 'default' });
+
 const presentationUnits = ['Tabletas', 'Capsulas', 'Sobres', 'Frascos', 'Ampollas', 'Gotas', 'Aplicaciones', 'Unidades'];
 const dosageUnits = ['Microgramos', 'Miligramos', 'Gramos', 'Kilogramos', 'Mililitros', 'Litros'];
 
@@ -63,11 +65,8 @@ const checkoutSchema = yup.object().shape({
 });
 
 const getMedicineImage = (fileName) => {
-  try {
-    return require(`../img/${fileName}`);
-  } catch (error) {
-    return null;
-  }
+  if (!fileName) return null;
+  return medicineImages[`../img/${fileName}`] || null;
 };
 
 const hasValue = (value) => value !== null && value !== undefined && `${value}`.trim() !== '';

@@ -17,6 +17,8 @@ import AlbumOutlinedIcon from '@mui/icons-material/AlbumOutlined';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import UploadFileOutlinedIcon from '@mui/icons-material/UploadFileOutlined';
 import BootlegsImportModal from '../Components/BootlegsImportModal';
+import audioHero from '../uploads/Audio.jpg';
+import concertHero from '../uploads/Concierto.jpg';
 import '../pages/Bootlegs.scss';
 
 export const Bootlegs = () => {
@@ -28,7 +30,7 @@ export const Bootlegs = () => {
         title: 'Audios',
         copy:
           'Grabaciones lossless de heavy, power y otras ramas del metal desde fuentes como audiencia, soundboard y FM.',
-        image: require('../uploads/Audio.jpg'),
+        image: audioHero,
         tag: 'Lossless',
         icon: <HeadphonesOutlinedIcon fontSize="small" />,
         to: '/audios',
@@ -39,7 +41,7 @@ export const Bootlegs = () => {
         title: 'Videos',
         copy:
           'Coleccion de conciertos en DVD, Blu-ray y capturas en vivo desde fuentes como audience, pro-shot y streaming.',
-        image: require('../uploads/Concierto.jpg'),
+        image: concertHero,
         tag: 'En expansion',
         icon: <VideoLibraryOutlinedIcon fontSize="small" />,
         to: '#',
