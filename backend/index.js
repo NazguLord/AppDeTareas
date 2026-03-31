@@ -54,6 +54,7 @@ const MEDICAMENTOS_TABLE = "medicamentos";
 const AUDIO_BOOTLEGS_TABLE = "bootlegs_backup_20260328";
 const AUDIO_FORMATS_TABLE = "catalogo_audio_formatos";
 const AUDIO_TYPES_TABLE = "catalogo_audio_tipos";
+const AUDIO_GENRES_TABLE = "catalogo_generos_bootlegs";
 
 const mapCatalogRows = (rows = []) =>
   rows.map((row) => ({
@@ -434,8 +435,17 @@ app.get("/catalogos/audio-tipos", (req, res) => {
     return res.status(200).json(mapCatalogRows(data));
   });
 });
+
+app.get("/catalogos/audio-generos", (req, res) => {
+  const q = `SELECT id, codigo, nombre, descripcion FROM ${AUDIO_GENRES_TABLE} WHERE activo = 1 ORDER BY orden, nombre`;
+  db.query(q, (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json(mapCatalogRows(data));
+  });
+});
+
 app.get("/audios", (req, res) => {
-  const q = `SELECT idbootlegs, nombreBanda, lugar, DATE_FORMAT(fecha, '%Y-%m-%d') AS fecha, tipo, cantidadDiscos, formato, version, almacenamiento, comentario, categoria, peso, negociable FROM ${AUDIO_BOOTLEGS_TABLE} ORDER BY nombreBanda, fecha`;
+  const q = `SELECT b.idbootlegs, b.nombreBanda, b.lugar, DATE_FORMAT(b.fecha, '%Y-%m-%d') AS fecha, b.tipo, b.genero_id, g.nombre AS genero, b.cantidadDiscos, b.formato, b.version, b.almacenamiento, b.comentario, b.categoria, b.peso, b.negociable FROM ${AUDIO_BOOTLEGS_TABLE} b LEFT JOIN ${AUDIO_GENRES_TABLE} g ON g.id = b.genero_id ORDER BY b.nombreBanda, b.fecha`;
   db.query(q, (err, data) => {
     if (err) return res.json(err);
     return res.json(data);
@@ -445,12 +455,13 @@ app.get("/audios", (req, res) => {
 app.put("/audios/:id", (req, res) => {
   const audioId = req.params.id;
   const normalizedDate = normalizeBootlegDate(req.body.fecha);
-  const q = `UPDATE ${AUDIO_BOOTLEGS_TABLE} SET \`nombreBanda\` = ?, \`lugar\` = ?, \`fecha\` = ?, \`tipo\` = ?, \`cantidadDiscos\` = ?, \`formato\` = ?, \`version\` = ?, \`almacenamiento\` = ?, \`comentario\` = ?, \`categoria\` = ?, \`peso\` = ?, \`negociable\` = ? WHERE idbootlegs = ?`;
+  const q = `UPDATE ${AUDIO_BOOTLEGS_TABLE} SET \`nombreBanda\` = ?, \`lugar\` = ?, \`fecha\` = ?, \`tipo\` = ?, \`genero_id\` = ?, \`cantidadDiscos\` = ?, \`formato\` = ?, \`version\` = ?, \`almacenamiento\` = ?, \`comentario\` = ?, \`categoria\` = ?, \`peso\` = ?, \`negociable\` = ? WHERE idbootlegs = ?`;
   const values = [
     req.body.nombreBanda || "",
     req.body.lugar || "",
     normalizedDate.value || null,
     req.body.tipo || "",
+    req.body.genero_id === "" || req.body.genero_id === undefined || req.body.genero_id === null ? null : Number(req.body.genero_id),
     req.body.cantidadDiscos === "" || req.body.cantidadDiscos === undefined ? null : Number(req.body.cantidadDiscos),
     req.body.formato || "",
     req.body.version || null,
@@ -657,6 +668,7 @@ app.post("/logout", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Conectado al backend en el puerto ${PORT}`);
 });
+
 
 
 
