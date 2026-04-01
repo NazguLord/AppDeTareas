@@ -13,6 +13,7 @@ import {
   Typography,
   useTheme,
 } from '@mui/material';
+import ExcelJS from 'exceljs';
 import api from '../api';
 import LibraryMusicOutlinedIcon from '@mui/icons-material/LibraryMusicOutlined';
 import AlbumOutlinedIcon from '@mui/icons-material/AlbumOutlined';
@@ -31,6 +32,7 @@ import LaunchOutlinedIcon from '@mui/icons-material/LaunchOutlined';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
+import DownloadOutlinedIcon from '@mui/icons-material/DownloadOutlined';
 import './Audios.scss';
 
 const createAudioForm = (audio) => ({
@@ -49,6 +51,24 @@ const createAudioForm = (audio) => ({
   peso: audio?.peso || '',
   negociable: audio?.negociable || '',
 });
+
+const AUDIO_EXPORT_COLUMNS = [
+  { key: 'nombreBanda', label: 'Nombre de banda', width: 28 },
+  { key: 'lugar', label: 'Lugar', width: 58 },
+  { key: 'fecha', label: 'Fecha', width: 16 },
+  { key: 'tipo', label: 'Tipo', width: 18 },
+  { key: 'genero', label: 'Genero', width: 20 },
+  { key: 'cantidadDiscos', label: 'Cantidad de discos', width: 18 },
+  { key: 'formato', label: 'Formato', width: 14 },
+  { key: 'version', label: 'Version', width: 18 },
+  { key: 'almacenamiento', label: 'Almacenamiento', width: 18 },
+  { key: 'comentario', label: 'Comentario', width: 24 },
+  { key: 'categoria', label: 'Categoria', width: 14 },
+  { key: 'peso', label: 'Peso', width: 12 },
+  { key: 'negociable', label: 'Negociable', width: 18 },
+];
+
+const NEGOTIABLE_ALERT_VALUE = 'NOT FOR TRADE';
 
 const Audios = () => {
   const theme = useTheme();
@@ -287,6 +307,72 @@ const Audios = () => {
     }
   };
 
+  const handleExportAudios = async () => {
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Audios');
+
+    worksheet.columns = AUDIO_EXPORT_COLUMNS.map((column) => ({
+      header: column.label,
+      key: column.key,
+      width: column.width,
+    }));
+
+    worksheet.getRow(1).font = { bold: true };
+    worksheet.getRow(1).fill = {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: 'FFF3F4F6' },
+    };
+
+    worksheet.views = [{ state: 'frozen', ySplit: 1 }];
+
+    audios.forEach((audio) => {
+      const row = worksheet.addRow(
+        AUDIO_EXPORT_COLUMNS.reduce((acc, column) => {
+          acc[column.key] = audio?.[column.key] ?? '';
+          return acc;
+        }, {})
+      );
+
+      const negotiableValue = `${audio?.negociable ?? ''}`.trim().toUpperCase();
+      if (negotiableValue === NEGOTIABLE_ALERT_VALUE) {
+        const negotiableColumnIndex = AUDIO_EXPORT_COLUMNS.findIndex((column) => column.key === 'negociable') + 1;
+        const cell = row.getCell(negotiableColumnIndex);
+        cell.font = { color: { argb: 'FF9C0006' }, bold: true };
+        cell.fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: 'FFFFC7CE' },
+        };
+      }
+    });
+
+    worksheet.eachRow((row) => {
+      row.eachCell((cell) => {
+        cell.border = {
+          top: { style: 'thin', color: { argb: 'FFD1D5DB' } },
+          left: { style: 'thin', color: { argb: 'FFD1D5DB' } },
+          bottom: { style: 'thin', color: { argb: 'FFD1D5DB' } },
+          right: { style: 'thin', color: { argb: 'FFD1D5DB' } },
+        };
+        cell.alignment = { vertical: 'middle', horizontal: 'left' };
+      });
+    });
+
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    });
+    const downloadUrl = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = downloadUrl;
+    link.download = `bootlegs-audios-${new Date().toISOString().slice(0, 10)}.xlsx`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(downloadUrl);
+  };
+
   const columns = [
     {
       name: 'Nombre de banda',
@@ -373,15 +459,26 @@ const Audios = () => {
             <h2>Biblioteca de audios</h2>
           </div>
           <div className="audio-table-tools">
-            <TextField
-              value={searchTerm}
-              onChange={(event) => setSearchTerm(event.target.value)}
-              placeholder="Buscar por banda, lugar, fecha, genero o formato"
-              className="audio-search"
-              InputProps={{
-                startAdornment: <SearchOutlinedIcon fontSize="small" className="audio-search-icon" />,
-              }}
-            />
+            <div className="audio-table-actions">
+              <TextField
+                value={searchTerm}
+                onChange={(event) => setSearchTerm(event.target.value)}
+                placeholder="Buscar por banda, lugar, fecha, genero o formato"
+                className="audio-search"
+                InputProps={{
+                  startAdornment: <SearchOutlinedIcon fontSize="small" className="audio-search-icon" />,
+                }}
+              />
+              <Button
+                variant="outlined"
+                className="audio-export-trigger"
+                onClick={handleExportAudios}
+                disabled={!audios.length}
+                startIcon={<DownloadOutlinedIcon fontSize="small" />}
+              >
+                Descargar Excel
+              </Button>
+            </div>
             <p>Busqueda rapida para encontrar y luego corregir cualquier registro sin ir directo a la base.</p>
           </div>
         </div>

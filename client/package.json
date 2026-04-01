@@ -19,6 +19,7 @@
     "country-to-iso": "^1.3.0",
     "date-fns": "^2.30.0",
     "dayjs": "^1.11.9",
+    "exceljs": "^4.4.0",
     "formik": "^2.2.9",
     "moment": "^2.29.4",
     "react": "^18.2.0",

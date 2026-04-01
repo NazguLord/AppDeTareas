@@ -43,11 +43,33 @@
     }
   }
 
+  .audio-table-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
   .audio-search {
     min-width: min(100%, 360px);
 
     .MuiOutlinedInput-root {
       border-radius: 16px;
+      background: var(--surface-soft);
+    }
+  }
+
+  .audio-export-trigger {
+    &.MuiButton-root {
+      min-height: 56px;
+      padding-inline: 18px;
+      border-radius: 16px;
+      border-color: var(--border);
+      color: var(--accent);
+      text-transform: none;
+      font-weight: 700;
       background: var(--surface-soft);
     }
   }
@@ -330,6 +352,10 @@
         text-align: left;
       }
     }
+
+    .audio-table-actions {
+      justify-content: stretch;
+    }
   }
 }
 
@@ -337,6 +363,11 @@
   .audio-page {
     .audio-table-shell {
       padding: 18px;
+    }
+
+    .audio-search,
+    .audio-export-trigger {
+      width: 100%;
     }
   }
 
