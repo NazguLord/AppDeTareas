@@ -21,6 +21,7 @@ import Medicamentos from "./pages/Medicamentos";
 
 import { ColorModeContext, useMode } from "./theme.js";
 import { CssBaseline, ThemeProvider } from "@mui/material";
+import { AlertProvider } from "./context/alertContext";
 
 const Layout = () => {
   return (
@@ -67,7 +68,9 @@ function App() {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <div className={`app ${theme.palette.mode}`}>
-          <RouterProvider router={router} />
+          <AlertProvider>
+            <RouterProvider router={router} />
+          </AlertProvider>
         </div>
       </ThemeProvider>
     </ColorModeContext.Provider>

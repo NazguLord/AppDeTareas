@@ -1,0 +1,175 @@
+.bootleg-create-modal {
+  .MuiDialog-paper {
+    overflow: hidden;
+    border-radius: 28px;
+    background:
+      radial-gradient(circle at top left, rgba(14, 165, 233, 0.14), transparent 26%),
+      radial-gradient(circle at top right, rgba(251, 191, 36, 0.16), transparent 22%),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(255, 249, 242, 0.92));
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    box-shadow: 0 34px 90px rgba(15, 23, 42, 0.2);
+    backdrop-filter: blur(20px);
+  }
+
+  .bootleg-create-modal-close {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    z-index: 2;
+    background: rgba(255, 255, 255, 0.82);
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    box-shadow: 0 12px 26px rgba(15, 23, 42, 0.12);
+  }
+
+  .bootleg-create-modal-body {
+    padding: 32px;
+  }
+}
+
+.bootleg-form {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.bootleg-form-intro {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-right: 42px;
+}
+
+.bootleg-form-kicker {
+  &.MuiTypography-root {
+    letter-spacing: 0.2em;
+    color: #0f766e;
+    font-weight: 700;
+  }
+}
+
+.bootleg-form-title {
+  &.MuiTypography-root {
+    margin: 0;
+    font-size: clamp(1.8rem, 3vw, 2.6rem);
+    line-height: 1.02;
+    color: #111827;
+    font-weight: 800;
+  }
+}
+
+.bootleg-form-copy {
+  &.MuiTypography-root {
+    margin: 0;
+    max-width: 720px;
+    color: #4b5563;
+    line-height: 1.7;
+  }
+}
+
+.bootleg-form-grid {
+  .MuiOutlinedInput-root {
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.78);
+    backdrop-filter: blur(10px);
+  }
+}
+
+.bootleg-radio-group {
+  position: relative;
+  min-height: 100%;
+  justify-content: center;
+  padding: 18px 18px 12px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(15, 23, 42, 0.12);
+
+  .MuiFormLabel-root {
+    position: absolute;
+    top: -8px;
+    left: 14px;
+    display: inline-block;
+    padding: 0 6px;
+    background: rgba(255, 255, 255, 0.96);
+    color: #6b7280;
+    font-size: 0.78rem;
+    font-weight: 500;
+    line-height: 1.1;
+  }
+
+  .MuiRadioGroup-root {
+    min-height: 100%;
+    justify-content: center;
+    gap: 18px;
+    padding-top: 6px;
+  }
+
+  .MuiFormControlLabel-root {
+    margin: 0;
+  }
+}
+
+.bootleg-form-status {
+  padding: 14px 16px;
+  border-radius: 16px;
+  font-weight: 600;
+}
+
+.bootleg-form-status-error {
+  color: #991b1b;
+  background: rgba(254, 226, 226, 0.92);
+  border: 1px solid rgba(248, 113, 113, 0.28);
+}
+
+.bootleg-form-actions {
+  &.MuiDialogActions-root {
+    padding: 0;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+
+  .MuiButton-root {
+    min-height: 46px;
+    border-radius: 16px;
+    text-transform: none;
+    font-weight: 700;
+  }
+}
+
+.bootleg-form-shell {
+  padding: 40px 0;
+
+  .bootleg-form-shell-card {
+    padding: 28px;
+    border-radius: 28px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.86), rgba(255, 249, 242, 0.92));
+    border: 1px solid var(--border);
+    box-shadow: 0 24px 60px var(--shadow);
+  }
+}
+
+@media (max-width: 640px) {
+  .bootleg-create-modal {
+    .MuiDialog-paper {
+      margin: 12px;
+      border-radius: 22px;
+    }
+
+    .bootleg-create-modal-body {
+      padding: 20px;
+    }
+  }
+
+  .bootleg-form-intro {
+    padding-right: 0;
+  }
+
+  .bootleg-form-actions {
+    &.MuiDialogActions-root {
+      flex-direction: column-reverse;
+      align-items: stretch;
+    }
+  }
+}
+
+
+

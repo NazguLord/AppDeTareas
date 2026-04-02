@@ -17,11 +17,13 @@ import AlbumOutlinedIcon from '@mui/icons-material/AlbumOutlined';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import UploadFileOutlinedIcon from '@mui/icons-material/UploadFileOutlined';
 import BootlegsImportModal from '../Components/BootlegsImportModal';
+import BootlegCreateModal from '../Components/BootlegCreateModal';
 import audioHero from '../uploads/Audio.jpg';
 import concertHero from '../uploads/Concierto.jpg';
 import '../pages/Bootlegs.scss';
 
 export const Bootlegs = () => {
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isImportOpen, setIsImportOpen] = useState(false);
 
   const categories = useMemo(
@@ -70,7 +72,7 @@ export const Bootlegs = () => {
         icon: <AddCircleOutlineOutlinedIcon fontSize="small" />,
         label: 'Carga rapida',
         value: '1',
-        copy: 'Acceso directo para agregar nuevas entradas',
+        copy: 'Alta directa en modal sin salir de esta pantalla',
       },
     ],
     [categories]
@@ -83,10 +85,10 @@ export const Bootlegs = () => {
           <div className="task-hero-copy">
             <span className="eyebrow">Bootlegs</span>
             <h1>Archivo multimedia</h1>
-            <p>Una portada mas limpia para navegar tu coleccion de audios y videos sin que la vista se sienta vieja o vacia.</p>
+            <p>Una portada mas limpia para navegar tu coleccion de audios y videos y ahora crear registros desde un modal mas rapido y mas claro.</p>
           </div>
           <div className="task-hero-actions bootlegs-hero-actions">
-            <Button variant="contained" className="primary-cta" component={Link} to="/form">
+            <Button variant="contained" className="primary-cta" onClick={() => setIsCreateOpen(true)}>
               Agregar bootleg
             </Button>
             <Button variant="outlined" className="secondary-cta" startIcon={<UploadFileOutlinedIcon />} onClick={() => setIsImportOpen(true)}>
@@ -112,7 +114,7 @@ export const Bootlegs = () => {
             <span className="section-kicker">Biblioteca</span>
             <h2>Explora por formato</h2>
           </div>
-          <p>Tarjetas principales con mejor presencia visual, mejor texto y acciones mas claras para cada tipo de material.</p>
+          <p>Tarjetas principales con mejor presencia visual, acciones mas claras y una entrada directa para seguir cargando material sin romper el flujo.</p>
         </div>
 
         <div className="bootlegs-grid">
@@ -162,6 +164,7 @@ export const Bootlegs = () => {
         </div>
       </section>
 
+      <BootlegCreateModal open={isCreateOpen} onClose={() => setIsCreateOpen(false)} />
       <BootlegsImportModal open={isImportOpen} onClose={() => setIsImportOpen(false)} />
     </>
   );
