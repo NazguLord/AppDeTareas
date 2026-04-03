@@ -1,33 +1,35 @@
-import { useTheme } from '@mui/material';
+﻿import { useTheme } from '@mui/material';
 
 const BAR_COLORS = ['#0f766e', '#1d4ed8', '#f97316', '#14b8a6', '#8b5cf6', '#f43f5e'];
 
-const CategoryBarChart = ({ data = [] }) => {
+const CategoryBarChart = ({ data = [], preserveOrder = false, maxItems, minHeight = 460 }) => {
   const theme = useTheme();
   const isDark = theme.palette.mode === 'dark';
   const textColor = isDark ? '#e2e8f0' : '#0f172a';
   const copyColor = isDark ? '#94a3b8' : '#64748b';
   const trackColor = isDark ? 'rgba(148, 163, 184, 0.14)' : 'rgba(148, 163, 184, 0.16)';
   const borderColor = isDark ? 'rgba(148, 163, 184, 0.14)' : 'rgba(148, 163, 184, 0.18)';
+  const resolvedMinHeight = typeof minHeight === 'number' ? `${minHeight}px` : minHeight;
 
   if (!data.length) {
     return <div className="audio-chart-empty">Sin datos para graficar.</div>;
   }
 
-  const sorted = [...data].sort((a, b) => Number(b.value || 0) - Number(a.value || 0));
-  const maxValue = Math.max(...sorted.map((item) => Number(item.value || 0)), 1);
+  const prepared = preserveOrder ? [...data] : [...data].sort((a, b) => Number(b.value || 0) - Number(a.value || 0));
+  const visibleItems = typeof maxItems === 'number' ? prepared.slice(0, maxItems) : prepared;
+  const maxValue = Math.max(...visibleItems.map((item) => Number(item.value || 0)), 1);
 
   return (
     <div
       style={{
         height: '100%',
-        minHeight: '460px',
+        minHeight: resolvedMinHeight,
         display: 'flex',
         flexDirection: 'column',
         gap: '14px',
       }}
     >
-      {sorted.map((item, index) => {
+      {visibleItems.map((item, index) => {
         const value = Number(item.value || 0);
         const width = Math.max((value / maxValue) * 100, value > 0 ? 2 : 0);
         const color = BAR_COLORS[index % BAR_COLORS.length];

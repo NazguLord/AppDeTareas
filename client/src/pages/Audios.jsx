@@ -193,11 +193,11 @@ const Audios = () => {
   const insightCards = useMemo(
     () => [
       {
-        title: 'Distribucion por tipo',
-        copy: 'Revisa rapidamente cuantos registros son audience, soundboard o FM broadcast.',
+        title: 'Panel analitico',
+        copy: 'Revisa distribucion por tipo, genero, conciertos por año y bandas con mas bootlegs.',
         to: '/pie',
         icon: <PieChartOutlineOutlinedIcon fontSize="small" />,
-        action: 'Ver pie chart',
+        action: 'Ver analitica',
       },
       {
         title: 'Mapa por pais',
@@ -491,7 +491,7 @@ const Audios = () => {
           <span className="section-kicker">Analitica</span>
           <h2>Explora la coleccion</h2>
         </div>
-        <p>Accesos visuales para entender la distribucion por tipo y la procedencia geografica del archivo.</p>
+        <p>Accesos visuales para entender la distribucion general, la cronologia por año y las bandas con mayor presencia.</p>
       </div>
 
       <div className="audio-insight-grid">
@@ -614,3 +614,4 @@ const CardLink = ({ title, copy, to, icon, action }) => (
 );
 
 export default Audios;
+
