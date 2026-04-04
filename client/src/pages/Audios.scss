@@ -1,4 +1,4 @@
-.metric-icon {
+﻿.metric-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -102,6 +102,12 @@
       font-weight: 700;
       background: var(--surface-soft);
     }
+
+    &.is-alert.MuiButton-root {
+      border-color: rgba(220, 38, 38, 0.22);
+      color: #b91c1c;
+      background: rgba(254, 226, 226, 0.85);
+    }
   }
 
   .audio-insight-grid {
@@ -175,8 +181,8 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: min(720px, calc(100vw - 24px));
-  max-height: min(88vh, 760px);
+  width: min(860px, calc(100vw - 24px));
+  max-height: min(92vh, 860px);
   overflow: auto;
   padding: 22px;
   border-radius: 24px;
@@ -219,6 +225,11 @@
   gap: 10px;
   flex-wrap: wrap;
 
+  &.is-footer {
+    justify-content: flex-end;
+    margin-left: auto;
+  }
+
   .MuiButton-root {
     min-height: 42px;
     border-radius: 14px;
@@ -230,6 +241,21 @@
 .audio-detail-alert {
   margin-bottom: 14px;
   border-radius: 16px;
+}
+
+.audio-detail-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--audio-modal-border);
+}
+
+.audio-detail-footer-copy {
+  color: var(--audio-modal-copy);
+  line-height: 1.5;
 }
 
 .audio-detail-kicker {
@@ -372,12 +398,22 @@
   }
 
   .audio-detail-modal {
-    width: min(calc(100vw - 16px), 720px);
+    width: min(calc(100vw - 16px), 860px);
     padding: 18px;
   }
 
   .audio-detail-head {
     flex-direction: column;
+  }
+
+  .audio-detail-footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .audio-detail-actions.is-footer {
+    margin-left: 0;
+    justify-content: stretch;
   }
 
   .audio-detail-title {
@@ -410,3 +446,4 @@
     }
   }
 }
+

@@ -9,6 +9,7 @@ import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined';
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
 import GroupsOutlinedIcon from '@mui/icons-material/GroupsOutlined';
 import PieChart from '../Components/PieChart';
+import LollipopChart from '../Components/LollipopChart';
 import CategoryBarChart from '../Components/CategoryBarChart';
 import YearTrendChart from '../Components/YearTrendChart';
 import api from '../api';
@@ -87,6 +88,21 @@ const buildDecadeData = (items = []) => {
 const getTopEntry = (items = []) => [...items].sort((a, b) => Number(b.value || 0) - Number(a.value || 0))[0];
 const getTotalValue = (items = []) => items.reduce((acc, item) => acc + Number(item.value || 0), 0);
 const getShare = (value, total) => (total ? Math.round((value / total) * 100) : 0);
+const buildTopFivePlusOthers = (items = []) => {
+  const sorted = [...items].sort((a, b) => Number(b.value || 0) - Number(a.value || 0));
+  const topFive = sorted.slice(0, 5);
+  const othersValue = sorted.slice(5).reduce((acc, item) => acc + Number(item.value || 0), 0);
+
+  if (othersValue > 0) {
+    topFive.push({
+      id: 'Otros',
+      label: 'Otros',
+      value: othersValue,
+    });
+  }
+
+  return topFive;
+};
 
 const Pie = () => {
   const [typeChartData, setTypeChartData] = useState([]);
@@ -165,6 +181,7 @@ const Pie = () => {
 
   const topGenre = useMemo(() => getTopEntry(genreChartData), [genreChartData]);
   const topGenres = useMemo(() => [...genreChartData].sort((a, b) => b.value - a.value).slice(0, 5), [genreChartData]);
+  const genreDonutData = useMemo(() => buildTopFivePlusOthers(genreChartData), [genreChartData]);
   const topTypes = useMemo(() => [...typeChartData].sort((a, b) => b.value - a.value).slice(0, 4), [typeChartData]);
   const yearRange = useMemo(() => {
     if (!yearChartData.length) {
@@ -411,9 +428,9 @@ const Pie = () => {
                   <div className="audio-chart-canvas pie-view audio-chart-panel">
                     <div className="audio-chart-panel-head">
                       <strong>Vista general</strong>
-                      <span>Participacion por genero musical</span>
+                      <span>Participacion resumida con top 5 generos y otros</span>
                     </div>
-                    <PieChart data={genreChartData} />
+                    <PieChart data={genreDonutData} />
                   </div>
 
                   <div className="audio-chart-canvas audio-chart-insights audio-chart-panel">
@@ -596,3 +613,5 @@ const Pie = () => {
 };
 
 export default Pie;
+
+

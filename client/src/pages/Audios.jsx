@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+﻿import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import DataTable from 'react-data-table-component';
 import {
@@ -69,6 +69,7 @@ const AUDIO_EXPORT_COLUMNS = [
 ];
 
 const NEGOTIABLE_ALERT_VALUE = 'NOT FOR TRADE';
+const isNegotiableAlert = (value) => `${value ?? ''}`.trim().toUpperCase() === NEGOTIABLE_ALERT_VALUE;
 
 const Audios = () => {
   const theme = useTheme();
@@ -194,7 +195,7 @@ const Audios = () => {
     () => [
       {
         title: 'Panel analitico',
-        copy: 'Revisa distribucion por tipo, genero, conciertos por año y bandas con mas bootlegs.',
+        copy: 'Revisa distribucion por tipo, genero, conciertos por anio y bandas con mas bootlegs.',
         to: '/pie',
         icon: <PieChartOutlineOutlinedIcon fontSize="small" />,
         action: 'Ver analitica',
@@ -404,7 +405,11 @@ const Audios = () => {
       button: true,
       center: true,
       cell: (row) => (
-        <Button variant="outlined" className="audio-detail-trigger" onClick={() => openAudioDetail(row)}>
+        <Button
+          variant="outlined"
+          className={`audio-detail-trigger ${isNegotiableAlert(row.negociable) ? 'is-alert' : ''}`.trim()}
+          onClick={() => openAudioDetail(row)}
+        >
           Ver ficha
         </Button>
       ),
@@ -422,6 +427,7 @@ const Audios = () => {
         { icon: <AudioFileOutlinedIcon fontSize="small" />, label: 'Formato', value: selectedAudio.formato },
         { icon: <DiscFullOutlinedIcon fontSize="small" />, label: 'Cantidad de discos', value: selectedAudio.cantidadDiscos },
         { icon: <NotesOutlinedIcon fontSize="small" />, label: 'Version', value: selectedAudio.version || 'Sin version registrada' },
+        { icon: <CommentOutlinedIcon fontSize="small" />, label: 'Negociable', value: selectedAudio.negociable || 'Sin dato registrado' },
       ]
     : [];
 
@@ -491,7 +497,7 @@ const Audios = () => {
           <span className="section-kicker">Analitica</span>
           <h2>Explora la coleccion</h2>
         </div>
-        <p>Accesos visuales para entender la distribucion general, la cronologia por año y las bandas con mayor presencia.</p>
+        <p>Accesos visuales para entender la distribucion general, la cronologia por anio y las bandas con mayor presencia.</p>
       </div>
 
       <div className="audio-insight-grid">
@@ -510,62 +516,60 @@ const Audios = () => {
               </Typography>
               <p>{isEditing ? 'Edita los campos principales y guarda los cambios desde esta misma ficha.' : 'Ficha ampliada con los datos principales del bootleg seleccionado.'}</p>
             </div>
-            <div className="audio-detail-actions">
-              {isEditing ? (
-                <>
-                  <Button variant="outlined" onClick={() => { setIsEditing(false); setAudioForm(createAudioForm(selectedAudio)); setFormError(''); setFormSuccess(''); }}>
-                    Cancelar
-                  </Button>
-                  <Button variant="contained" onClick={handleSaveAudio} disabled={isSaving} startIcon={<SaveOutlinedIcon fontSize="small" />}>
-                    Guardar cambios
-                  </Button>
-                </>
-              ) : (
-                <Button variant="contained" onClick={() => setIsEditing(true)} startIcon={<EditOutlinedIcon fontSize="small" />}>
-                  Editar ficha
-                </Button>
-              )}
-            </div>
           </div>
 
           {formError ? <Alert severity="error" className="audio-detail-alert">{formError}</Alert> : null}
           {formSuccess ? <Alert severity="success" className="audio-detail-alert">{formSuccess}</Alert> : null}
 
           {isEditing ? (
-            <div className="audio-edit-grid">
-              <TextField label="Nombre de banda" value={audioForm.nombreBanda} onChange={handleFormChange('nombreBanda')} fullWidth />
-              <TextField label="Fecha" type="date" value={audioForm.fecha} onChange={handleFormChange('fecha')} InputLabelProps={{ shrink: true }} fullWidth />
-              <TextField label="Lugar" value={audioForm.lugar} onChange={handleFormChange('lugar')} fullWidth className="is-wide" />
-              <TextField select label="Tipo" value={audioForm.tipo} onChange={handleFormChange('tipo')} fullWidth>
-                {tipoOptions.map((option) => (
-                  <MenuItem key={option.id || option.codigo} value={option.nombre}>
-                    {option.nombre}
-                  </MenuItem>
-                ))}
-              </TextField>
-              <TextField select label="Formato" value={audioForm.formato} onChange={handleFormChange('formato')} fullWidth>
-                {formatoOptions.map((option) => (
-                  <MenuItem key={option.id || option.codigo} value={option.nombre}>
-                    {option.nombre}
-                  </MenuItem>
-                ))}
-              </TextField>
-              <TextField select label="Genero" value={audioForm.genero_id} onChange={handleFormChange('genero_id')} fullWidth>
-                <MenuItem value="">Sin genero</MenuItem>
-                {generoOptions.map((option) => (
-                  <MenuItem key={option.id || option.codigo} value={option.id}>
-                    {option.nombre}
-                  </MenuItem>
-                ))}
-              </TextField>
-              <TextField label="Cantidad de discos" type="number" value={audioForm.cantidadDiscos} onChange={handleFormChange('cantidadDiscos')} fullWidth />
-              <TextField label="Version" value={audioForm.version} onChange={handleFormChange('version')} fullWidth />
-              <TextField label="Almacenamiento" value={audioForm.almacenamiento} onChange={handleFormChange('almacenamiento')} fullWidth />
-              <TextField label="Categoria" value={audioForm.categoria} onChange={handleFormChange('categoria')} fullWidth />
-              <TextField label="Peso" value={audioForm.peso} onChange={handleFormChange('peso')} fullWidth />
-              <TextField label="Negociable" value={audioForm.negociable} onChange={handleFormChange('negociable')} fullWidth />
-              <TextField label="Comentario" value={audioForm.comentario} onChange={handleFormChange('comentario')} fullWidth multiline minRows={3} className="is-wide" />
-            </div>
+            <>
+              <div className="audio-edit-grid">
+                <TextField label="Nombre de banda" value={audioForm.nombreBanda} onChange={handleFormChange('nombreBanda')} fullWidth />
+                <TextField label="Fecha" type="date" value={audioForm.fecha} onChange={handleFormChange('fecha')} InputLabelProps={{ shrink: true }} fullWidth />
+                <TextField label="Lugar" value={audioForm.lugar} onChange={handleFormChange('lugar')} fullWidth className="is-wide" />
+                <TextField select label="Tipo" value={audioForm.tipo} onChange={handleFormChange('tipo')} fullWidth>
+                  {tipoOptions.map((option) => (
+                    <MenuItem key={option.id || option.codigo} value={option.nombre}>
+                      {option.nombre}
+                    </MenuItem>
+                  ))}
+                </TextField>
+                <TextField select label="Formato" value={audioForm.formato} onChange={handleFormChange('formato')} fullWidth>
+                  {formatoOptions.map((option) => (
+                    <MenuItem key={option.id || option.codigo} value={option.nombre}>
+                      {option.nombre}
+                    </MenuItem>
+                  ))}
+                </TextField>
+                <TextField select label="Genero" value={audioForm.genero_id} onChange={handleFormChange('genero_id')} fullWidth>
+                  <MenuItem value="">Sin genero</MenuItem>
+                  {generoOptions.map((option) => (
+                    <MenuItem key={option.id || option.codigo} value={option.id}>
+                      {option.nombre}
+                    </MenuItem>
+                  ))}
+                </TextField>
+                <TextField label="Cantidad de discos" type="number" value={audioForm.cantidadDiscos} onChange={handleFormChange('cantidadDiscos')} fullWidth />
+                <TextField label="Version" value={audioForm.version} onChange={handleFormChange('version')} fullWidth />
+                <TextField label="Almacenamiento" value={audioForm.almacenamiento} onChange={handleFormChange('almacenamiento')} fullWidth />
+                <TextField label="Categoria" value={audioForm.categoria} onChange={handleFormChange('categoria')} fullWidth />
+                <TextField label="Peso" value={audioForm.peso} onChange={handleFormChange('peso')} fullWidth />
+                <TextField label="Negociable" value={audioForm.negociable} onChange={handleFormChange('negociable')} fullWidth />
+                <TextField label="Comentario" value={audioForm.comentario} onChange={handleFormChange('comentario')} fullWidth multiline minRows={3} className="is-wide" />
+              </div>
+
+              <div className="audio-detail-footer">
+                <div className="audio-detail-footer-copy">Revisa los cambios y guarda al terminar la ficha.</div>
+                <div className="audio-detail-actions is-footer">
+                  <Button variant="outlined" onClick={() => { setIsEditing(false); setAudioForm(createAudioForm(selectedAudio)); setFormError(''); setFormSuccess(''); }}>
+                    Cancelar
+                  </Button>
+                  <Button variant="contained" onClick={handleSaveAudio} disabled={isSaving} startIcon={<SaveOutlinedIcon fontSize="small" />}>
+                    Guardar cambios
+                  </Button>
+                </div>
+              </div>
+            </>
           ) : (
             <>
               <div className="audio-detail-grid">
@@ -574,7 +578,16 @@ const Audios = () => {
                     <span className="audio-detail-icon">{item.icon}</span>
                     <div>
                       <small>{item.label}</small>
-                      <span className={!item.value ? 'is-empty' : ''}>{item.value || 'Sin dato registrado'}</span>
+                      <span
+                        className={[
+                          !item.value ? 'is-empty' : '',
+                          item.label === 'Negociable' && isNegotiableAlert(item.value) ? 'is-alert' : '',
+                        ]
+                          .filter(Boolean)
+                          .join(' ')}
+                      >
+                        {item.value || 'Sin dato registrado'}
+                      </span>
                     </div>
                   </div>
                 ))}
@@ -591,6 +604,15 @@ const Audios = () => {
                       {selectedAudio?.comentario || 'Sin comentario registrado'}
                     </span>
                   </div>
+                </div>
+              </div>
+
+              <div className="audio-detail-footer is-view-mode">
+                <div className="audio-detail-footer-copy">Si quieres corregir algo de esta ficha, puedes editarla desde aqui mismo.</div>
+                <div className="audio-detail-actions is-footer">
+                  <Button variant="contained" onClick={() => setIsEditing(true)} startIcon={<EditOutlinedIcon fontSize="small" />}>
+                    Editar ficha
+                  </Button>
                 </div>
               </div>
             </>
@@ -614,4 +636,5 @@ const CardLink = ({ title, copy, to, icon, action }) => (
 );
 
 export default Audios;
+
 
