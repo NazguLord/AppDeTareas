@@ -1,5 +1,4 @@
 import React from 'react'
-//import '../Styles/pagination.css';
 
 const Pagination = ({medicamentosPerPage, totalMedicamentos, currentPage, setCurrentPage}) => {
 const pageNumbers = []

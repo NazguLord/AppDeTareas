@@ -122,6 +122,12 @@ export const tokens = (mode) => ({
 
 export const themeSettings = (mode) => {
     const colors = tokens(mode);
+    const isDark = mode === 'dark';
+    const titleColor = isDark ? '#f8fafc' : '#111827';
+    const copyColor = isDark ? '#94a3b8' : '#57534e';
+    const borderColor = isDark ? 'rgba(148, 163, 184, 0.16)' : 'rgba(28, 25, 23, 0.08)';
+    const surfaceColor = isDark ? 'rgba(15, 23, 42, 0.92)' : 'rgba(255, 255, 255, 0.92)';
+    const accentColor = isDark ? '#5eead4' : '#0f766e';
 
     return {
         palette: {
@@ -159,32 +165,190 @@ export const themeSettings = (mode) => {
                 },
             }),
         },
+            shape: {
+                borderRadius: 16,
+            },
             typography: {
-                fontFamily: ["Source Sabs Pro", "sans-serif"].join(","),
+                fontFamily: ["Source Sans Pro", "Inter", "Segoe UI", "Arial", "sans-serif"].join(","),
                 fontSize: 12,
                 h1: {
-                    fontFamily: ["Source Sabs Pro", "sans-serif"].join(","),
+                    fontFamily: ["Source Sans Pro", "Inter", "Segoe UI", "Arial", "sans-serif"].join(","),
                     fontSize: 40,
+                    fontWeight: 800,
                 },
                 h2: {
-                    fontFamily: ["Source Sabs Pro", "sans-serif"].join(","),
+                    fontFamily: ["Source Sans Pro", "Inter", "Segoe UI", "Arial", "sans-serif"].join(","),
                     fontSize: 32,
+                    fontWeight: 800,
                 },
                 h3: {
-                    fontFamily: ["Source Sabs Pro", "sans-serif"].join(","),
+                    fontFamily: ["Source Sans Pro", "Inter", "Segoe UI", "Arial", "sans-serif"].join(","),
                     fontSize: 24,
+                    fontWeight: 800,
                 },
                 h4: {
-                    fontFamily: ["Source Sabs Pro", "sans-serif"].join(","),
+                    fontFamily: ["Source Sans Pro", "Inter", "Segoe UI", "Arial", "sans-serif"].join(","),
                     fontSize: 20,
+                    fontWeight: 800,
                 },
                 h5: {
-                    fontFamily: ["Source Sabs Pro", "sans-serif"].join(","),
+                    fontFamily: ["Source Sans Pro", "Inter", "Segoe UI", "Arial", "sans-serif"].join(","),
                     fontSize: 16,
+                    fontWeight: 800,
                 },
                 h6: {
-                    fontFamily: ["Source Sabs Pro", "sans-serif"].join(","),
+                    fontFamily: ["Source Sans Pro", "Inter", "Segoe UI", "Arial", "sans-serif"].join(","),
                     fontSize: 14,
+                    fontWeight: 800,
+                },
+            },
+            components: {
+                MuiCssBaseline: {
+                    styleOverrides: {
+                        html: {
+                            minHeight: '100%',
+                        },
+                        body: {
+                            minHeight: '100vh',
+                            margin: 0,
+                            fontFamily: '"Source Sans Pro", Inter, "Segoe UI", Arial, sans-serif',
+                            WebkitFontSmoothing: 'antialiased',
+                            MozOsxFontSmoothing: 'grayscale',
+                        },
+                        '#root': {
+                            minHeight: '100%',
+                        },
+                        code: {
+                            fontFamily: 'source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace',
+                        },
+                    },
+                },
+                MuiButton: {
+                    defaultProps: {
+                        disableElevation: true,
+                    },
+                    styleOverrides: {
+                        root: {
+                            borderRadius: 14,
+                            minHeight: 42,
+                            textTransform: 'none',
+                            fontWeight: 700,
+                            letterSpacing: 0,
+                        },
+                        contained: {
+                            background: 'linear-gradient(135deg, #0f766e 0%, #1d4ed8 100%)',
+                            color: '#f8fafc',
+                            boxShadow: isDark ? '0 16px 28px rgba(2, 6, 23, 0.28)' : '0 16px 28px rgba(29, 78, 216, 0.18)',
+                            '&:hover': {
+                                background: 'linear-gradient(135deg, #0d9488 0%, #2563eb 100%)',
+                            },
+                            '&.Mui-disabled': {
+                                background: isDark ? 'rgba(148, 163, 184, 0.16)' : 'rgba(17, 24, 39, 0.12)',
+                                color: isDark ? 'rgba(226, 232, 240, 0.42)' : 'rgba(17, 24, 39, 0.38)',
+                            },
+                        },
+                        outlined: {
+                            borderColor,
+                            color: titleColor,
+                            backgroundColor: isDark ? 'rgba(15, 23, 42, 0.48)' : 'rgba(255, 255, 255, 0.62)',
+                            '&:hover': {
+                                borderColor: accentColor,
+                                backgroundColor: isDark ? 'rgba(20, 184, 166, 0.12)' : 'rgba(14, 116, 144, 0.08)',
+                            },
+                        },
+                    },
+                },
+                MuiCard: {
+                    styleOverrides: {
+                        root: {
+                            borderRadius: 24,
+                            border: `1px solid ${borderColor}`,
+                            backgroundImage: 'none',
+                            backgroundColor: surfaceColor,
+                            color: titleColor,
+                        },
+                    },
+                },
+                MuiPaper: {
+                    styleOverrides: {
+                        root: {
+                            backgroundImage: 'none',
+                            backgroundColor: surfaceColor,
+                        },
+                    },
+                },
+                MuiDialog: {
+                    styleOverrides: {
+                        paper: {
+                            borderRadius: 24,
+                            border: `1px solid ${borderColor}`,
+                            backgroundImage: 'none',
+                            backgroundColor: surfaceColor,
+                        },
+                    },
+                },
+                MuiTextField: {
+                    defaultProps: {
+                        variant: 'outlined',
+                    },
+                },
+                MuiOutlinedInput: {
+                    styleOverrides: {
+                        root: {
+                            borderRadius: 14,
+                            backgroundColor: isDark ? 'rgba(15, 23, 42, 0.54)' : 'rgba(255, 255, 255, 0.74)',
+                            color: titleColor,
+                            '& .MuiOutlinedInput-notchedOutline': {
+                                borderColor,
+                            },
+                            '&:hover .MuiOutlinedInput-notchedOutline': {
+                                borderColor: accentColor,
+                            },
+                            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                                borderColor: accentColor,
+                                borderWidth: 1,
+                            },
+                        },
+                        input: {
+                            '&::placeholder': {
+                                color: copyColor,
+                                opacity: 1,
+                            },
+                        },
+                    },
+                },
+                MuiInputLabel: {
+                    styleOverrides: {
+                        root: {
+                            color: copyColor,
+                            '&.Mui-focused': {
+                                color: accentColor,
+                            },
+                        },
+                    },
+                },
+                MuiChip: {
+                    styleOverrides: {
+                        root: {
+                            borderRadius: 999,
+                            fontWeight: 700,
+                            letterSpacing: 0,
+                        },
+                    },
+                },
+                MuiAlert: {
+                    styleOverrides: {
+                        root: {
+                            borderRadius: 16,
+                        },
+                    },
+                },
+                MuiIconButton: {
+                    styleOverrides: {
+                        root: {
+                            color: titleColor,
+                        },
+                    },
                 },
             },
     };

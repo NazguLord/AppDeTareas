@@ -1,5 +1,5 @@
 import React from 'react'
-import '../Components/style.scss';
+import '../Components/Auth.scss';
 import {Link, useNavigate } from 'react-router-dom';
 import { useState, useContext } from 'react';
 import { AuthContext } from '../context/authContext';

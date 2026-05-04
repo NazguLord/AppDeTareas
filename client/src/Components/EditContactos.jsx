@@ -8,8 +8,6 @@ import { useState } from 'react';
 import api from '../api';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
-import './style.scss';
-
 const EditContactos = () => {
   const [file, setFile] = useState(null);
   const [name, setName] = useState('');
