@@ -4,15 +4,17 @@ import {
   Button,
   DialogActions,
   FormControl,
-  FormControlLabel,
   FormHelperText,
-  FormLabel,
   MenuItem,
-  Radio,
-  RadioGroup,
   TextField,
+  ToggleButton,
+  ToggleButtonGroup,
   Typography,
 } from '@mui/material';
+import AudiotrackOutlinedIcon from '@mui/icons-material/AudiotrackOutlined';
+import VideoLibraryOutlinedIcon from '@mui/icons-material/VideoLibraryOutlined';
+import SwapHorizOutlinedIcon from '@mui/icons-material/SwapHorizOutlined';
+import BlockOutlinedIcon from '@mui/icons-material/BlockOutlined';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import api from '../api';
@@ -162,218 +164,268 @@ const BootlegForm = ({ onSuccess, onCancel, submitLabel = 'Guardar bootleg', isD
                 Ingresa un bootleg
               </Typography>
               <Typography variant="body1" className="bootleg-form-copy">
-                Registra tus bootlegs aqui
+                Crea una ficha limpia con formato, fuente, almacenamiento y notas para encontrarla rapido despues.
               </Typography>
             </div>
 
-            <Box className="bootleg-form-grid" display="grid" gridTemplateColumns="repeat(12, minmax(0, 1fr))" gap="16px" sx={fieldLayout}>
-              <TextField
-                className="span-6"
-                fullWidth
-                variant="outlined"
-                label="Banda"
-                name="nombreBanda"
-                value={values.nombreBanda}
-                onBlur={handleBlur}
-                onChange={handleChange}
-                error={!!touched.nombreBanda && !!errors.nombreBanda}
-                helperText={touched.nombreBanda && errors.nombreBanda}
-              />
+            <div className="bootleg-form-sections">
+              <section className="bootleg-form-section">
+                <div className="bootleg-form-section-head">
+                  <span>01</span>
+                  <div>
+                    <strong>Identificacion</strong>
+                    <p>Banda, categoria, lugar y fecha del registro.</p>
+                  </div>
+                </div>
 
-              <TextField
-                className="span-6"
-                fullWidth
-                select
-                variant="outlined"
-                label="Categoria"
-                name="categoria"
-                value={values.categoria}
-                onBlur={handleBlur}
-                onChange={(event) => {
-                  handleChange(event);
-                  setFieldValue('formato', '');
-                  setFieldValue('tipo', '');
-                }}
-                error={!!touched.categoria && !!errors.categoria}
-                helperText={touched.categoria && errors.categoria}
-              >
-                <MenuItem value="Audio">Audio</MenuItem>
-                <MenuItem value="Video">Video</MenuItem>
-              </TextField>
+                <Box className="bootleg-form-grid" display="grid" gridTemplateColumns="repeat(12, minmax(0, 1fr))" gap="16px" sx={fieldLayout}>
+                  <TextField
+                    className="span-6"
+                    fullWidth
+                    variant="outlined"
+                    label="Banda"
+                    name="nombreBanda"
+                    value={values.nombreBanda}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    error={!!touched.nombreBanda && !!errors.nombreBanda}
+                    helperText={touched.nombreBanda && errors.nombreBanda}
+                  />
 
-              <TextField
-                className="span-6"
-                fullWidth
-                variant="outlined"
-                label="Lugar"
-                name="lugar"
-                value={values.lugar}
-                onBlur={handleBlur}
-                onChange={handleChange}
-                error={!!touched.lugar && !!errors.lugar}
-                helperText={touched.lugar && errors.lugar}
-              />
+                  <FormControl className="span-6 bootleg-segment-control" error={!!touched.categoria && !!errors.categoria}>
+                    <span className="bootleg-segment-label">Categoria</span>
+                    <ToggleButtonGroup
+                      exclusive
+                      fullWidth
+                      value={values.categoria}
+                      onBlur={() => setFieldTouched('categoria', true, true)}
+                      onChange={(_, nextValue) => {
+                        if (!nextValue) return;
+                        setFieldValue('categoria', nextValue);
+                        setFieldValue('formato', '');
+                        setFieldValue('tipo', '');
+                      }}
+                    >
+                      <ToggleButton value="Audio">
+                        <AudiotrackOutlinedIcon fontSize="small" />
+                        Audio
+                      </ToggleButton>
+                      <ToggleButton value="Video">
+                        <VideoLibraryOutlinedIcon fontSize="small" />
+                        Video
+                      </ToggleButton>
+                    </ToggleButtonGroup>
+                    <FormHelperText>{touched.categoria && errors.categoria}</FormHelperText>
+                  </FormControl>
 
-              <TextField
-                className="span-3"
-                fullWidth
-                variant="outlined"
-                type="date"
-                label="Fecha"
-                name="fecha"
-                value={values.fecha}
-                onBlur={handleBlur}
-                onChange={handleChange}
-                error={!!touched.fecha && !!errors.fecha}
-                helperText={touched.fecha && errors.fecha}
-                InputLabelProps={{ shrink: true }}
-              />
+                  <TextField
+                    className="span-8"
+                    fullWidth
+                    variant="outlined"
+                    label="Lugar"
+                    name="lugar"
+                    value={values.lugar}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    error={!!touched.lugar && !!errors.lugar}
+                    helperText={touched.lugar && errors.lugar}
+                  />
 
-              <FormControl className="span-3 bootleg-radio-group" error={!!touched.negociable && !!errors.negociable}>
-                <FormLabel>Tradeable</FormLabel>
-                <RadioGroup
-                  row
-                  name="negociable"
-                  value={values.negociable}
-                  onChange={handleChange}
-                  onBlur={() => setFieldTouched('negociable', true, true)}
-                >
-                  <FormControlLabel value="Yes" control={<Radio />} label="Si" />
-                  <FormControlLabel value="No" control={<Radio />} label="No" />
-                </RadioGroup>
-                <FormHelperText>{touched.negociable && errors.negociable}</FormHelperText>
-              </FormControl>
+                  <TextField
+                    className="span-4"
+                    fullWidth
+                    variant="outlined"
+                    type="date"
+                    label="Fecha"
+                    name="fecha"
+                    value={values.fecha}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    error={!!touched.fecha && !!errors.fecha}
+                    helperText={touched.fecha && errors.fecha}
+                    InputLabelProps={{ shrink: true }}
+                  />
+                </Box>
+              </section>
 
-              <TextField
-                className="span-4"
-                fullWidth
-                select
-                variant="outlined"
-                label={values.categoria === 'Video' ? 'Formato de video' : 'Formato de audio'}
-                name="formato"
-                value={values.formato}
-                onBlur={handleBlur}
-                onChange={(event) => {
-                  handleChange(event);
-                  setFieldValue('tipo', '');
-                }}
-                error={!!touched.formato && !!errors.formato}
-                helperText={touched.formato && errors.formato}
-              >
-                {formatOptions.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
-                  </MenuItem>
-                ))}
-              </TextField>
+              <section className="bootleg-form-section">
+                <div className="bootleg-form-section-head">
+                  <span>02</span>
+                  <div>
+                    <strong>Formato y fuente</strong>
+                    <p>Datos tecnicos para filtrar y clasificar la coleccion.</p>
+                  </div>
+                </div>
 
-              <TextField
-                className="span-4"
-                fullWidth
-                select
-                variant="outlined"
-                label={isVideoFormat ? 'Fuente de video' : 'Fuente de audio'}
-                name="tipo"
-                value={values.tipo}
-                onBlur={handleBlur}
-                onChange={handleChange}
-                error={!!touched.tipo && !!errors.tipo}
-                helperText={touched.tipo && errors.tipo}
-              >
-                {sourceOptions.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
-                  </MenuItem>
-                ))}
-              </TextField>
+                <Box className="bootleg-form-grid" display="grid" gridTemplateColumns="repeat(12, minmax(0, 1fr))" gap="16px" sx={fieldLayout}>
+                  <TextField
+                    className="span-4"
+                    fullWidth
+                    select
+                    variant="outlined"
+                    label={values.categoria === 'Video' ? 'Formato de video' : 'Formato de audio'}
+                    name="formato"
+                    value={values.formato}
+                    onBlur={handleBlur}
+                    onChange={(event) => {
+                      handleChange(event);
+                      setFieldValue('tipo', '');
+                    }}
+                    error={!!touched.formato && !!errors.formato}
+                    helperText={touched.formato && errors.formato}
+                  >
+                    {formatOptions.map((option) => (
+                      <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </TextField>
 
-              <TextField
-                className="span-4"
-                fullWidth
-                select
-                variant="outlined"
-                label="Genero"
-                name="genero_id"
-                value={values.genero_id}
-                onBlur={handleBlur}
-                onChange={handleChange}
-              >
-                <MenuItem value="">Sin genero</MenuItem>
-                {genreOptions.map((option) => (
-                  <MenuItem key={option.id || option.codigo} value={option.id}>
-                    {option.nombre}
-                  </MenuItem>
-                ))}
-              </TextField>
+                  <TextField
+                    className="span-4"
+                    fullWidth
+                    select
+                    variant="outlined"
+                    label={isVideoFormat ? 'Fuente de video' : 'Fuente de audio'}
+                    name="tipo"
+                    value={values.tipo}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    error={!!touched.tipo && !!errors.tipo}
+                    helperText={touched.tipo && errors.tipo}
+                  >
+                    {sourceOptions.map((option) => (
+                      <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </TextField>
 
-              <TextField
-                className="span-4"
-                fullWidth
-                variant="outlined"
-                label="Version"
-                name="version"
-                value={values.version}
-                onBlur={handleBlur}
-                onChange={handleChange}
-              />
+                  <TextField
+                    className="span-4"
+                    fullWidth
+                    select
+                    variant="outlined"
+                    label="Genero"
+                    name="genero_id"
+                    value={values.genero_id}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                  >
+                    <MenuItem value="">Sin genero</MenuItem>
+                    {genreOptions.map((option) => (
+                      <MenuItem key={option.id || option.codigo} value={option.id}>
+                        {option.nombre}
+                      </MenuItem>
+                    ))}
+                  </TextField>
 
-              <TextField
-                className="span-3"
-                fullWidth
-                variant="outlined"
-                type="number"
-                label="Discos"
-                name="cantidadDiscos"
-                value={values.cantidadDiscos}
-                onBlur={handleBlur}
-                onChange={handleChange}
-                error={!!touched.cantidadDiscos && !!errors.cantidadDiscos}
-                helperText={touched.cantidadDiscos && errors.cantidadDiscos}
-              />
+                  <TextField
+                    className="span-4"
+                    fullWidth
+                    variant="outlined"
+                    label="Version"
+                    name="version"
+                    value={values.version}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                  />
 
-              <TextField
-                className="span-3"
-                fullWidth
-                variant="outlined"
-                type="number"
-                inputProps={{ step: '0.01', min: '0' }}
-                label="Peso"
-                name="peso"
-                value={values.peso}
-                onBlur={handleBlur}
-                onChange={handleChange}
-                error={!!touched.peso && !!errors.peso}
-                helperText={touched.peso && errors.peso}
-              />
+                  <TextField
+                    className="span-4"
+                    fullWidth
+                    variant="outlined"
+                    type="number"
+                    label="Discos"
+                    name="cantidadDiscos"
+                    value={values.cantidadDiscos}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    error={!!touched.cantidadDiscos && !!errors.cantidadDiscos}
+                    helperText={touched.cantidadDiscos && errors.cantidadDiscos}
+                  />
 
-              <TextField
-                className="span-6"
-                fullWidth
-                variant="outlined"
-                label="Almacenamiento"
-                name="almacenamiento"
-                value={values.almacenamiento}
-                onBlur={handleBlur}
-                onChange={handleChange}
-                error={!!touched.almacenamiento && !!errors.almacenamiento}
-                helperText={touched.almacenamiento && errors.almacenamiento}
-              />
+                  <TextField
+                    className="span-4"
+                    fullWidth
+                    variant="outlined"
+                    type="number"
+                    inputProps={{ step: '0.01', min: '0' }}
+                    label="Peso"
+                    name="peso"
+                    value={values.peso}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    error={!!touched.peso && !!errors.peso}
+                    helperText={touched.peso && errors.peso}
+                  />
+                </Box>
+              </section>
 
-              <TextField
-                className="span-12"
-                fullWidth
-                variant="outlined"
-                label="Comentario"
-                name="comentario"
-                value={values.comentario}
-                onBlur={handleBlur}
-                onChange={handleChange}
-                error={!!touched.comentario && !!errors.comentario}
-                helperText={touched.comentario && errors.comentario}
-                multiline
-                minRows={3}
-              />
-            </Box>
+              <section className="bootleg-form-section">
+                <div className="bootleg-form-section-head">
+                  <span>03</span>
+                  <div>
+                    <strong>Archivo y notas</strong>
+                    <p>Ubicacion, intercambio y comentario visible en la ficha.</p>
+                  </div>
+                </div>
+
+                <Box className="bootleg-form-grid" display="grid" gridTemplateColumns="repeat(12, minmax(0, 1fr))" gap="16px" sx={fieldLayout}>
+                  <TextField
+                    className="span-8"
+                    fullWidth
+                    variant="outlined"
+                    label="Almacenamiento"
+                    name="almacenamiento"
+                    value={values.almacenamiento}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    error={!!touched.almacenamiento && !!errors.almacenamiento}
+                    helperText={touched.almacenamiento && errors.almacenamiento}
+                  />
+
+                  <FormControl className="span-4 bootleg-segment-control" error={!!touched.negociable && !!errors.negociable}>
+                    <span className="bootleg-segment-label">Tradeable</span>
+                    <ToggleButtonGroup
+                      exclusive
+                      fullWidth
+                      value={values.negociable}
+                      onBlur={() => setFieldTouched('negociable', true, true)}
+                      onChange={(_, nextValue) => {
+                        if (!nextValue) return;
+                        setFieldValue('negociable', nextValue);
+                      }}
+                    >
+                      <ToggleButton value="Yes">
+                        <SwapHorizOutlinedIcon fontSize="small" />
+                        Si
+                      </ToggleButton>
+                      <ToggleButton value="No">
+                        <BlockOutlinedIcon fontSize="small" />
+                        No
+                      </ToggleButton>
+                    </ToggleButtonGroup>
+                    <FormHelperText>{touched.negociable && errors.negociable}</FormHelperText>
+                  </FormControl>
+
+                  <TextField
+                    className="span-12"
+                    fullWidth
+                    variant="outlined"
+                    label="Comentario"
+                    name="comentario"
+                    value={values.comentario}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    error={!!touched.comentario && !!errors.comentario}
+                    helperText={touched.comentario && errors.comentario}
+                    multiline
+                    minRows={3}
+                  />
+                </Box>
+              </section>
+            </div>
 
             {status ? <div className="bootleg-form-status bootleg-form-status-error">{status}</div> : null}
 
