@@ -57,11 +57,30 @@ const extractCountryName = (place) => {
 const getRegionLabel = (code) => COUNTRY_REGION_MAP[code] || 'Otras regiones';
 const getTotalValue = (items = []) => items.reduce((acc, item) => acc + Number(item.value || 0), 0);
 const getShare = (value, total) => (total ? Math.round((value / total) * 100) : 0);
+const getPlaceLabel = (place) => {
+  if (!place) return 'Sin lugar';
+  return place.split(',').map((item) => item.trim()).filter(Boolean)[0] || place;
+};
+const addCount = (collection, key) => {
+  if (!key) return;
+  collection[key] = (collection[key] || 0) + 1;
+};
+const countToRankedList = (counts, limit = 3) =>
+  Object.keys(counts)
+    .map((id) => ({ id, value: counts[id] }))
+    .sort((a, b) => b.value - a.value || a.id.localeCompare(b.id))
+    .slice(0, limit);
+const getYear = (date) => {
+  if (!date) return null;
+  const year = new Date(date).getFullYear();
+  return Number.isNaN(year) ? null : year;
+};
 
 const Map = () => {
   const [mapData, setMapData] = useState([]);
   const [countrySummary, setCountrySummary] = useState([]);
   const [totalAudios, setTotalAudios] = useState(0);
+  const [selectedCountryId, setSelectedCountryId] = useState(null);
 
   useEffect(() => {
     const fetchAllAudios = async () => {
@@ -69,6 +88,7 @@ const Map = () => {
         const res = await api.get('/audios');
         const countryCount = {};
         const countryNames = {};
+        const countryDetails = {};
 
         setTotalAudios(res.data.length);
 
@@ -80,11 +100,38 @@ const Map = () => {
 
           countryCount[countryCode] = (countryCount[countryCode] || 0) + 1;
           countryNames[countryCode] = countryName;
+          countryDetails[countryCode] = countryDetails[countryCode] || {
+            bands: {},
+            places: {},
+            formats: {},
+            genres: {},
+            types: {},
+            years: [],
+          };
+
+          addCount(countryDetails[countryCode].bands, item.nombreBanda);
+          addCount(countryDetails[countryCode].places, getPlaceLabel(item.lugar));
+          addCount(countryDetails[countryCode].formats, item.formato);
+          addCount(countryDetails[countryCode].genres, item.genero || 'Sin genero');
+          addCount(countryDetails[countryCode].types, item.tipo);
+
+          const year = getYear(item.fecha);
+          if (year) countryDetails[countryCode].years.push(year);
         });
 
         const mappedData = Object.keys(countryCount).map((id) => ({
           id,
           value: countryCount[id],
+          name: countryNames[id],
+          region: getRegionLabel(id),
+          topBands: countToRankedList(countryDetails[id]?.bands || {}),
+          topPlaces: countToRankedList(countryDetails[id]?.places || {}),
+          topFormats: countToRankedList(countryDetails[id]?.formats || {}),
+          topGenres: countToRankedList(countryDetails[id]?.genres || {}),
+          topTypes: countToRankedList(countryDetails[id]?.types || {}),
+          yearRange: countryDetails[id]?.years?.length
+            ? `${Math.min(...countryDetails[id].years)} - ${Math.max(...countryDetails[id].years)}`
+            : 'Sin fechas',
         }));
 
         const rankedCountries = Object.keys(countryCount)
@@ -93,11 +140,20 @@ const Map = () => {
             name: countryNames[id],
             value: countryCount[id],
             region: getRegionLabel(id),
+            topBands: countToRankedList(countryDetails[id]?.bands || {}),
+            topPlaces: countToRankedList(countryDetails[id]?.places || {}),
+            topFormats: countToRankedList(countryDetails[id]?.formats || {}),
+            topGenres: countToRankedList(countryDetails[id]?.genres || {}),
+            topTypes: countToRankedList(countryDetails[id]?.types || {}),
+            yearRange: countryDetails[id]?.years?.length
+              ? `${Math.min(...countryDetails[id].years)} - ${Math.max(...countryDetails[id].years)}`
+              : 'Sin fechas',
           }))
           .sort((a, b) => b.value - a.value);
 
         setMapData(mappedData);
         setCountrySummary(rankedCountries);
+        setSelectedCountryId((current) => current || rankedCountries[0]?.id || null);
       } catch (error) {
         console.log(error);
       }
@@ -108,6 +164,10 @@ const Map = () => {
 
   const totalMappedRecords = useMemo(() => getTotalValue(mapData), [mapData]);
   const topCountry = useMemo(() => countrySummary[0], [countrySummary]);
+  const selectedCountry = useMemo(
+    () => countrySummary.find((item) => item.id === selectedCountryId) || topCountry,
+    [countrySummary, selectedCountryId, topCountry]
+  );
   const topCountries = useMemo(
     () => countrySummary.slice(0, 8).map((item) => ({ id: item.name || item.id, value: item.value })),
     [countrySummary]
@@ -203,13 +263,17 @@ const Map = () => {
 
           <div className="map-center-stack">
             <div className="audio-chart-canvas map-view">
-              <GeoMap data={mapData} />
+              <GeoMap data={mapData} totalRecords={totalMappedRecords} onCountrySelect={setSelectedCountryId} />
             </div>
 
             <div className="audio-chart-canvas audio-chart-panel map-focus-panel">
               <div className="audio-chart-panel-head">
-                <strong>Lectura geografica</strong>
-                <span>Que tan concentrado esta el archivo en los paises mas fuertes</span>
+                <strong>{selectedCountry ? `Detalle de ${selectedCountry.name}` : 'Lectura geografica'}</strong>
+                <span>
+                  {selectedCountry
+                    ? 'Selecciona otro pais en el mapa para cambiar esta lectura'
+                    : 'Que tan concentrado esta el archivo en los paises mas fuertes'}
+                </span>
               </div>
 
               <div className="audio-chart-share-track" aria-label="Concentracion geografica del archivo">
@@ -218,18 +282,49 @@ const Map = () => {
               </div>
 
               <div className="audio-chart-tags map-focus-grid">
-                {topThreeCountries.map((item) => (
-                  <div className="audio-chart-tag" key={`top-country-${item.id}`}>
-                    <span className="audio-chart-tag-label">{item.name}</span>
-                    <strong className="audio-chart-tag-value">{item.value}</strong>
-                    <span className="audio-chart-tag-copy">{`${getShare(item.value, totalMappedRecords)}% del total mapeado`}</span>
+                {selectedCountry ? (
+                  <>
+                    <div className="audio-chart-tag">
+                      <span className="audio-chart-tag-label">Registros</span>
+                      <strong className="audio-chart-tag-value">{selectedCountry.value}</strong>
+                      <span className="audio-chart-tag-copy">{`${getShare(selectedCountry.value, totalMappedRecords)}% del total mapeado`}</span>
+                    </div>
+                    <div className="audio-chart-tag">
+                      <span className="audio-chart-tag-label">Periodo</span>
+                      <strong className="audio-chart-tag-value">{selectedCountry.yearRange}</strong>
+                      <span className="audio-chart-tag-copy">{selectedCountry.region}</span>
+                    </div>
+                    <div className="audio-chart-tag">
+                      <span className="audio-chart-tag-label">Bandas fuertes</span>
+                      <strong className="audio-chart-tag-value">{selectedCountry.topBands[0]?.id || 'Sin datos'}</strong>
+                      <span className="audio-chart-tag-copy">
+                        {selectedCountry.topBands.map((item) => `${item.id} (${item.value})`).join(', ') || 'Sin lectura suficiente'}
+                      </span>
+                    </div>
+                    <div className="audio-chart-tag">
+                      <span className="audio-chart-tag-label">Lugares frecuentes</span>
+                      <strong className="audio-chart-tag-value">{selectedCountry.topPlaces[0]?.id || 'Sin datos'}</strong>
+                      <span className="audio-chart-tag-copy">
+                        {selectedCountry.topPlaces.map((item) => `${item.id} (${item.value})`).join(', ') || 'Sin lectura suficiente'}
+                      </span>
+                    </div>
+                  </>
+                ) : (
+                  topThreeCountries.map((item) => (
+                    <div className="audio-chart-tag" key={`top-country-${item.id}`}>
+                      <span className="audio-chart-tag-label">{item.name}</span>
+                      <strong className="audio-chart-tag-value">{item.value}</strong>
+                      <span className="audio-chart-tag-copy">{`${getShare(item.value, totalMappedRecords)}% del total mapeado`}</span>
+                    </div>
+                  ))
+                )}
+                {!selectedCountry && (
+                  <div className="audio-chart-tag">
+                    <span className="audio-chart-tag-label">Top 3 combinados</span>
+                    <strong className="audio-chart-tag-value">{topThreeShare}%</strong>
+                    <span className="audio-chart-tag-copy">{`${topThreeTotal} registros concentrados en los tres paises lideres`}</span>
                   </div>
-                ))}
-                <div className="audio-chart-tag">
-                  <span className="audio-chart-tag-label">Top 3 combinados</span>
-                  <strong className="audio-chart-tag-value">{topThreeShare}%</strong>
-                  <span className="audio-chart-tag-copy">{`${topThreeTotal} registros concentrados en los tres paises lideres`}</span>
-                </div>
+                )}
               </div>
             </div>
           </div>

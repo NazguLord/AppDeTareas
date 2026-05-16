@@ -2,7 +2,56 @@
 import { useTheme } from '@mui/material';
 import { geoData } from '../state/geoData';
 
-const GeoMap = ({ data = [] }) => {
+const collectLatitudes = (coordinates, values = []) => {
+  if (!Array.isArray(coordinates)) return values;
+
+  if (typeof coordinates[0] === 'number' && typeof coordinates[1] === 'number') {
+    values.push(coordinates[1]);
+    return values;
+  }
+
+  coordinates.forEach((item) => collectLatitudes(item, values));
+  return values;
+};
+
+const shouldPlaceTooltipBelow = (feature) => {
+  const latitudes = collectLatitudes(feature?.geometry?.coordinates);
+  if (!latitudes.length) return false;
+
+  const averageLatitude = latitudes.reduce((sum, value) => sum + value, 0) / latitudes.length;
+  return averageLatitude > 22;
+};
+
+const MapTooltip = ({ feature, totalRecords = 0 }) => {
+  const item = feature?.data || feature || {};
+  const share = totalRecords ? Math.round((Number(item.value || 0) / totalRecords) * 100) : 0;
+  const topBand = item.topBands?.[0];
+  const topFormat = item.topFormats?.[0];
+  const tooltipClassName = shouldPlaceTooltipBelow(feature) ? 'geo-map-tooltip is-below' : 'geo-map-tooltip';
+
+  return (
+    <div className={tooltipClassName}>
+      <div className="geo-map-tooltip-head">
+        <span className="geo-map-tooltip-color" style={{ background: feature?.color || item.color }} />
+        <strong>{item.name || feature?.label || feature?.id}</strong>
+      </div>
+      <div className="geo-map-tooltip-grid">
+        <span>Registros</span>
+        <strong>{item.value || 0}</strong>
+        <span>Peso</span>
+        <strong>{share}%</strong>
+        <span>Region</span>
+        <strong>{item.region || 'Sin region'}</strong>
+        <span>Banda top</span>
+        <strong>{topBand ? `${topBand.id} (${topBand.value})` : 'Sin datos'}</strong>
+        <span>Formato top</span>
+        <strong>{topFormat ? topFormat.id : 'Sin datos'}</strong>
+      </div>
+    </div>
+  );
+};
+
+const GeoMap = ({ data = [], totalRecords = 0, onCountrySelect }) => {
   const theme = useTheme();
   const isDark = theme.palette.mode === 'dark';
   const textColor = isDark ? '#e2e8f0' : '#334155';
@@ -40,6 +89,12 @@ const GeoMap = ({ data = [] }) => {
         unknownColor={isDark ? 'rgba(51, 65, 85, 0.85)' : '#d6d3d1'}
         label="properties.name"
         valueFormat=".0f"
+        tooltip={(props) => <MapTooltip {...props} totalRecords={totalRecords} />}
+        onClick={(feature) => {
+          if (feature?.data && onCountrySelect) {
+            onCountrySelect(feature.data.id);
+          }
+        }}
         projectionScale={128}
         projectionTranslation={[0.5, 0.6]}
         projectionRotation={[0, 0, 0]}
