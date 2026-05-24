@@ -124,10 +124,10 @@ export const themeSettings = (mode) => {
     const colors = tokens(mode);
     const isDark = mode === 'dark';
     const titleColor = isDark ? '#f8fafc' : '#111827';
-    const copyColor = isDark ? '#94a3b8' : '#57534e';
-    const borderColor = isDark ? 'rgba(148, 163, 184, 0.16)' : 'rgba(28, 25, 23, 0.08)';
-    const surfaceColor = isDark ? 'rgba(15, 23, 42, 0.92)' : 'rgba(255, 255, 255, 0.92)';
-    const accentColor = isDark ? '#5eead4' : '#0f766e';
+    const copyColor = isDark ? '#a3a3a3' : '#57534e';
+    const borderColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(28, 25, 23, 0.08)';
+    const surfaceColor = isDark ? 'rgba(12, 12, 12, 0.94)' : 'rgba(255, 255, 255, 0.92)';
+    const accentColor = isDark ? '#64f4df' : '#0f766e';
 
     return {
         palette: {
@@ -135,10 +135,10 @@ export const themeSettings = (mode) => {
             ...(mode === 'dark'
             ? {
                 primary: {
-                    main: colors.primary[500],
+                    main: '#050505',
                 },
                 secondary: {
-                    main: colors.greenAccent[500],
+                    main: accentColor,
                 },
                 neutral: {
                     dark: colors.grey[700],
@@ -146,7 +146,8 @@ export const themeSettings = (mode) => {
                     light: colors.grey[100]
                 },
                 background:{
-                    default: colors.primary[500],
+                    default: '#050505',
+                    paper: surfaceColor,
                 }
             } : {
                 primary: {
@@ -211,6 +212,7 @@ export const themeSettings = (mode) => {
                         body: {
                             minHeight: '100vh',
                             margin: 0,
+                            backgroundColor: isDark ? '#050505' : '#fcfcfc',
                             fontFamily: '"Source Sans Pro", Inter, "Segoe UI", Arial, sans-serif',
                             WebkitFontSmoothing: 'antialiased',
                             MozOsxFontSmoothing: 'grayscale',

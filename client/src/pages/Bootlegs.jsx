@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Button,
@@ -32,24 +32,34 @@ import '../pages/Bootlegs.scss';
 
 const NEGOTIABLE_ALERT_VALUE = 'NOT FOR TRADE';
 const isNegotiableAlert = (value) => `${value ?? ''}`.trim().toUpperCase() === NEGOTIABLE_ALERT_VALUE;
+const getBootlegId = (item) => Number(item?.idbootlegs) || 0;
 
 export const Bootlegs = () => {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isImportOpen, setIsImportOpen] = useState(false);
   const [audios, setAudios] = useState([]);
 
-  useEffect(() => {
-    const fetchAudios = async () => {
-      try {
-        const response = await api.get('/audios');
-        setAudios(Array.isArray(response.data) ? response.data : []);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchAudios();
+  const fetchAudios = useCallback(async () => {
+    try {
+      const response = await api.get('/audios');
+      setAudios(Array.isArray(response.data) ? response.data : []);
+    } catch (error) {
+      console.log(error);
+    }
   }, []);
+
+  useEffect(() => {
+    fetchAudios();
+  }, [fetchAudios]);
+
+  const handleCreated = () => {
+    setIsCreateOpen(false);
+    fetchAudios();
+  };
+
+  const handleImported = () => {
+    fetchAudios();
+  };
 
   const dashboard = useMemo(() => {
     const uniqueBands = new Set(audios.map((item) => item.nombreBanda).filter(Boolean)).size;
@@ -59,7 +69,7 @@ export const Bootlegs = () => {
     const missingStorage = audios.filter((item) => !item.almacenamiento).length;
     const recent = [...audios]
       .filter((item) => item.nombreBanda || item.fecha)
-      .sort((a, b) => `${b.fecha || ''}`.localeCompare(`${a.fecha || ''}`))
+      .sort((a, b) => getBootlegId(b) - getBootlegId(a))
       .slice(0, 4);
 
     return {
@@ -162,14 +172,26 @@ export const Bootlegs = () => {
             </div>
           </div>
 
-          <div className="bootlegs-library-rail bootlegs-hero-library">
-            <div className="bootlegs-section-head task-section-head">
-              <div>
-                <span className="section-kicker">Biblioteca</span>
-                <h2>Explora por formato</h2>
-              </div>
-            </div>
+          <div className="task-hero-actions bootlegs-hero-actions">
+            <Button variant="contained" className="primary-cta" startIcon={<AddCircleOutlineOutlinedIcon />} onClick={() => setIsCreateOpen(true)}>
+              Agregar bootleg
+            </Button>
+            <Button variant="outlined" className="secondary-cta" startIcon={<UploadFileOutlinedIcon />} onClick={() => setIsImportOpen(true)}>
+              Importar XLSX
+            </Button>
+          </div>
+        </div>
 
+        <div className="bootlegs-library-shell">
+          <div className="bootlegs-section-head task-section-head">
+            <div>
+              <span className="section-kicker">Biblioteca</span>
+              <h2>Explora por formato</h2>
+            </div>
+            <p>Accesos directos a los formatos principales de la coleccion.</p>
+          </div>
+
+          <div className="bootlegs-library-layout">
             <div className="bootlegs-grid">
               {categories.map((category) => {
                 const cardBody = (
@@ -190,6 +212,7 @@ export const Bootlegs = () => {
                       <Typography className="bootlegs-card-title" component="h2">
                         {category.title}
                       </Typography>
+                      <Typography className="bootlegs-card-copy">{category.copy}</Typography>
                       <div className="bootlegs-card-count">
                         <strong>{category.count}</strong>
                         <span>{category.countLabel}</span>
@@ -223,23 +246,13 @@ export const Bootlegs = () => {
                 );
               })}
             </div>
-          </div>
 
-          <div className="task-hero-actions bootlegs-hero-actions">
             <div className="bootlegs-command-card">
               <img src={concertHero} alt="Concierto bootleg" />
               <div className="bootlegs-command-overlay">
                 <span>Gestion rapida</span>
                 <strong>{dashboard.totalAudios} registros</strong>
               </div>
-            </div>
-            <div className="bootlegs-command-actions">
-              <Button variant="contained" className="primary-cta" startIcon={<AddCircleOutlineOutlinedIcon />} onClick={() => setIsCreateOpen(true)}>
-                Agregar bootleg
-              </Button>
-              <Button variant="outlined" className="secondary-cta" startIcon={<UploadFileOutlinedIcon />} onClick={() => setIsImportOpen(true)}>
-                Importar XLSX
-              </Button>
             </div>
           </div>
         </div>
@@ -276,7 +289,7 @@ export const Bootlegs = () => {
                       </span>
                       <div>
                         <strong>{item.nombreBanda || 'Sin banda'}</strong>
-                        <p>{[item.fecha, item.formato, item.tipo].filter(Boolean).join(' · ') || 'Sin detalles tecnicos'}</p>
+                        <p>{[item.fecha, item.formato, item.tipo].filter(Boolean).join(' - ') || 'Sin detalles tecnicos'}</p>
                       </div>
                       <Chip label={item.genero || 'Sin genero'} size="small" className="bootlegs-mini-chip" />
                     </div>
@@ -328,8 +341,8 @@ export const Bootlegs = () => {
         </div>
       </section>
 
-      <BootlegCreateModal open={isCreateOpen} onClose={() => setIsCreateOpen(false)} />
-      <BootlegsImportModal open={isImportOpen} onClose={() => setIsImportOpen(false)} />
+      <BootlegCreateModal open={isCreateOpen} onClose={() => setIsCreateOpen(false)} onCreated={handleCreated} />
+      <BootlegsImportModal open={isImportOpen} onClose={() => setIsImportOpen(false)} onImported={handleImported} />
     </>
   );
 };

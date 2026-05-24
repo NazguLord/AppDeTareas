@@ -162,6 +162,8 @@ const Registros = () => {
           columns={columns}
           data={tareas}
           pagination
+          paginationPerPage={8}
+          paginationRowsPerPageOptions={[8, 12, 20, 50]}
           highlightOnHover
           customStyles={customStyles}
           conditionalRowStyles={conditionalRowStyles}

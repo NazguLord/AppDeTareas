@@ -258,7 +258,7 @@ const Map = () => {
               <strong>Top paises</strong>
               <span>Los destinos con mayor presencia dentro del archivo</span>
             </div>
-            <CategoryBarChart data={topCountries} preserveOrder minHeight={420} />
+            <CategoryBarChart data={topCountries} preserveOrder minHeight={300} />
           </div>
 
           <div className="map-center-stack">
@@ -365,7 +365,7 @@ const Map = () => {
                 <strong>Regiones</strong>
                 <span>Agrupacion resumida para leer mejor el mapa completo</span>
               </div>
-              <CategoryBarChart data={regionSummary} preserveOrder minHeight={260} />
+              <CategoryBarChart data={regionSummary} preserveOrder minHeight={200} />
             </div>
           </div>
         </div>

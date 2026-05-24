@@ -489,7 +489,15 @@ const Audios = () => {
           </div>
         </div>
 
-        <DataTable columns={columns} data={filteredAudios} pagination highlightOnHover customStyles={customStyles} />
+        <DataTable
+          columns={columns}
+          data={filteredAudios}
+          pagination
+          paginationPerPage={8}
+          paginationRowsPerPageOptions={[8, 12, 20, 50]}
+          highlightOnHover
+          customStyles={customStyles}
+        />
       </div>
 
       <div className="audio-section-head task-section-head">

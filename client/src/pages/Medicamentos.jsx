@@ -127,7 +127,7 @@ const Medicamentos = () => {
   const [open, setOpen] = useState(false);
   const [medicamentos, setMedicamentos] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [cardsPerPage] = useState(7);
+  const [cardsPerPage] = useState(12);
   const [page, setPage] = useState(1);
   const [selectedMedicamento, setSelectedMedicamento] = useState(null);
   const [isEditing, setIsEditing] = useState(false);

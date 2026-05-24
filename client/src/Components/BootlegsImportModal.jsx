@@ -59,7 +59,7 @@ const formatMissingField = (field) => {
   return labels[field] || field;
 };
 
-const BootlegsImportModal = ({ open, onClose }) => {
+const BootlegsImportModal = ({ open, onClose, onImported }) => {
   const theme = useTheme();
   const [file, setFile] = useState(null);
   const [targetTable, setTargetTable] = useState(defaultTargetTable);
@@ -169,6 +169,7 @@ const BootlegsImportModal = ({ open, onClose }) => {
       });
 
       setSuccess(response.data?.message || 'Importacion completada.');
+      onImported?.();
     } catch (requestError) {
       setError(requestError?.response?.data?.message || 'No se pudo completar la importacion.');
     } finally {
