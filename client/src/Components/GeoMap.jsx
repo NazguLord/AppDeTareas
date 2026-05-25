@@ -36,16 +36,26 @@ const MapTooltip = ({ feature, totalRecords = 0 }) => {
         <strong>{item.name || feature?.label || feature?.id}</strong>
       </div>
       <div className="geo-map-tooltip-grid">
-        <span>Registros</span>
-        <strong>{item.value || 0}</strong>
-        <span>Peso</span>
-        <strong>{share}%</strong>
-        <span>Region</span>
-        <strong>{item.region || 'Sin region'}</strong>
-        <span>Banda top</span>
-        <strong>{topBand ? `${topBand.id} (${topBand.value})` : 'Sin datos'}</strong>
-        <span>Formato top</span>
-        <strong>{topFormat ? topFormat.id : 'Sin datos'}</strong>
+        <div className="geo-map-tooltip-row">
+          <span>Registros</span>
+          <strong>{item.value || 0}</strong>
+        </div>
+        <div className="geo-map-tooltip-row">
+          <span>Peso</span>
+          <strong>{share}%</strong>
+        </div>
+        <div className="geo-map-tooltip-row">
+          <span>Region</span>
+          <strong>{item.region || 'Sin region'}</strong>
+        </div>
+        <div className="geo-map-tooltip-row">
+          <span>Banda top</span>
+          <strong>{topBand ? `${topBand.id} (${topBand.value})` : 'Sin datos'}</strong>
+        </div>
+        <div className="geo-map-tooltip-row">
+          <span>Formato top</span>
+          <strong>{topFormat ? topFormat.id : 'Sin datos'}</strong>
+        </div>
       </div>
     </div>
   );
@@ -77,9 +87,11 @@ const GeoMap = ({ data = [], totalRecords = 0, onCountrySelect }) => {
           },
           tooltip: {
             container: {
-              color: '#0f172a',
-              background: '#f8fafc',
-              borderRadius: '12px',
+              padding: 0,
+              color: 'inherit',
+              background: 'transparent',
+              borderRadius: 0,
+              boxShadow: 'none',
             },
           },
         }}

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Alert,
   Box,
@@ -26,20 +26,26 @@ const validationSchema = Yup.object({
     .required('La cantidad es obligatoria.'),
 });
 
-const TaskModal = ({ open, onClose, onCreated }) => {
+const TaskModal = ({ open, onClose, onCreated, task }) => {
   const theme = useTheme();
   const isDark = theme.palette.mode === 'dark';
+  const isEditing = Boolean(task?.id);
 
   const formik = useFormik({
     initialValues: {
-      tituloTarea: '',
-      cantidad: '',
+      tituloTarea: task?.tituloTarea || '',
+      cantidad: task?.cantidad ?? '',
     },
+    enableReinitialize: true,
     validationSchema,
     onSubmit: async (values, { resetForm, setStatus, setSubmitting }) => {
       setStatus(null);
       try {
-        await api.post('/tareas', values);
+        if (isEditing) {
+          await api.put(`/tareas/${task.id}`, values);
+        } else {
+          await api.post('/tareas', values);
+        }
         resetForm();
         onCreated?.();
         onClose?.();
@@ -51,6 +57,13 @@ const TaskModal = ({ open, onClose, onCreated }) => {
       }
     },
   });
+
+  useEffect(() => {
+    if (!open) {
+      formik.resetForm();
+      formik.setStatus(null);
+    }
+  }, [open]);
 
   const handleClose = () => {
     formik.resetForm();
@@ -84,14 +97,10 @@ const TaskModal = ({ open, onClose, onCreated }) => {
           overflowY: 'auto',
           p: { xs: 2.5, sm: 3.5 },
           borderRadius: '28px',
-          border: isDark ? '1px solid rgba(148, 163, 184, 0.18)' : '1px solid rgba(28, 25, 23, 0.08)',
-          background: isDark
-            ? 'linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(30, 41, 59, 0.94))'
-            : 'linear-gradient(135deg, rgba(255,255,255,0.98), rgba(249,245,238,0.95))',
-          boxShadow: isDark
-            ? '0 34px 90px rgba(2, 6, 23, 0.55)'
-            : '0 34px 90px rgba(28, 25, 23, 0.22)',
-          color: isDark ? '#e2e8f0' : '#1f2937',
+          border: '1px solid var(--line)',
+          background: isDark ? '#0f0f0f' : 'linear-gradient(135deg, rgba(255,255,255,0.98), rgba(249,245,238,0.95))',
+          boxShadow: 'var(--shadow)',
+          color: 'var(--text)',
           outline: 'none',
         }}
       >
@@ -103,10 +112,10 @@ const TaskModal = ({ open, onClose, onCreated }) => {
                 fontSize: '0.78rem',
                 letterSpacing: '0.22em',
                 textTransform: 'uppercase',
-                color: isDark ? '#5eead4' : '#0f766e',
+                color: 'var(--accent)',
               }}
             >
-              Nueva tarea
+              {isEditing ? 'Editar tarea' : 'Nueva tarea'}
             </Typography>
             <Typography
               variant="h4"
@@ -114,19 +123,21 @@ const TaskModal = ({ open, onClose, onCreated }) => {
               sx={{
                 mb: 1,
                 fontWeight: 800,
-                color: isDark ? '#f8fafc' : '#111827',
+                color: 'var(--title)',
               }}
             >
-              Agregar movimiento
+              {isEditing ? 'Actualizar movimiento' : 'Agregar movimiento'}
             </Typography>
             <Typography
               sx={{
                 maxWidth: 560,
                 lineHeight: 1.7,
-                color: isDark ? '#94a3b8' : '#57534e',
+                color: 'var(--muted)',
               }}
             >
-              Registra una descripcion clara y un monto para que luego se vea limpio en el dashboard y en registros.
+              {isEditing
+                ? 'Corrige la descripcion o el monto sin salir del panel principal.'
+                : 'Registra una descripcion clara y un monto para que luego se vea limpio en el dashboard y en registros.'}
             </Typography>
           </Box>
 
@@ -134,7 +145,7 @@ const TaskModal = ({ open, onClose, onCreated }) => {
 
           <Stack spacing={2}>
             <Box>
-              <Typography sx={{ mb: 1, fontWeight: 700, color: isDark ? '#e2e8f0' : '#1f2937' }}>
+              <Typography sx={{ mb: 1, fontWeight: 700, color: 'var(--title)' }}>
                 Descripcion
               </Typography>
               <TextField
@@ -152,7 +163,7 @@ const TaskModal = ({ open, onClose, onCreated }) => {
             </Box>
 
             <Box sx={{ maxWidth: 280 }}>
-              <Typography sx={{ mb: 1, fontWeight: 700, color: isDark ? '#e2e8f0' : '#1f2937' }}>
+              <Typography sx={{ mb: 1, fontWeight: 700, color: 'var(--title)' }}>
                 Cantidad
               </Typography>
               <TextField
@@ -172,7 +183,7 @@ const TaskModal = ({ open, onClose, onCreated }) => {
 
           <DialogActions sx={{ p: 0, justifyContent: 'flex-start', gap: 1.5, flexWrap: 'wrap' }}>
             <Button type="submit" variant="contained" className="primary-cta" disabled={formik.isSubmitting}>
-              {formik.isSubmitting ? <CircularProgress size={20} color="inherit" /> : 'Guardar tarea'}
+              {formik.isSubmitting ? <CircularProgress size={20} color="inherit" /> : isEditing ? 'Guardar cambios' : 'Guardar tarea'}
             </Button>
             <Button variant="outlined" className="secondary-cta" onClick={handleClose} disabled={formik.isSubmitting}>
               Cancelar

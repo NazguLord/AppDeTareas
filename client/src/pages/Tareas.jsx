@@ -35,6 +35,7 @@ const Tareas = () => {
   const [tareas, setTareas] = useState([]);
   const [total, setTotal] = useState('0.00');
   const [openTaskModal, setOpenTaskModal] = useState(false);
+  const [selectedTask, setSelectedTask] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
 
   const loadDashboard = async () => {
@@ -59,11 +60,22 @@ const Tareas = () => {
 
   const closeTaskModal = () => {
     setOpenTaskModal(false);
+    setSelectedTask(null);
     if (searchParams.get('new') === '1') {
       const next = new URLSearchParams(searchParams);
       next.delete('new');
       setSearchParams(next, { replace: true });
     }
+  };
+
+  const openCreateTask = () => {
+    setSelectedTask(null);
+    setOpenTaskModal(true);
+  };
+
+  const openEditTask = (task) => {
+    setSelectedTask(task);
+    setOpenTaskModal(true);
   };
 
   const stats = useMemo(() => {
@@ -132,8 +144,8 @@ const Tareas = () => {
   };
 
   return (
-    <section className="task-page home-page">
-      <TaskModal open={openTaskModal} onClose={closeTaskModal} onCreated={loadDashboard} />
+      <section className="task-page home-page">
+      <TaskModal open={openTaskModal} onClose={closeTaskModal} onCreated={loadDashboard} task={selectedTask} />
 
       <div className="task-hero home-hero">
         <div className="task-hero-copy">
@@ -145,7 +157,7 @@ const Tareas = () => {
           </p>
         </div>
         <div className="task-hero-actions">
-          <Button variant="contained" className="primary-cta" onClick={() => setOpenTaskModal(true)}>
+          <Button variant="contained" className="primary-cta" onClick={openCreateTask}>
             Agregar tarea
           </Button>
           <Button component={Link} to="/registros" variant="outlined" className="secondary-cta">
@@ -177,7 +189,6 @@ const Tareas = () => {
           <span className="section-kicker">Vista principal</span>
           <h2>Movimientos recientes</h2>
         </div>
-        <p>Una sola fila principal, mejor orden visual y acciones directas sin bloques que distraigan.</p>
       </div>
 
       <div className="task-grid home-task-grid">
@@ -201,7 +212,7 @@ const Tareas = () => {
                 <Divider className="task-divider" />
               </CardContent>
               <CardActions className="task-card-actions">
-                <Button variant="outlined" component={Link} to={`/update/${tarea.id}`}>
+                <Button variant="outlined" onClick={() => openEditTask(tarea)}>
                   Actualizar
                 </Button>
                 <Button variant="outlined" color="error" onClick={() => handleDelete(tarea.id)}>
