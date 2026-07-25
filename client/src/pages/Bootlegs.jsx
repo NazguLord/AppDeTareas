@@ -83,12 +83,21 @@ export const Bootlegs = () => {
     };
   }, [audios]);
 
+  const archiveHealthScore = useMemo(() => {
+    if (!dashboard.totalAudios) {
+      return 100;
+    }
+
+    const missingFields = dashboard.missingGenre + dashboard.missingStorage;
+    return Math.max(0, Math.round(100 - (missingFields / (dashboard.totalAudios * 2)) * 100));
+  }, [dashboard.missingGenre, dashboard.missingStorage, dashboard.totalAudios]);
+
   const categories = useMemo(
     () => [
       {
         title: 'Audios',
         copy:
-          'Grabaciones lossless de heavy, power y otras ramas del metal desde fuentes como audiencia, soundboard y FM.',
+          'Grabaciones lossless de heavy, power y otras ramas del metal desde fuentes audience, soundboard y FM.',
         image: audioHero,
         tag: 'Lossless',
         icon: <HeadphonesOutlinedIcon fontSize="small" />,
@@ -102,9 +111,9 @@ export const Bootlegs = () => {
       {
         title: 'Videos',
         copy:
-          'Coleccion de conciertos en DVD, Blu-ray y capturas en vivo desde fuentes como audience, pro-shot y streaming.',
+          'Colección de conciertos en DVD, Blu-ray y capturas en vivo desde fuentes audience, pro-shot y streaming.',
         image: concertHero,
-        tag: 'En expansion',
+        tag: 'En expansión',
         icon: <VideoLibraryOutlinedIcon fontSize="small" />,
         details: ['DVD / Blu-ray / MKV', 'Pro-shot y audience', 'Vista pendiente'],
         count: 0,
@@ -151,7 +160,7 @@ export const Bootlegs = () => {
     () => [
       { label: 'Nuevo bootleg', icon: <AddCircleOutlineOutlinedIcon fontSize="small" />, onClick: () => setIsCreateOpen(true) },
       { label: 'Importar Excel', icon: <UploadFileOutlinedIcon fontSize="small" />, onClick: () => setIsImportOpen(true) },
-      { label: 'Analitica', icon: <PieChartOutlineOutlinedIcon fontSize="small" />, to: '/pie' },
+      { label: 'Analítica', icon: <PieChartOutlineOutlinedIcon fontSize="small" />, to: '/pie' },
       { label: 'Mapa', icon: <PublicOutlinedIcon fontSize="small" />, to: '/map' },
     ],
     []
@@ -164,7 +173,7 @@ export const Bootlegs = () => {
           <div className="task-hero-copy">
             <span className="eyebrow">Bootlegs</span>
             <h1>Archivo multimedia</h1>
-            <p>Gestiona grabaciones, conciertos y fuentes de tu coleccion desde una vista mas directa: entra al catalogo, crea fichas nuevas o importa lotes desde Excel.</p>
+            <p>Gestiona grabaciones, conciertos y fuentes de tu colección desde una vista más directa: entra al catálogo, crea fichas nuevas o importa lotes desde Excel.</p>
             <div className="bootlegs-hero-strip">
               <span>{dashboard.totalAudios} audios</span>
               <span>{dashboard.uniqueBands} bandas</span>
@@ -172,13 +181,27 @@ export const Bootlegs = () => {
             </div>
           </div>
 
-          <div className="task-hero-actions bootlegs-hero-actions">
-            <Button variant="contained" className="primary-cta" startIcon={<AddCircleOutlineOutlinedIcon />} onClick={() => setIsCreateOpen(true)}>
-              Agregar bootleg
-            </Button>
-            <Button variant="outlined" className="secondary-cta" startIcon={<UploadFileOutlinedIcon />} onClick={() => setIsImportOpen(true)}>
-              Importar XLSX
-            </Button>
+          <div className="bootlegs-hero-panel">
+            <div className="bootlegs-equalizer" aria-hidden="true">
+              <span />
+              <span />
+              <span />
+              <span />
+              <span />
+            </div>
+            <div className="bootlegs-hero-score">
+              <span>Salud del archivo</span>
+              <strong>{archiveHealthScore}%</strong>
+              <p>{dashboard.missingGenre + dashboard.missingStorage} campos clave pendientes</p>
+            </div>
+            <div className="task-hero-actions bootlegs-hero-actions">
+              <Button variant="contained" className="primary-cta" startIcon={<AddCircleOutlineOutlinedIcon />} onClick={() => setIsCreateOpen(true)}>
+                Agregar bootleg
+              </Button>
+              <Button variant="outlined" className="secondary-cta" startIcon={<UploadFileOutlinedIcon />} onClick={() => setIsImportOpen(true)}>
+                Importar XLSX
+              </Button>
+            </div>
           </div>
         </div>
 
@@ -188,7 +211,7 @@ export const Bootlegs = () => {
               <span className="section-kicker">Biblioteca</span>
               <h2>Explora por formato</h2>
             </div>
-            <p>Accesos directos a los formatos principales de la coleccion.</p>
+            <p>Accesos directos a los formatos principales de la colección.</p>
           </div>
 
           <div className="bootlegs-library-layout">
@@ -213,6 +236,11 @@ export const Bootlegs = () => {
                         {category.title}
                       </Typography>
                       <Typography className="bootlegs-card-copy">{category.copy}</Typography>
+                      <div className="bootlegs-card-details">
+                        {category.details.map((detail) => (
+                          <span key={detail}>{detail}</span>
+                        ))}
+                      </div>
                       <div className="bootlegs-card-count">
                         <strong>{category.count}</strong>
                         <span>{category.countLabel}</span>
@@ -250,8 +278,9 @@ export const Bootlegs = () => {
             <div className="bootlegs-command-card">
               <img src={concertHero} alt="Concierto bootleg" />
               <div className="bootlegs-command-overlay">
-                <span>Gestion rapida</span>
+                <span>Gestión rápida</span>
                 <strong>{dashboard.totalAudios} registros</strong>
+                <p>Alta, importación y revisión del catálogo desde una sola vista.</p>
               </div>
             </div>
           </div>
@@ -274,7 +303,7 @@ export const Bootlegs = () => {
               <div className="bootlegs-panel-head">
                 <div>
                   <span className="section-kicker">Actividad</span>
-                  <h2>Ultimos registros</h2>
+                  <h2>Últimos registros</h2>
                 </div>
                 <Button component={Link} to="/audios" variant="outlined" size="small" endIcon={<ArrowForwardRoundedIcon />}>
                   Ver biblioteca
@@ -289,9 +318,9 @@ export const Bootlegs = () => {
                       </span>
                       <div>
                         <strong>{item.nombreBanda || 'Sin banda'}</strong>
-                        <p>{[item.fecha, item.formato, item.tipo].filter(Boolean).join(' - ') || 'Sin detalles tecnicos'}</p>
+                        <p>{[item.fecha, item.formato, item.tipo].filter(Boolean).join(' - ') || 'Sin detalles técnicos'}</p>
                       </div>
-                      <Chip label={item.genero || 'Sin genero'} size="small" className="bootlegs-mini-chip" />
+                      <Chip label={item.genero || 'Sin género'} size="small" className="bootlegs-mini-chip" />
                     </div>
                   ))
                 ) : (
@@ -312,7 +341,7 @@ export const Bootlegs = () => {
                   <span><WarningAmberRoundedIcon fontSize="small" /></span>
                   <div>
                     <strong>{dashboard.missingGenre}</strong>
-                    <p>sin genero asignado</p>
+                    <p>sin género asignado</p>
                   </div>
                 </div>
                 <div className="bootlegs-health-item">
