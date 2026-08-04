@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+﻿import React, { useEffect, useMemo, useState } from 'react';
 import {
   Box,
   Button,
@@ -41,7 +41,7 @@ const checkoutSchema = yup.object().shape({
   lugar: yup.string().trim().required('Ingresa el lugar.'),
   categoria: yup.string().oneOf(['Audio', 'Video']).required('Selecciona una categoria.'),
   fecha: yup.string().required('Selecciona la fecha.'),
-  negociable: yup.string().oneOf(['Yes', 'No'], 'Selecciona una opcion.').required('Selecciona una opcion.'),
+  negociable: yup.string().oneOf(['Yes', 'No', 'NOT FOR TRADE'], 'Selecciona una opcion.').required('Selecciona una opcion.'),
   cantidadDiscos: yup
     .number()
     .typeError('Ingresa un numero valido.')
@@ -404,6 +404,10 @@ const BootlegForm = ({ onSuccess, onCancel, submitLabel = 'Guardar bootleg', isD
                       <ToggleButton value="No">
                         <BlockOutlinedIcon fontSize="small" />
                         No
+                      </ToggleButton>
+                      <ToggleButton value="NOT FOR TRADE">
+                        <BlockOutlinedIcon fontSize="small" />
+                        Not for trade
                       </ToggleButton>
                     </ToggleButtonGroup>
                     <FormHelperText>{touched.negociable && errors.negociable}</FormHelperText>

@@ -49,7 +49,7 @@ const createAudioForm = (audio) => ({
   comentario: audio?.comentario || '',
   categoria: audio?.categoria || '',
   peso: audio?.peso || '',
-  negociable: audio?.negociable || '',
+  negociable: getNegotiableFormValue(audio?.negociable),
 });
 
 const AUDIO_EXPORT_COLUMNS = [
@@ -69,8 +69,14 @@ const AUDIO_EXPORT_COLUMNS = [
 ];
 
 const NEGOTIABLE_ALERT_VALUE = 'NOT FOR TRADE';
-const isNegotiableAlert = (value) => `${value ?? ''}`.trim().toUpperCase() === NEGOTIABLE_ALERT_VALUE;
-
+const normalizeNegotiableValue = (value) => `${value ?? ''}`.trim().toUpperCase();
+const isNegotiableAlert = (value) => normalizeNegotiableValue(value) === NEGOTIABLE_ALERT_VALUE;
+const getNegotiableState = (value) => {
+  if (isNegotiableAlert(value)) return 'blocked';
+  return normalizeNegotiableValue(value) ? 'available' : 'unknown';
+};
+const getNegotiableLabel = (value) => `${value ?? ''}`.trim() || 'Sin dato';
+const getNegotiableFormValue = (value) => `${value ?? ''}`.trim();
 const Audios = () => {
   const theme = useTheme();
   const isDark = theme.palette.mode === 'dark';
@@ -335,8 +341,7 @@ const Audios = () => {
         }, {})
       );
 
-      const negotiableValue = `${audio?.negociable ?? ''}`.trim().toUpperCase();
-      if (negotiableValue === NEGOTIABLE_ALERT_VALUE) {
+      if (isNegotiableAlert(audio?.negociable)) {
         const negotiableColumnIndex = AUDIO_EXPORT_COLUMNS.findIndex((column) => column.key === 'negociable') + 1;
         const cell = row.getCell(negotiableColumnIndex);
         cell.font = { color: { argb: 'FF9C0006' }, bold: true };
@@ -400,6 +405,7 @@ const Audios = () => {
       cell: (row) => <span className="audio-disc-pill">{row.cantidadDiscos} discos</span>,
       minWidth: '140px',
     },
+
     {
       name: 'Descripcion',
       button: true,
@@ -427,7 +433,9 @@ const Audios = () => {
         { icon: <AudioFileOutlinedIcon fontSize="small" />, label: 'Formato', value: selectedAudio.formato },
         { icon: <DiscFullOutlinedIcon fontSize="small" />, label: 'Cantidad de discos', value: selectedAudio.cantidadDiscos },
         { icon: <NotesOutlinedIcon fontSize="small" />, label: 'Version', value: selectedAudio.version || 'Sin version registrada' },
-        { icon: <CommentOutlinedIcon fontSize="small" />, label: 'Negociable', value: selectedAudio.negociable || 'Sin dato registrado' },
+        { icon: <SourceOutlinedIcon fontSize="small" />, label: 'Categoria', value: selectedAudio.categoria || 'Sin categoria registrada' },
+        { icon: <StorageOutlinedIcon fontSize="small" />, label: 'Peso', value: selectedAudio.peso || 'Sin peso registrado' },
+        { icon: <CommentOutlinedIcon fontSize="small" />, label: 'Negociable', value: getNegotiableLabel(selectedAudio.negociable), alert: isNegotiableAlert(selectedAudio.negociable) },
       ]
     : [];
 
@@ -514,16 +522,32 @@ const Audios = () => {
         ))}
       </div>
 
-      <Modal open={Boolean(selectedAudio)} onClose={closeAudioDetail}>
-        <Box className={`audio-detail-modal ${isDark ? 'is-dark' : 'is-light'}`}>
+      <Modal
+        open={Boolean(selectedAudio)}
+        onClose={closeAudioDetail}
+        container={() => document.querySelector('.app')}
+      >
+        <Box className={`audio-detail-modal ${isEditing ? 'is-editing' : 'is-viewing'} ${isDark ? 'is-dark' : 'is-light'}`}>
           <div className="audio-detail-head">
-            <div>
+            <div className="audio-detail-heading-copy">
               <span className="audio-detail-kicker">Informacion completa</span>
               <Typography className="audio-detail-title" component="h2">
                 {selectedAudio?.nombreBanda || 'Sin nombre'}
               </Typography>
               <p>{isEditing ? 'Edita los campos principales y guarda los cambios desde esta misma ficha.' : 'Ficha ampliada con los datos principales del bootleg seleccionado.'}</p>
             </div>
+            {!isEditing ? (
+              <div className="audio-detail-badges" aria-label="Resumen del bootleg">
+                <Chip label={selectedAudio?.tipo || 'Sin tipo'} size="small" />
+                <Chip label={selectedAudio?.formato || 'Sin formato'} size="small" />
+                <Chip label={selectedAudio?.fecha || 'Sin fecha'} size="small" />
+                <Chip
+                  label={getNegotiableLabel(selectedAudio?.negociable)}
+                  size="small"
+                  className={`is-${getNegotiableState(selectedAudio?.negociable)}`}
+                />
+              </div>
+            ) : null}
           </div>
 
           {formError ? <Alert severity="error" className="audio-detail-alert">{formError}</Alert> : null}
@@ -562,7 +586,11 @@ const Audios = () => {
                 <TextField label="Almacenamiento" value={audioForm.almacenamiento} onChange={handleFormChange('almacenamiento')} fullWidth />
                 <TextField label="Categoria" value={audioForm.categoria} onChange={handleFormChange('categoria')} fullWidth />
                 <TextField label="Peso" value={audioForm.peso} onChange={handleFormChange('peso')} fullWidth />
-                <TextField label="Negociable" value={audioForm.negociable} onChange={handleFormChange('negociable')} fullWidth />
+                <TextField select label="Negociable" value={audioForm.negociable} onChange={handleFormChange('negociable')} fullWidth>
+                  <MenuItem value="Yes">Yes</MenuItem>
+                  <MenuItem value="No">No</MenuItem>
+                  <MenuItem value="NOT FOR TRADE">NOT FOR TRADE</MenuItem>
+                </TextField>
                 <TextField label="Comentario" value={audioForm.comentario} onChange={handleFormChange('comentario')} fullWidth multiline minRows={3} className="is-wide" />
               </div>
 
@@ -589,7 +617,7 @@ const Audios = () => {
                       <span
                         className={[
                           !item.value ? 'is-empty' : '',
-                          item.label === 'Negociable' && isNegotiableAlert(item.value) ? 'is-alert' : '',
+                          item.alert ? 'is-alert' : '',
                         ]
                           .filter(Boolean)
                           .join(' ')}
@@ -618,6 +646,9 @@ const Audios = () => {
               <div className="audio-detail-footer is-view-mode">
                 <div className="audio-detail-footer-copy">Si quieres corregir algo de esta ficha, puedes editarla desde aqui mismo.</div>
                 <div className="audio-detail-actions is-footer">
+                  <Button variant="outlined" color="inherit" onClick={closeAudioDetail}>
+                    Cerrar
+                  </Button>
                   <Button variant="contained" onClick={() => setIsEditing(true)} startIcon={<EditOutlinedIcon fontSize="small" />}>
                     Editar ficha
                   </Button>
