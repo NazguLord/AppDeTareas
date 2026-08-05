@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Dialog, DialogContent, IconButton } from '@mui/material';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import BootlegForm from './BootlegForm';
@@ -14,7 +14,14 @@ const BootlegCreateModal = ({ open, onClose, onCreated }) => {
   };
 
   return (
-    <Dialog open={open} onClose={handleClose} maxWidth="lg" fullWidth className="bootleg-create-modal">
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      maxWidth="lg"
+      fullWidth
+      className="bootleg-create-modal"
+      container={() => document.querySelector('.app')}
+    >
       <IconButton className="bootleg-create-modal-close" onClick={onClose} aria-label="Cerrar modal">
         <CloseRoundedIcon />
       </IconButton>

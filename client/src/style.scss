@@ -698,6 +698,234 @@
     padding: 0;
   }
 
+  .audio-page {
+    display: grid;
+    gap: 18px;
+  }
+
+  .audio-hero {
+    position: relative;
+    align-items: center;
+    overflow: hidden;
+    min-height: clamp(210px, 26vw, 330px);
+    border-color: rgba(148, 163, 184, 0.22);
+    color: #f8fafc;
+    background:
+      radial-gradient(circle at 82% 16%, rgba(20, 184, 166, 0.42), transparent 32%),
+      radial-gradient(circle at 18% 18%, rgba(96, 165, 250, 0.3), transparent 28%),
+      linear-gradient(135deg, #07111f 0%, #101827 52%, #18213a 100%);
+
+    &::before {
+      content: '';
+      position: absolute;
+      right: clamp(22px, 6vw, 86px);
+      bottom: -76px;
+      width: clamp(210px, 31vw, 420px);
+      aspect-ratio: 1;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 50%;
+      background:
+        radial-gradient(circle, rgba(255, 255, 255, 0.85) 0 3%, transparent 3.4% 11%, rgba(255, 255, 255, 0.12) 11.4% 12%, transparent 12.4% 29%, rgba(255, 255, 255, 0.1) 29.4% 30%, transparent 30.4%),
+        conic-gradient(from 120deg, rgba(20, 184, 166, 0.22), rgba(96, 165, 250, 0.18), rgba(168, 85, 247, 0.2), rgba(20, 184, 166, 0.22));
+      opacity: 0.76;
+      filter: drop-shadow(0 26px 60px rgba(0, 0, 0, 0.3));
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background-image: linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+      background-size: 36px 36px;
+      mask-image: linear-gradient(90deg, rgba(0, 0, 0, 0.86), transparent 82%);
+    }
+
+    .task-hero-copy,
+    .task-hero-actions {
+      position: relative;
+      z-index: 1;
+    }
+
+    .eyebrow,
+    .task-hero-copy h1 {
+      color: inherit;
+    }
+
+    .task-hero-copy h1 {
+      max-width: 780px;
+      text-wrap: balance;
+    }
+
+    .task-hero-copy p {
+      color: rgba(248, 250, 252, 0.74);
+      font-size: clamp(1rem, 1.35vw, 1.16rem);
+    }
+
+    .primary-cta.MuiButton-root {
+      box-shadow: 0 16px 38px rgba(20, 184, 166, 0.28);
+    }
+
+    .task-chip.MuiChip-root {
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(14px);
+    }
+  }
+
+  .audio-stats.task-metrics {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .audio-stats .metric-card,
+  .audio-insight-card {
+    position: relative;
+    transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease, background 180ms ease;
+  }
+
+  .audio-stats .metric-card {
+    background:
+      linear-gradient(135deg, color-mix(in srgb, var(--accent-soft) 34%, transparent), transparent 56%),
+      var(--surface);
+
+    &:hover {
+      transform: translateY(-3px);
+      border-color: color-mix(in srgb, var(--accent) 28%, transparent);
+      box-shadow: 0 20px 48px rgba(15, 23, 42, 0.1);
+    }
+  }
+
+  &.dark .audio-stats .metric-card:hover {
+    box-shadow: 0 22px 54px rgba(0, 0, 0, 0.42);
+  }
+
+  .audio-table-shell {
+    position: relative;
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--accent-soft) 36%, transparent), transparent 180px),
+      var(--surface);
+  }
+
+  .audio-table-head {
+    margin-top: 0;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .audio-table-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    width: min(100%, 620px);
+  }
+
+  .audio-search.MuiFormControl-root {
+    flex: 0 1 300px;
+    min-width: 220px;
+  }
+
+  .audio-search .MuiInputBase-input {
+    padding-block: 12px;
+  }
+
+  .audio-search-icon {
+    margin-right: 8px;
+    color: var(--accent);
+  }
+
+  .audio-export-trigger.MuiButton-root {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    min-height: 48px;
+    min-width: 190px;
+    padding: 0 22px;
+    border: 1px solid color-mix(in srgb, var(--accent) 28%, transparent);
+    border-radius: 999px;
+    color: var(--accent);
+    background: color-mix(in srgb, var(--accent-soft) 76%, var(--surface));
+    font-weight: 900;
+    line-height: 1;
+    text-transform: none;
+    white-space: nowrap;
+
+    .MuiButton-startIcon {
+      margin: 0 2px 0 0;
+    }
+
+    &:hover {
+      border-color: color-mix(in srgb, var(--accent) 42%, transparent);
+      background: color-mix(in srgb, var(--accent-soft) 100%, var(--surface));
+    }
+  }
+
+  .audio-detail-trigger.MuiButton-root {
+    border-radius: 999px;
+    font-weight: 900;
+    text-transform: none;
+  }
+
+  .audio-section-head {
+    margin-bottom: 0;
+  }
+
+  .audio-insight-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .audio-insight-card {
+    min-height: 210px;
+    padding: 22px;
+    background:
+      linear-gradient(140deg, var(--surface) 0%, var(--surface) 54%, color-mix(in srgb, var(--accent-soft) 70%, transparent) 100%);
+
+    &::after {
+      content: '';
+      position: absolute;
+      right: -48px;
+      bottom: -68px;
+      width: 190px;
+      height: 190px;
+      border-radius: 50%;
+      background: color-mix(in srgb, var(--accent) 12%, transparent);
+      transition: transform 180ms ease, opacity 180ms ease;
+    }
+
+    &:hover {
+      transform: translateY(-4px);
+      border-color: color-mix(in srgb, var(--accent) 34%, transparent);
+      box-shadow: 0 22px 54px rgba(15, 23, 42, 0.11);
+    }
+
+    &:hover::after {
+      transform: scale(1.12);
+      opacity: 0.9;
+    }
+
+    > * {
+      position: relative;
+      z-index: 1;
+    }
+  }
+
+  &.dark .audio-insight-card:hover {
+    box-shadow: 0 22px 54px rgba(0, 0, 0, 0.42);
+  }
+
+  .audio-insight-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    width: fit-content;
+    margin-top: 18px;
+    color: var(--accent);
+    font-size: 0.9rem;
+    font-weight: 900;
+  }
+
   .bootlegs-hero {
     position: relative;
     align-items: center;
@@ -1686,10 +1914,193 @@
     box-shadow: var(--shadow);
   }
 
+  .bootleg-create-modal .MuiDialog-paper {
+    width: min(1120px, calc(100vw - 28px));
+    padding: 0;
+    overflow: hidden;
+    border-radius: calc(var(--radius) + 8px);
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--accent-soft) 42%, transparent), transparent 240px),
+      var(--surface);
+  }
+
+  .bootleg-create-modal-body.MuiDialogContent-root {
+    padding: 0;
+    overflow: auto;
+  }
+
   .bootleg-create-modal-close {
     position: absolute;
-    top: 12px;
-    right: 12px;
+    top: 14px;
+    right: 14px;
+    z-index: 3;
+    width: 38px;
+    height: 38px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: #fff;
+    background: rgba(15, 23, 42, 0.42);
+    backdrop-filter: blur(14px);
+
+    &:hover {
+      background: rgba(15, 23, 42, 0.62);
+    }
+  }
+
+  .bootleg-create-modal .bootleg-form {
+    gap: 0;
+    min-height: min(820px, calc(100vh - 28px));
+  }
+
+  .bootleg-create-modal .bootleg-form-intro {
+    position: relative;
+    overflow: hidden;
+    margin: 0;
+    padding: clamp(24px, 3vw, 36px) clamp(22px, 3vw, 36px) clamp(30px, 4vw, 46px);
+    color: #f8fafc;
+    background:
+      radial-gradient(circle at 82% 16%, rgba(20, 184, 166, 0.4), transparent 28%),
+      radial-gradient(circle at 16% 8%, rgba(96, 165, 250, 0.28), transparent 30%),
+      linear-gradient(135deg, #07111f 0%, #101827 58%, #18213a 100%);
+
+    &::after {
+      content: '';
+      position: absolute;
+      right: clamp(28px, 8vw, 110px);
+      bottom: -82px;
+      width: clamp(180px, 25vw, 320px);
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle, rgba(255, 255, 255, 0.8) 0 3%, transparent 3.4% 14%, rgba(255, 255, 255, 0.12) 14.4% 15%, transparent 15.4% 34%, rgba(255, 255, 255, 0.1) 34.4% 35%, transparent 35.4%),
+        conic-gradient(from 150deg, rgba(20, 184, 166, 0.22), rgba(96, 165, 250, 0.2), rgba(168, 85, 247, 0.2), rgba(20, 184, 166, 0.22));
+      opacity: 0.72;
+    }
+
+    > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .bootleg-form-kicker,
+    .bootleg-form-title,
+    .bootleg-form-copy {
+      color: inherit;
+    }
+
+    .bootleg-form-title.MuiTypography-root {
+      max-width: 720px;
+      font-size: clamp(1.8rem, 3.8vw, 3.15rem);
+    }
+
+    .bootleg-form-copy.MuiTypography-root {
+      max-width: 660px;
+      margin-top: 10px;
+      color: rgba(248, 250, 252, 0.74);
+    }
+  }
+
+  .bootleg-create-modal .bootleg-form-sections {
+    padding: 22px 18px 18px;
+    gap: 12px;
+  }
+
+  .bootleg-create-modal .bootleg-form-section {
+    grid-template-columns: 1fr;
+    padding: 14px;
+    align-items: start;
+    background:
+      linear-gradient(135deg, color-mix(in srgb, var(--accent-soft) 24%, transparent), transparent 46%),
+      var(--surface-soft);
+  }
+
+  .bootleg-create-modal .bootleg-form-section-head {
+    padding-left: 12px;
+    border-left: 3px solid var(--accent);
+  }
+
+  .bootleg-create-modal .bootleg-form-section-head > span {
+    display: none;
+  }
+
+  .bootleg-create-modal .bootleg-form-section-head strong {
+    font-size: 1rem;
+    line-height: 1.2;
+  }
+
+  .bootleg-create-modal .bootleg-form-section-head p {
+    font-size: 0.88rem;
+  }
+
+  .bootleg-create-modal .MuiOutlinedInput-root,
+  .bootleg-create-modal .bootleg-segment-control {
+    border-radius: 12px;
+    background: var(--surface);
+  }
+
+  .bootleg-create-modal .bootleg-segment-control {
+    min-height: 56px;
+    padding: 8px 10px;
+    justify-content: center;
+  }
+
+  .bootleg-create-modal .bootleg-segment-label {
+    margin-bottom: 4px;
+    line-height: 1;
+  }
+
+  .bootleg-create-modal .MuiToggleButtonGroup-root {
+    gap: 6px;
+  }
+
+  .bootleg-create-modal .MuiToggleButton-root {
+    min-height: 36px;
+    border: 1px solid var(--line) !important;
+    border-radius: 10px !important;
+    color: var(--muted-strong);
+    text-transform: none;
+    font-weight: 850;
+  }
+
+  .bootleg-create-modal .MuiToggleButton-root.Mui-selected {
+    color: var(--accent);
+    background: var(--accent-soft);
+  }
+
+  .bootleg-create-modal .MuiToggleButton-root.is-trade-yes.Mui-selected {
+    color: #15803d;
+    border-color: rgba(21, 128, 61, 0.34) !important;
+    background: rgba(34, 197, 94, 0.14);
+  }
+
+  .bootleg-create-modal .MuiToggleButton-root.is-trade-yes.Mui-selected svg {
+    color: #15803d;
+  }
+
+  .bootleg-create-modal .MuiToggleButton-root.is-trade-blocked.Mui-selected {
+    color: #b91c1c;
+    border-color: rgba(185, 28, 28, 0.34) !important;
+    background: rgba(239, 68, 68, 0.12);
+  }
+
+  .bootleg-create-modal .MuiToggleButton-root.is-trade-blocked.Mui-selected svg {
+    color: #b91c1c;
+  }
+
+  .bootleg-create-modal .bootleg-form-actions.MuiDialogActions-root {
+    position: sticky;
+    bottom: 0;
+    z-index: 2;
+    padding: 14px 18px;
+    border-top: 1px solid var(--line);
+    background: color-mix(in srgb, var(--surface) 88%, transparent);
+    backdrop-filter: blur(16px);
+  }
+
+  .bootleg-create-modal .bootleg-form-actions .MuiButton-root {
+    min-height: 42px;
+    border-radius: 999px;
+    font-weight: 900;
+    text-transform: none;
   }
 
   .bootleg-form,
@@ -1741,7 +2152,7 @@
   .bootleg-form-section-head {
     display: flex;
     align-items: flex-start;
-    gap: 10px;
+    gap: 0;
 
     > span {
       display: inline-flex;
@@ -2228,6 +2639,11 @@
   }
 
   @media (max-width: 1180px) {
+    .audio-stats.task-metrics,
+    .audio-insight-grid {
+      grid-template-columns: 1fr;
+    }
+
     .map-dashboard-grid,
     .task-dashboard-grid,
     .bootlegs-library-layout,
@@ -2247,6 +2663,37 @@
   }
 
   @media (max-width: 900px) {
+    .bootleg-create-modal .bootleg-form-section {
+      grid-template-columns: 1fr;
+    }
+
+    .bootleg-create-modal .bootleg-form-intro::after {
+      right: -70px;
+      bottom: -104px;
+      width: 250px;
+    }
+
+    .audio-hero {
+      align-items: flex-start;
+      min-height: 260px;
+
+      &::before {
+        right: -72px;
+        bottom: -94px;
+        width: 280px;
+      }
+    }
+
+    .audio-table-actions {
+      width: 100%;
+      justify-content: flex-start;
+    }
+
+    .audio-search.MuiFormControl-root {
+      flex-basis: auto;
+      width: 100%;
+    }
+
     .audio-edit-grid > * {
       grid-column: span 6;
     }
@@ -2335,6 +2782,69 @@
 
   @media (max-width: 640px) {
     --gutter: 10px;
+
+    .bootleg-create-modal .MuiDialog-paper {
+      width: calc(100vw - 16px);
+      max-height: calc(100vh - 16px);
+      border-radius: 16px;
+    }
+
+    .bootleg-create-modal-close {
+      top: 10px;
+      right: 10px;
+    }
+
+    .bootleg-create-modal .bootleg-form-intro {
+      padding: 22px 18px;
+    }
+
+    .bootleg-create-modal .bootleg-form-sections {
+      padding: 12px;
+    }
+
+    .bootleg-create-modal .bootleg-form-section {
+      padding: 12px;
+    }
+
+    .bootleg-create-modal .bootleg-form-actions.MuiDialogActions-root {
+      align-items: stretch;
+      flex-direction: column-reverse;
+      padding: 12px;
+
+      .MuiButton-root {
+        width: 100%;
+      }
+    }
+
+    .audio-page {
+      gap: 14px;
+    }
+
+    .audio-hero {
+      min-height: 300px;
+
+      .task-hero-copy p {
+        max-width: 100%;
+      }
+    }
+
+    .audio-table-shell {
+      padding: 14px;
+    }
+
+    .audio-table-actions {
+      flex-direction: column;
+      align-items: stretch;
+
+      .MuiButton-root {
+        width: 100%;
+      }
+    }
+
+    .audio-insight-card {
+      min-height: 190px;
+      padding: 18px;
+    }
 
     .navbar.is-open .links,
     .task-metrics,

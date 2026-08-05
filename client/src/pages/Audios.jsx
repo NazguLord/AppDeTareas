@@ -477,7 +477,7 @@ const Audios = () => {
               <TextField
                 value={searchTerm}
                 onChange={(event) => setSearchTerm(event.target.value)}
-                placeholder="Buscar por banda, lugar, fecha, genero o formato"
+                placeholder="Buscar"
                 className="audio-search"
                 InputProps={{
                   startAdornment: <SearchOutlinedIcon fontSize="small" className="audio-search-icon" />,
@@ -493,7 +493,6 @@ const Audios = () => {
                 Descargar Excel
               </Button>
             </div>
-            <p>Busqueda rapida para encontrar y luego corregir cualquier registro sin ir directo a la base.</p>
           </div>
         </div>
 
@@ -513,7 +512,6 @@ const Audios = () => {
           <span className="section-kicker">Analitica</span>
           <h2>Explora la coleccion</h2>
         </div>
-        <p>Accesos visuales para entender la distribucion general, la cronologia por anio y las bandas con mayor presencia.</p>
       </div>
 
       <div className="audio-insight-grid">
@@ -595,7 +593,7 @@ const Audios = () => {
               </div>
 
               <div className="audio-detail-footer">
-                <div className="audio-detail-footer-copy">Revisa los cambios y guarda al terminar la ficha.</div>
+                <div className="audio-detail-footer-copy"></div>
                 <div className="audio-detail-actions is-footer">
                   <Button variant="outlined" onClick={() => { setIsEditing(false); setAudioForm(createAudioForm(selectedAudio)); setFormError(''); setFormSuccess(''); }}>
                     Cancelar
@@ -644,7 +642,7 @@ const Audios = () => {
               </div>
 
               <div className="audio-detail-footer is-view-mode">
-                <div className="audio-detail-footer-copy">Si quieres corregir algo de esta ficha, puedes editarla desde aqui mismo.</div>
+                <div className="audio-detail-footer-copy"></div>
                 <div className="audio-detail-actions is-footer">
                   <Button variant="outlined" color="inherit" onClick={closeAudioDetail}>
                     Cerrar

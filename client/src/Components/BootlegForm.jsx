@@ -41,7 +41,7 @@ const checkoutSchema = yup.object().shape({
   lugar: yup.string().trim().required('Ingresa el lugar.'),
   categoria: yup.string().oneOf(['Audio', 'Video']).required('Selecciona una categoria.'),
   fecha: yup.string().required('Selecciona la fecha.'),
-  negociable: yup.string().oneOf(['Yes', 'No', 'NOT FOR TRADE'], 'Selecciona una opcion.').required('Selecciona una opcion.'),
+  negociable: yup.string().oneOf(['Yes', 'NOT FOR TRADE'], 'Selecciona una opcion.').required('Selecciona una opcion.'),
   cantidadDiscos: yup
     .number()
     .typeError('Ingresa un numero valido.')
@@ -157,27 +157,13 @@ const BootlegForm = ({ onSuccess, onCancel, submitLabel = 'Guardar bootleg', isD
         return (
           <form onSubmit={handleSubmit} className="bootleg-form">
             <div className="bootleg-form-intro">
-              <Typography variant="overline" className="bootleg-form-kicker">
-                Nuevo registro
-              </Typography>
               <Typography variant="h4" className="bootleg-form-title">
                 Ingresa un bootleg
-              </Typography>
-              <Typography variant="body1" className="bootleg-form-copy">
-                Crea una ficha limpia con formato, fuente, almacenamiento y notas para encontrarla rapido despues.
               </Typography>
             </div>
 
             <div className="bootleg-form-sections">
               <section className="bootleg-form-section">
-                <div className="bootleg-form-section-head">
-                  <span>01</span>
-                  <div>
-                    <strong>Identificacion</strong>
-                    <p>Banda, categoria, lugar y fecha del registro.</p>
-                  </div>
-                </div>
-
                 <Box className="bootleg-form-grid" display="grid" gridTemplateColumns="repeat(12, minmax(0, 1fr))" gap="16px" sx={fieldLayout}>
                   <TextField
                     className="span-6"
@@ -193,7 +179,6 @@ const BootlegForm = ({ onSuccess, onCancel, submitLabel = 'Guardar bootleg', isD
                   />
 
                   <FormControl className="span-6 bootleg-segment-control" error={!!touched.categoria && !!errors.categoria}>
-                    <span className="bootleg-segment-label">Categoria</span>
                     <ToggleButtonGroup
                       exclusive
                       fullWidth
@@ -249,14 +234,6 @@ const BootlegForm = ({ onSuccess, onCancel, submitLabel = 'Guardar bootleg', isD
               </section>
 
               <section className="bootleg-form-section">
-                <div className="bootleg-form-section-head">
-                  <span>02</span>
-                  <div>
-                    <strong>Formato y fuente</strong>
-                    <p>Datos tecnicos para filtrar y clasificar la coleccion.</p>
-                  </div>
-                </div>
-
                 <Box className="bootleg-form-grid" display="grid" gridTemplateColumns="repeat(12, minmax(0, 1fr))" gap="16px" sx={fieldLayout}>
                   <TextField
                     className="span-4"
@@ -363,14 +340,6 @@ const BootlegForm = ({ onSuccess, onCancel, submitLabel = 'Guardar bootleg', isD
               </section>
 
               <section className="bootleg-form-section">
-                <div className="bootleg-form-section-head">
-                  <span>03</span>
-                  <div>
-                    <strong>Archivo y notas</strong>
-                    <p>Ubicacion, intercambio y comentario visible en la ficha.</p>
-                  </div>
-                </div>
-
                 <Box className="bootleg-form-grid" display="grid" gridTemplateColumns="repeat(12, minmax(0, 1fr))" gap="16px" sx={fieldLayout}>
                   <TextField
                     className="span-8"
@@ -397,15 +366,11 @@ const BootlegForm = ({ onSuccess, onCancel, submitLabel = 'Guardar bootleg', isD
                         setFieldValue('negociable', nextValue);
                       }}
                     >
-                      <ToggleButton value="Yes">
+                      <ToggleButton value="Yes" className="is-trade-yes">
                         <SwapHorizOutlinedIcon fontSize="small" />
                         Si
                       </ToggleButton>
-                      <ToggleButton value="No">
-                        <BlockOutlinedIcon fontSize="small" />
-                        No
-                      </ToggleButton>
-                      <ToggleButton value="NOT FOR TRADE">
+                      <ToggleButton value="NOT FOR TRADE" className="is-trade-blocked">
                         <BlockOutlinedIcon fontSize="small" />
                         Not for trade
                       </ToggleButton>
