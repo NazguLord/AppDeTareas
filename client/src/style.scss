@@ -700,14 +700,14 @@
 
   .audio-page {
     display: grid;
-    gap: 18px;
+    gap: 14px;
   }
 
   .audio-hero {
     position: relative;
     align-items: center;
     overflow: hidden;
-    min-height: clamp(210px, 26vw, 330px);
+    min-height: clamp(190px, 23vw, 290px);
     border-color: rgba(148, 163, 184, 0.22);
     color: #f8fafc;
     background:
@@ -778,6 +778,11 @@
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
+  .audio-stats .metric-card {
+    min-height: 112px;
+    padding: 16px;
+  }
+
   .audio-stats .metric-card,
   .audio-insight-card {
     position: relative;
@@ -809,7 +814,7 @@
 
   .audio-table-head {
     margin-top: 0;
-    padding-bottom: 14px;
+    padding-bottom: 12px;
     border-bottom: 1px solid var(--line);
   }
 
@@ -868,6 +873,29 @@
     text-transform: none;
   }
 
+  .audio-negotiable-chip.MuiChip-root {
+    min-width: 86px;
+    border: 1px solid var(--line);
+    font-weight: 900;
+  }
+
+  .audio-negotiable-chip.is-available.MuiChip-root {
+    color: #15803d;
+    border-color: rgba(21, 128, 61, 0.28);
+    background: rgba(34, 197, 94, 0.12);
+  }
+
+  .audio-negotiable-chip.is-blocked.MuiChip-root {
+    color: #b91c1c;
+    border-color: rgba(185, 28, 28, 0.3);
+    background: rgba(239, 68, 68, 0.12);
+  }
+
+  .audio-negotiable-chip.is-unknown.MuiChip-root {
+    color: var(--muted);
+    background: var(--surface-soft);
+  }
+
   .audio-section-head {
     margin-bottom: 0;
   }
@@ -877,8 +905,8 @@
   }
 
   .audio-insight-card {
-    min-height: 210px;
-    padding: 22px;
+    min-height: 180px;
+    padding: 20px;
     background:
       linear-gradient(140deg, var(--surface) 0%, var(--surface) 54%, color-mix(in srgb, var(--accent-soft) 70%, transparent) 100%);
 
@@ -2388,6 +2416,10 @@
     border-top: 1px solid var(--line);
   }
 
+  .audio-detail-modal .audio-detail-footer {
+    justify-content: flex-end;
+  }
+
   .audio-detail-footer-copy {
     max-width: 540px;
     color: var(--muted);
@@ -2399,6 +2431,13 @@
     display: flex;
     gap: 10px;
     flex: 0 0 auto;
+  }
+
+  .audio-detail-actions.is-footer .MuiButton-root {
+    min-height: 42px;
+    border-radius: 999px;
+    font-weight: 900;
+    text-transform: none;
   }
 
   @media (max-width: 900px) {

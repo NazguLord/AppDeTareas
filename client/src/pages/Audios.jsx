@@ -75,6 +75,7 @@ const getNegotiableState = (value) => {
   if (isNegotiableAlert(value)) return 'blocked';
   return normalizeNegotiableValue(value) ? 'available' : 'unknown';
 };
+const getNegotiableChipClass = (value) => `audio-negotiable-chip is-${getNegotiableState(value)}`;
 const getNegotiableLabel = (value) => `${value ?? ''}`.trim() || 'Sin dato';
 const getNegotiableFormValue = (value) => `${value ?? ''}`.trim();
 const Audios = () => {
@@ -222,7 +223,7 @@ const Audios = () => {
     headRow: {
       style: {
         backgroundColor: 'transparent',
-        borderBottom: '1px solid var(--border)',
+        borderBottom: '1px solid var(--line)',
         minHeight: '58px',
       },
     },
@@ -239,12 +240,14 @@ const Audios = () => {
       style: {
         backgroundColor: 'transparent',
         color: 'var(--copy-strong)',
-        minHeight: '72px',
-        borderBottom: '1px solid var(--border)',
+        minHeight: '66px',
+        borderBottom: '1px solid var(--line)',
+        transition: 'background-color 160ms ease, box-shadow 160ms ease',
       },
       highlightOnHoverStyle: {
-        backgroundColor: 'var(--accent-soft)',
+        backgroundColor: 'color-mix(in srgb, var(--accent-soft) 58%, transparent)',
         color: 'var(--copy-strong)',
+        boxShadow: 'inset 3px 0 0 var(--accent)',
       },
     },
     cells: { style: { fontSize: '0.95rem' } },
@@ -252,7 +255,7 @@ const Audios = () => {
       style: {
         backgroundColor: 'transparent',
         color: 'var(--copy)',
-        borderTop: '1px solid var(--border)',
+        borderTop: '1px solid var(--line)',
       },
     },
   };
@@ -404,6 +407,13 @@ const Audios = () => {
       center: true,
       cell: (row) => <span className="audio-disc-pill">{row.cantidadDiscos} discos</span>,
       minWidth: '140px',
+    },
+    {
+      name: 'Negociable',
+      selector: (row) => row.negociable,
+      center: true,
+      cell: (row) => <Chip label={getNegotiableLabel(row.negociable)} size="small" className={getNegotiableChipClass(row.negociable)} />,
+      minWidth: '150px',
     },
 
     {
@@ -586,14 +596,12 @@ const Audios = () => {
                 <TextField label="Peso" value={audioForm.peso} onChange={handleFormChange('peso')} fullWidth />
                 <TextField select label="Negociable" value={audioForm.negociable} onChange={handleFormChange('negociable')} fullWidth>
                   <MenuItem value="Yes">Yes</MenuItem>
-                  <MenuItem value="No">No</MenuItem>
                   <MenuItem value="NOT FOR TRADE">NOT FOR TRADE</MenuItem>
                 </TextField>
                 <TextField label="Comentario" value={audioForm.comentario} onChange={handleFormChange('comentario')} fullWidth multiline minRows={3} className="is-wide" />
               </div>
 
               <div className="audio-detail-footer">
-                <div className="audio-detail-footer-copy"></div>
                 <div className="audio-detail-actions is-footer">
                   <Button variant="outlined" onClick={() => { setIsEditing(false); setAudioForm(createAudioForm(selectedAudio)); setFormError(''); setFormSuccess(''); }}>
                     Cancelar
@@ -642,7 +650,6 @@ const Audios = () => {
               </div>
 
               <div className="audio-detail-footer is-view-mode">
-                <div className="audio-detail-footer-copy"></div>
                 <div className="audio-detail-actions is-footer">
                   <Button variant="outlined" color="inherit" onClick={closeAudioDetail}>
                     Cerrar
