@@ -742,7 +742,8 @@
     }
 
     .task-hero-copy,
-    .task-hero-actions {
+    .task-hero-actions,
+    .audio-hero-inline-actions {
       position: relative;
       z-index: 1;
     }
@@ -763,7 +764,14 @@
     }
 
     .primary-cta.MuiButton-root {
-      box-shadow: 0 16px 38px rgba(20, 184, 166, 0.28);
+      box-shadow: none;
+    }
+
+    .audio-hero-inline-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 18px;
     }
 
     .task-chip.MuiChip-root {

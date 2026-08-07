@@ -456,12 +456,11 @@ const Audios = () => {
           <span className="eyebrow">Bootlegs</span>
           <h1>Audios bootlegs</h1>
           <p>Consulta grabaciones, abre su ficha completa y salta a las vistas analiticas desde una sola pantalla mas clara.</p>
-        </div>
-        <div className="task-hero-actions">
-          <Button variant="contained" className="primary-cta" component={Link} to="/bootlegs">
-            Volver a bootlegs
-          </Button>
-          <Chip label={`${audios.length} registros`} className="task-chip" />
+          <div className="audio-hero-inline-actions">
+            <Button variant="contained" className="primary-cta" component={Link} to="/bootlegs">
+              Volver a bootlegs
+            </Button>
+          </div>
         </div>
       </div>
 
