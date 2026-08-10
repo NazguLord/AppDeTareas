@@ -15,6 +15,7 @@ import ReceiptLongRoundedIcon from '@mui/icons-material/ReceiptLongRounded';
 import ContactsRoundedIcon from '@mui/icons-material/ContactsRounded';
 import LibraryMusicRoundedIcon from '@mui/icons-material/LibraryMusicRounded';
 import MedicationLiquidRoundedIcon from '@mui/icons-material/MedicationLiquidRounded';
+import AttachMoneyRoundedIcon from '@mui/icons-material/AttachMoneyRounded';
 import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
 import LoginRoundedIcon from '@mui/icons-material/LoginRounded';
 import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
@@ -27,6 +28,7 @@ const navItems = [
   { to: '/contactos', label: 'Contactos', icon: <ContactsRoundedIcon fontSize="small" /> },
   { to: '/bootlegs', label: 'Bootlegs', icon: <LibraryMusicRoundedIcon fontSize="small" /> },
   { to: '/medicamentos', label: 'Medicina', icon: <MedicationLiquidRoundedIcon fontSize="small" /> },
+  { to: '/finanzas', label: 'Finanzas', icon: <AttachMoneyRoundedIcon fontSize="small" /> },
 ];
 
 const Navbar = () => {

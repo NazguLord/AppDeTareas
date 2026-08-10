@@ -18,6 +18,7 @@ import FAQ from "./pages/FAQ";
 import Pie from "./pages/Pie";
 import Map from "./pages/Map";
 import Medicamentos from "./pages/Medicamentos";
+import Finanzas from "./pages/Finanzas";
 
 import { ColorModeContext, useMode } from "./theme.js";
 import { CssBaseline, ThemeProvider } from "@mui/material";
@@ -53,6 +54,7 @@ const router = createBrowserRouter([
       { path: "/audios", element: <Audios /> },
       { path: "/form", element: <Form /> },
       { path: "/faq", element: <FAQ /> },
+      { path: "/finanzas", element: <Finanzas /> },
     ],
   },
   { path: "/update/:id", element: <Update /> },

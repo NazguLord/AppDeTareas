@@ -1,0 +1,255 @@
+.finanzas-page {
+  padding-bottom: 3rem;
+}
+
+.finanzas-hero {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.finanzas-hero-copy {
+  flex: 1;
+  min-width: 280px;
+}
+
+.finanzas-hero-copy .eyebrow {
+  display: block;
+  font-size: 0.78rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.4rem;
+}
+
+.finanzas-hero-copy h1 {
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  font-weight: 800;
+  color: var(--title);
+  margin: 0 0 0.5rem;
+}
+
+.finanzas-hero-copy p {
+  color: var(--muted);
+  line-height: 1.7;
+  max-width: 520px;
+  margin: 0;
+}
+
+.finanzas-hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.finanzas-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.finanzas-metric-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 1.25rem 1.5rem;
+  border-radius: 18px;
+  border: 1px solid var(--line);
+  background: var(--card-bg, rgba(255, 255, 255, 0.03));
+}
+
+.finanzas-metric-icon {
+  font-size: 1.4rem;
+  margin-bottom: 0.25rem;
+}
+
+.finanzas-metric-label {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+}
+
+.finanzas-metric-value {
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+.finanzas-metric-value-secondary {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.finanzas-metric-copy {
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin: 0;
+}
+
+.finanzas-filters {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.finanzas-filter-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--title);
+}
+
+.finanzas-filter-group {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.finanzas-select {
+  padding: 0.5rem 1rem;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--card-bg, rgba(255, 255, 255, 0.03));
+  color: var(--text);
+  font-size: 0.88rem;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s;
+
+  &:focus {
+    border-color: var(--accent);
+  }
+}
+
+.finanzas-section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 1.25rem;
+}
+
+.finanzas-section-head .section-kicker {
+  display: block;
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.2rem;
+}
+
+.finanzas-section-head h2 {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--title);
+  margin: 0;
+}
+
+.finanzas-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1rem;
+}
+
+.finanzas-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 3rem 1rem;
+}
+
+.finanzas-card {
+  border-radius: 18px !important;
+  border: 1px solid var(--line) !important;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  }
+}
+
+.finanzas-card-content {
+  padding: 1.25rem 1.5rem 0.75rem !important;
+}
+
+.finanzas-card-topline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.finanzas-card-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 0.2rem 0.6rem;
+  border-radius: 6px;
+}
+
+.badge-ingreso {
+  background: rgba(22, 163, 74, 0.12);
+  color: #16a34a;
+}
+
+.badge-egreso {
+  background: rgba(220, 38, 38, 0.12);
+  color: #dc2626;
+}
+
+.finanzas-card-date {
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.finanzas-card-desc {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--title);
+  margin: 0 0 0.4rem;
+}
+
+.finanzas-card-amount {
+  font-size: 1.4rem;
+  font-weight: 800;
+  margin: 0 0 0.5rem;
+
+  &.positive {
+    color: #16a34a;
+  }
+
+  &.negative {
+    color: #dc2626;
+  }
+}
+
+.finanzas-card-currency {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--muted);
+  margin-left: 0.4rem;
+}
+
+.finanzas-divider {
+  margin-top: 0.25rem !important;
+}
+
+.finanzas-card-actions {
+  padding: 0.5rem 1.5rem 1.25rem !important;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.finanzas-pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+  padding: 1rem 0;
+}

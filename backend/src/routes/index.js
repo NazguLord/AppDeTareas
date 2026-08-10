@@ -6,6 +6,7 @@ import medicamentosRoutes from "./medicamentos.routes.js";
 import audiosRoutes from "./audios.routes.js";
 import bootlegsRoutes from "./bootlegs.routes.js";
 import uploadRoutes from "./upload.routes.js";
+import finanzasRoutes from "./finanzas.routes.js";
 
 const router = Router();
 
@@ -20,5 +21,6 @@ router.use("/medicamentos", medicamentosRoutes);
 router.use(audiosRoutes);
 router.use(bootlegsRoutes);
 router.use(tareasRoutes);
+router.use(finanzasRoutes);
 
 export default router;

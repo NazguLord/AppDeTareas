@@ -1,0 +1,9 @@
+CREATE TABLE IF NOT EXISTS transacciones (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  tipo ENUM('ingreso', 'egreso') NOT NULL,
+  monto DECIMAL(12, 2) NOT NULL,
+  moneda ENUM('USD', 'HNL') NOT NULL DEFAULT 'HNL',
+  descripcion VARCHAR(255) NOT NULL,
+  fecha DATE NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
