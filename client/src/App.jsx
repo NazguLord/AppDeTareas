@@ -27,8 +27,11 @@ import { AlertProvider } from "./context/alertContext";
 const Layout = () => {
   return (
     <div className="app-shell">
+      <a className="skip-link" href="#contenido-principal">
+        Saltar al contenido
+      </a>
       <Navbar />
-      <main className="container app-main">
+      <main id="contenido-principal" className="container app-main" tabIndex={-1}>
         <Outlet />
       </main>
       <Footer />

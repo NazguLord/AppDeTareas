@@ -16,6 +16,8 @@ import TrendingUpRoundedIcon from '@mui/icons-material/TrendingUpRounded';
 import TrendingDownRoundedIcon from '@mui/icons-material/TrendingDownRounded';
 import AccountBalanceWalletRoundedIcon from '@mui/icons-material/AccountBalanceWalletRounded';
 import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
+import BarChartRoundedIcon from '@mui/icons-material/BarChartRounded';
+import FinanzasReporte from '../Components/FinanzasReporte';
 import './Finanzas.scss';
 
 const MESES = [
@@ -60,6 +62,7 @@ const Finanzas = () => {
   const [filtroMoneda, setFiltroMoneda] = useState('');
   const [filtroMes, setFiltroMes] = useState('');
   const [filtroAnio, setFiltroAnio] = useState('');
+  const [showReporte, setShowReporte] = useState(false);
   const [page, setPage] = useState(1);
   const itemsPerPage = 14;
 
@@ -225,9 +228,21 @@ const Finanzas = () => {
             <AddCircleOutlineRoundedIcon fontSize="small" sx={{ mr: 0.5 }} />
             Nueva transaccion
           </Button>
+          <Button
+            variant={showReporte ? 'contained' : 'outlined'}
+            className={showReporte ? 'primary-cta' : 'secondary-cta'}
+            onClick={() => setShowReporte((prev) => !prev)}
+          >
+            <BarChartRoundedIcon fontSize="small" sx={{ mr: 0.5 }} />
+            {showReporte ? 'Ocultar reporte' : 'Ver reporte'}
+          </Button>
           <Chip label={`${transacciones.length} movimientos`} className="task-chip" />
         </div>
       </div>
+
+      {showReporte && (
+        <FinanzasReporte transacciones={transacciones} resumen={resumen} />
+      )}
 
       <div className="finanzas-metrics">
         {stats.map((stat) => (

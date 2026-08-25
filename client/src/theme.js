@@ -170,35 +170,35 @@ export const themeSettings = (mode) => {
                 borderRadius: 16,
             },
             typography: {
-                fontFamily: ["Source Sans Pro", "Inter", "Segoe UI", "Arial", "sans-serif"].join(","),
+                fontFamily: ["Source Sans 3", "Source Sans Pro", "Inter", "Segoe UI", "Arial", "sans-serif"].join(","),
                 fontSize: 12,
                 h1: {
-                    fontFamily: ["Source Sans Pro", "Inter", "Segoe UI", "Arial", "sans-serif"].join(","),
+                    fontFamily: ["Source Sans 3", "Source Sans Pro", "Inter", "Segoe UI", "Arial", "sans-serif"].join(","),
                     fontSize: 40,
                     fontWeight: 800,
                 },
                 h2: {
-                    fontFamily: ["Source Sans Pro", "Inter", "Segoe UI", "Arial", "sans-serif"].join(","),
+                    fontFamily: ["Source Sans 3", "Source Sans Pro", "Inter", "Segoe UI", "Arial", "sans-serif"].join(","),
                     fontSize: 32,
                     fontWeight: 800,
                 },
                 h3: {
-                    fontFamily: ["Source Sans Pro", "Inter", "Segoe UI", "Arial", "sans-serif"].join(","),
+                    fontFamily: ["Source Sans 3", "Source Sans Pro", "Inter", "Segoe UI", "Arial", "sans-serif"].join(","),
                     fontSize: 24,
                     fontWeight: 800,
                 },
                 h4: {
-                    fontFamily: ["Source Sans Pro", "Inter", "Segoe UI", "Arial", "sans-serif"].join(","),
+                    fontFamily: ["Source Sans 3", "Source Sans Pro", "Inter", "Segoe UI", "Arial", "sans-serif"].join(","),
                     fontSize: 20,
                     fontWeight: 800,
                 },
                 h5: {
-                    fontFamily: ["Source Sans Pro", "Inter", "Segoe UI", "Arial", "sans-serif"].join(","),
+                    fontFamily: ["Source Sans 3", "Source Sans Pro", "Inter", "Segoe UI", "Arial", "sans-serif"].join(","),
                     fontSize: 16,
                     fontWeight: 800,
                 },
                 h6: {
-                    fontFamily: ["Source Sans Pro", "Inter", "Segoe UI", "Arial", "sans-serif"].join(","),
+                    fontFamily: ["Source Sans 3", "Source Sans Pro", "Inter", "Segoe UI", "Arial", "sans-serif"].join(","),
                     fontSize: 14,
                     fontWeight: 800,
                 },
@@ -213,7 +213,7 @@ export const themeSettings = (mode) => {
                             minHeight: '100vh',
                             margin: 0,
                             backgroundColor: isDark ? '#050505' : '#fcfcfc',
-                            fontFamily: '"Source Sans Pro", Inter, "Segoe UI", Arial, sans-serif',
+                            fontFamily: '"Source Sans 3", "Source Sans Pro", Inter, "Segoe UI", Arial, sans-serif',
                             WebkitFontSmoothing: 'antialiased',
                             MozOsxFontSmoothing: 'grayscale',
                         },
@@ -361,14 +361,23 @@ export const ColorModeContext = createContext ({
 });
 
 export const useMode = () => {
-    const [mode, setMode] = useState("dark");
+    const getInitialMode = () => {
+        const stored = window.localStorage.getItem("mode");
+        if (stored === "dark" || stored === "light") return stored;
+        return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+    };
+
+    const [mode, setMode] = useState(getInitialMode);
 
     const colorMode = useMemo(
         () => ({
-            toggleColorMode: () => 
-            setMode((prev) => (prev === 'light' ? 'dark' : 'light')),
+            toggleColorMode: () => {
+                const next = mode === 'light' ? 'dark' : 'light';
+                localStorage.setItem("mode", next);
+                setMode(next);
+            },
         }),
-        []
+        [mode]
     );
     const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
 
