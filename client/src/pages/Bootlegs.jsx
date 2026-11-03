@@ -25,6 +25,8 @@ import PieChartOutlineOutlinedIcon from '@mui/icons-material/PieChartOutlineOutl
 import PublicOutlinedIcon from '@mui/icons-material/PublicOutlined';
 import BootlegsImportModal from '../Components/BootlegsImportModal';
 import BootlegCreateModal from '../Components/BootlegCreateModal';
+import VideoImportModal from '../Components/VideoImportModal';
+import { exportBootlegs } from '../utils/exportBootlegs';
 import api from '../api';
 import audioHero from '../uploads/Audio.jpg';
 import concertHero from '../uploads/Concierto.jpg';
@@ -38,6 +40,14 @@ export const Bootlegs = () => {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isImportOpen, setIsImportOpen] = useState(false);
   const [audios, setAudios] = useState([]);
+  const [videos, setVideos] = useState([]);
+  const [isVideoImportOpen, setIsVideoImportOpen] = useState(false);
+  const [exportError, setExportError] = useState('');
+
+  const fetchVideos = useCallback(async () => {
+    try { const response = await api.get('/videos'); setVideos(Array.isArray(response.data) ? response.data : []); }
+    catch (error) { console.log(error); }
+  }, []);
 
   const fetchAudios = useCallback(async () => {
     try {
@@ -50,11 +60,13 @@ export const Bootlegs = () => {
 
   useEffect(() => {
     fetchAudios();
-  }, [fetchAudios]);
+    fetchVideos();
+  }, [fetchAudios, fetchVideos]);
 
   const handleCreated = () => {
     setIsCreateOpen(false);
     fetchAudios();
+    fetchVideos();
   };
 
   const handleImported = () => {
@@ -115,15 +127,15 @@ export const Bootlegs = () => {
         image: concertHero,
         tag: 'En expansión',
         icon: <VideoLibraryOutlinedIcon fontSize="small" />,
-        details: ['DVD / Blu-ray / MKV', 'Pro-shot y audience', 'Vista pendiente'],
-        count: 0,
-        countLabel: 'modulo pendiente',
-        to: '#',
-        action: 'Disponible pronto',
-        available: false,
+        details: ['DVD / Blu-ray / MKV', 'Pro-shot y audience', 'Ficha editable'],
+        count: videos.length,
+        countLabel: 'registros',
+        to: '/videos',
+        action: 'Explorar vídeos',
+        available: true,
       },
     ],
-    [dashboard.totalAudios]
+    [dashboard.totalAudios, videos.length]
   );
 
   const stats = useMemo(
@@ -176,6 +188,7 @@ export const Bootlegs = () => {
             <p>Gestiona grabaciones, conciertos y fuentes de tu colección desde una vista más directa: entra al catálogo, crea fichas nuevas o importa lotes desde Excel.</p>
             <div className="bootlegs-hero-strip">
               <span>{dashboard.totalAudios} audios</span>
+              <span>{videos.length} vídeos</span>
               <span>{dashboard.uniqueBands} bandas</span>
               <span>{dashboard.uniqueFormats} formatos</span>
             </div>
@@ -201,6 +214,9 @@ export const Bootlegs = () => {
               <Button variant="outlined" className="secondary-cta" startIcon={<UploadFileOutlinedIcon />} onClick={() => setIsImportOpen(true)}>
                 Importar XLSX
               </Button>
+              <Button variant="outlined" onClick={() => setIsVideoImportOpen(true)}>Importar vídeos</Button>
+              <Button variant="outlined" onClick={async () => { try { const [a, v] = await Promise.all([api.get('/audios'), api.get('/videos')]); await exportBootlegs(a.data, v.data); setExportError(''); } catch { setExportError('No se pudo generar el Excel conjunto.'); } }}>Descargar Excel conjunto</Button>
+              {exportError && <p role="alert">{exportError}</p>}
             </div>
           </div>
         </div>
@@ -372,6 +388,7 @@ export const Bootlegs = () => {
 
       <BootlegCreateModal open={isCreateOpen} onClose={() => setIsCreateOpen(false)} onCreated={handleCreated} />
       <BootlegsImportModal open={isImportOpen} onClose={() => setIsImportOpen(false)} onImported={handleImported} />
+      <VideoImportModal open={isVideoImportOpen} onClose={() => setIsVideoImportOpen(false)} onImported={fetchVideos} />
     </>
   );
 };

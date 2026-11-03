@@ -38,25 +38,27 @@ const initialValues = {
 
 const checkoutSchema = yup.object().shape({
   nombreBanda: yup.string().trim().required('Ingresa la banda.'),
-  lugar: yup.string().trim().required('Ingresa el lugar.'),
+  lugar: yup.string().trim().when('categoria', { is: 'Audio', then: (schema) => schema.required('Ingresa el lugar.') }),
   categoria: yup.string().oneOf(['Audio', 'Video']).required('Selecciona una categoria.'),
-  fecha: yup.string().required('Selecciona la fecha.'),
-  negociable: yup.string().oneOf(['Yes', 'NOT FOR TRADE'], 'Selecciona una opcion.').required('Selecciona una opcion.'),
+  fecha: yup.string().when('categoria', { is: 'Audio', then: (schema) => schema.required('Selecciona la fecha.') }),
+  negociable: yup.string().oneOf(['', 'Yes', 'NOT FOR TRADE'], 'Selecciona una opcion.').when('categoria', { is: 'Audio', then: (schema) => schema.required('Selecciona una opcion.') }),
   cantidadDiscos: yup
     .number()
     .typeError('Ingresa un numero valido.')
     .integer('Solo se permiten enteros.')
     .positive('Debe ser mayor que cero.')
-    .required('Ingresa la cantidad de discos.'),
-  tipo: yup.string().trim().required('Selecciona una fuente.'),
+    .transform((value, original) => original === '' ? undefined : value)
+    .when('categoria', { is: 'Audio', then: (schema) => schema.required('Ingresa la cantidad de discos.') }),
+  tipo: yup.string().trim().when('categoria', { is: 'Audio', then: (schema) => schema.required('Selecciona una fuente.') }),
   formato: yup.string().trim().required('Selecciona un formato.'),
   peso: yup
     .number()
     .typeError('Ingresa un peso valido.')
-    .required('Ingresa el peso.')
-    .test('is-decimal', 'Usa hasta 2 decimales.', (value) => String(value ?? '').match(/^[0-9]+(\.[0-9]{1,2})?$/)),
-  almacenamiento: yup.string().trim().required('Ingresa el almacenamiento.'),
-  comentario: yup.string().trim().required('Agrega un comentario breve.'),
+    .transform((value, original) => original === '' ? undefined : value)
+    .when('categoria', { is: 'Audio', then: (schema) => schema.required('Ingresa el peso.') })
+    .test('is-decimal', 'Usa hasta 2 decimales.', (value) => value === undefined || String(value).match(/^[0-9]+(\.[0-9]{1,2})?$/)),
+  almacenamiento: yup.string().trim().when('categoria', { is: 'Audio', then: (schema) => schema.required('Ingresa el almacenamiento.') }),
+  comentario: yup.string().trim().when('categoria', { is: 'Audio', then: (schema) => schema.required('Agrega un comentario breve.') }),
 });
 
 const AUDIO_FORMATS = [
@@ -75,6 +77,7 @@ const VIDEO_FORMATS = [
   { value: 'TS', label: 'TS' },
   { value: 'MKV', label: 'MKV' },
   { value: 'MP4', label: 'MP4' },
+  { value: 'AVI', label: 'AVI' },
   { value: 'DL', label: 'DL' },
 ];
 
@@ -134,7 +137,7 @@ const BootlegForm = ({ onSuccess, onCancel, submitLabel = 'Guardar bootleg', isD
     helpers.setStatus(null);
 
     try {
-      await api.post('/form', values);
+      await api.post(values.categoria === 'Video' ? '/videos' : '/form', values);
       helpers.resetForm();
       showAlert('Bootleg agregado correctamente.', 'success');
       onSuccess?.();
@@ -220,14 +223,14 @@ const BootlegForm = ({ onSuccess, onCancel, submitLabel = 'Guardar bootleg', isD
                     className="span-4"
                     fullWidth
                     variant="outlined"
-                    type="date"
+                    type={values.categoria === 'Video' ? 'text' : 'date'}
                     label="Fecha"
                     name="fecha"
                     value={values.fecha}
                     onBlur={handleBlur}
                     onChange={handleChange}
                     error={!!touched.fecha && !!errors.fecha}
-                    helperText={touched.fecha && errors.fecha}
+                    helperText={(touched.fecha && errors.fecha) || (values.categoria === 'Video' ? 'aaaa/mm/dd o intervalo, por ejemplo 1999-2000' : '')}
                     InputLabelProps={{ shrink: true }}
                   />
                 </Box>

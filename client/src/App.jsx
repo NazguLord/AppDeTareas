@@ -13,6 +13,7 @@ import Contactos from "./pages/Contactos";
 import EditContactos from "./Components/EditContactos";
 import Bootlegs from "./pages/Bootlegs";
 import Audios from "./pages/Audios";
+import Videos from "./pages/Videos";
 import Form from "./pages/Form";
 import FAQ from "./pages/FAQ";
 import Pie from "./pages/Pie";
@@ -55,6 +56,7 @@ const router = createBrowserRouter([
       { path: "/pie", element: <Pie /> },
       { path: "/map", element: <Map /> },
       { path: "/audios", element: <Audios /> },
+      { path: "/videos", element: <Videos /> },
       { path: "/form", element: <Form /> },
       { path: "/faq", element: <FAQ /> },
       { path: "/finanzas", element: <Finanzas /> },
