@@ -30,9 +30,17 @@ const Contactos = () => {
   const [openUpdateModal, setOpenUpdateModal] = useState(false);
   const [selectedContact, setSelectedContact] = useState(null);
   const [contactos, setContactos] = useState([]);
+  const [page, setPage] = useState(1);
+  const pageSize = 8;
+  const totalPages = Math.max(1, Math.ceil(contactos.length / pageSize));
+  const currentPage = Math.min(page, totalPages);
+  const visibleContactos = contactos.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
   useEffect(() => {
-    const fetchAllContactos = async () => {
+    setPage((current) => Math.min(current, totalPages));
+  }, [totalPages]);
+
+  const fetchAllContactos = async () => {
       try {
         const res = await api.get('/contactos');
         setContactos(res.data);
@@ -40,6 +48,8 @@ const Contactos = () => {
         console.log(err);
       }
     };
+
+  useEffect(() => {
     fetchAllContactos();
   }, []);
 
@@ -135,8 +145,7 @@ const Contactos = () => {
       <div className="contacts-hero task-hero">
         <div className="task-hero-copy">
           <span className="eyebrow">Contactos</span>
-          <h1>Agenda visual</h1>
-          <p>Una vista mas limpia para consultar, actualizar y mantener tus contactos sin ruido visual.</p>
+          <h1>Agenda visual</h1>          
         </div>
         <div className="task-hero-actions">
           <Button variant="contained" className="primary-cta" onClick={addContacto}>
@@ -146,7 +155,7 @@ const Contactos = () => {
         </div>
       </div>
 
-      <BasicModal open={open} onClose={() => setOpen(false)} />
+      <BasicModal open={open} onClose={() => setOpen(false)} onCreated={fetchAllContactos} />
       <UpdateModal
         open={openUpdateModal}
         onClose={closeEditModal}
@@ -170,11 +179,11 @@ const Contactos = () => {
           <span className="section-kicker">Directorio</span>
           <h2>Contactos disponibles</h2>
         </div>
-        <p>Tarjetas con mejor separacion visual para ver foto, datos principales y acciones sin que todo se mezcle.</p>
+        <p>Actualiza o elimina tus contactos</p>
       </div>
 
       <div className="contacts-grid">
-        {contactos.map((contacto) => {
+        {visibleContactos.map((contacto) => {
           const imageSrc = getContactImage(contacto.image);
 
           return (
@@ -252,6 +261,17 @@ const Contactos = () => {
           );
         })}
       </div>
+      {totalPages > 1 && (
+        <nav className="contacts-pagination" aria-label="Paginación de contactos">
+          <Button variant="outlined" disabled={currentPage === 1} onClick={() => setPage(currentPage - 1)}>
+            Anterior
+          </Button>
+          <span aria-live="polite">Página {currentPage} de {totalPages}</span>
+          <Button variant="outlined" disabled={currentPage === totalPages} onClick={() => setPage(currentPage + 1)}>
+            Siguiente
+          </Button>
+        </nav>
+      )}
     </section>
   );
 };

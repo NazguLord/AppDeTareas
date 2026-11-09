@@ -1,0 +1,167 @@
+.task-modal-form {
+  --modal-bg: #f3eff6;
+  --modal-surface: rgba(255, 253, 255, 0.8);
+  --modal-text: #211b2a;
+  --modal-muted: #63596a;
+  --modal-accent: #704a87;
+  --modal-line: rgba(65, 45, 76, 0.2);
+  --modal-button-text: #fff;
+
+  padding: clamp(24px, 4vw, 40px);
+  border: 1px solid var(--modal-line);
+  background: radial-gradient(ellipse at 100% 0%, rgba(152, 131, 190, 0.2), transparent 55%), var(--modal-bg);
+  box-shadow: 0 24px 70px rgba(20, 12, 28, 0.25);
+  color: var(--modal-text);
+
+  &.is-dark {
+    --modal-bg: #191321;
+    --modal-surface: #241c2c;
+    --modal-text: #f7f2fa;
+    --modal-muted: #c2b8c9;
+    --modal-accent: #c8a3e4;
+    --modal-line: rgba(228, 213, 237, 0.22);
+    --modal-button-text: #191321;
+    background: radial-gradient(ellipse at 100% 0%, rgba(147, 111, 186, 0.24), transparent 55%), var(--modal-bg);
+  }
+
+  .task-modal-header {
+    padding-bottom: 22px;
+    border-bottom: 1px solid var(--modal-line);
+  }
+
+  .task-modal-kicker.MuiTypography-root {
+    margin-bottom: 12px;
+    color: var(--modal-accent);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  .task-modal-title.MuiTypography-root {
+    margin-bottom: 12px;
+    color: var(--modal-text);
+    font-size: clamp(1.8rem, 4vw, 2.7rem);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  .task-modal-copy.MuiTypography-root {
+    max-width: 560px;
+    color: var(--modal-muted);
+    line-height: 1.6;
+  }
+
+  .task-modal-label.MuiTypography-root {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--modal-text);
+    font-size: 0.76rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .MuiOutlinedInput-root {
+    border-radius: 0;
+    color: var(--modal-text);
+    background: var(--modal-surface);
+
+    .MuiOutlinedInput-notchedOutline {
+      border-color: var(--modal-line);
+    }
+
+    &:hover .MuiOutlinedInput-notchedOutline,
+    &.Mui-focused .MuiOutlinedInput-notchedOutline {
+      border-color: var(--modal-accent);
+    }
+
+    &.Mui-error .MuiOutlinedInput-notchedOutline {
+      border-color: #d45463;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: var(--modal-muted);
+      opacity: 1;
+    }
+  }
+
+  .task-modal-actions {
+    padding-top: 20px;
+    border-top: 1px solid var(--modal-line);
+
+    .MuiButton-root {
+      min-height: 46px;
+      padding-inline: 22px;
+      border-radius: 2px;
+      box-shadow: none;
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .MuiButton-contained:not(.Mui-disabled) {
+      color: var(--modal-button-text);
+      background: var(--modal-text);
+
+      &:hover { background: var(--modal-accent); }
+    }
+
+    .MuiButton-outlined:not(.Mui-disabled) {
+      border-color: var(--modal-line);
+      color: var(--modal-text);
+      background: transparent;
+
+      &:hover { border-color: var(--modal-accent); }
+    }
+  }
+}
+
+.contact-create-form {
+  .contact-file-error.MuiTypography-root {
+    margin: 6px 0 0;
+    color: #d45463;
+    font-size: 0.75rem;
+  }
+
+  .contact-create-fields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+    margin: 24px 0;
+  }
+
+  .contact-create-wide { grid-column: 1 / -1; }
+
+  .contact-create-upload {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    color: var(--modal-muted);
+    font-size: 0.85rem;
+    overflow-wrap: anywhere;
+
+    .MuiButton-root {
+      border-color: var(--modal-line);
+      border-radius: 2px;
+      color: var(--modal-text);
+      background: transparent;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+
+      &:hover { border-color: var(--modal-accent); }
+    }
+  }
+
+  @media (max-width: 600px) {
+    .contact-create-fields { grid-template-columns: 1fr; }
+    .contact-create-wide { grid-column: auto; }
+  }
+}

@@ -110,7 +110,7 @@
 
     .navbar-shell {
       display: grid;
-      grid-template-columns: auto minmax(0, 1fr) auto;
+      grid-template-columns: auto auto minmax(0, 1fr);
       align-items: center;
       gap: 18px;
     }
@@ -155,12 +155,61 @@
     }
 
     .links {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .nav-sections,
+    .nav-account {
       display: flex;
       align-items: center;
-      justify-content: flex-end;
       gap: 8px;
+    }
+
+    .nav-sections {
+      justify-content: center;
       flex-wrap: wrap;
-      min-width: 0;
+    }
+
+    .nav-sections .nav-pill,
+    .nav-account .user-pill,
+    .nav-account .nav-action {
+      border: 0;
+      border-bottom: 2px solid transparent;
+      border-radius: 0;
+      background: transparent;
+      color: var(--muted-strong);
+      font-size: 0.75rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .nav-sections .nav-pill:hover,
+    .nav-sections .nav-pill.is-active,
+    .nav-account .nav-action:hover,
+    .nav-account .nav-action.is-active {
+      color: #704a87;
+      border-bottom-color: #704a87;
+      background: transparent;
+    }
+
+    .mobile-theme-toggle {
+      display: none;
+    }
+
+    .theme-toggle.account-theme-toggle {
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      color: var(--muted-strong);
+
+      &:hover {
+        color: #704a87;
+        background: transparent;
+      }
     }
 
     .navbar-controls {
@@ -229,6 +278,18 @@
 
   &.dark .navbar {
     background: rgba(5, 5, 5, 0.88);
+
+    .nav-sections .nav-pill:hover,
+    .nav-sections .nav-pill.is-active,
+    .nav-account .nav-action:hover,
+    .nav-account .nav-action.is-active {
+      color: #c8a3e4;
+      border-bottom-color: #c8a3e4;
+    }
+
+    .account-theme-toggle:hover {
+      color: #c8a3e4;
+    }
   }
 
   .task-page {
@@ -2782,6 +2843,14 @@
         display: inline-flex;
       }
 
+      .mobile-theme-toggle {
+        display: inline-flex;
+      }
+
+      .account-theme-toggle {
+        display: none;
+      }
+
       .links {
         grid-column: 1 / -1;
         display: none;
@@ -2790,7 +2859,21 @@
 
       &.is-open .links {
         display: grid;
+        grid-template-columns: 1fr;
+      }
+
+      .nav-sections {
+        display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .nav-account {
+        justify-content: flex-end;
+      }
+
+      .nav-account .user-pill,
+      .nav-account .nav-action {
+        width: auto;
       }
 
       .nav-pill,

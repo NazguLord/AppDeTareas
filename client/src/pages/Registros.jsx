@@ -4,6 +4,7 @@ import DataTable from 'react-data-table-component';
 import ReceiptLongOutlinedIcon from '@mui/icons-material/ReceiptLongOutlined';
 import TrendingUpOutlinedIcon from '@mui/icons-material/TrendingUpOutlined';
 import EventOutlinedIcon from '@mui/icons-material/EventOutlined';
+import './Registros.scss';
 
 const Registros = () => {
   const [tareas, setTareas] = useState([]);
@@ -73,11 +74,7 @@ const Registros = () => {
   const conditionalRowStyles = [
     {
       when: (row) => Number(row.cantidad) < 0,
-      style: {
-        backgroundColor: 'rgba(185, 28, 28, 0.88)',
-        color: '#fff7f7',
-        borderBottom: '1px solid rgba(255,255,255,0.14)',
-      },
+      classNames: ['records-negative-row'],
     },
   ];
 
@@ -90,13 +87,13 @@ const Registros = () => {
     headRow: {
       style: {
         backgroundColor: 'transparent',
-        borderBottom: '1px solid var(--border)',
+        borderBottom: '1px solid var(--line-strong)',
         minHeight: '56px',
       },
     },
     headCells: {
       style: {
-        color: 'var(--title-soft)',
+        color: 'var(--muted-strong)',
         fontSize: '0.85rem',
         fontWeight: 800,
         textTransform: 'uppercase',
@@ -106,13 +103,13 @@ const Registros = () => {
     rows: {
       style: {
         backgroundColor: 'transparent',
-        color: 'var(--copy-strong)',
+        color: 'var(--text)',
         minHeight: '64px',
-        borderBottom: '1px solid var(--border)',
+        borderBottom: '1px solid var(--line)',
       },
       highlightOnHoverStyle: {
-        backgroundColor: 'var(--accent-soft)',
-        color: 'var(--copy-strong)',
+        backgroundColor: 'var(--records-hover)',
+        color: 'var(--text)',
       },
     },
     cells: {
@@ -123,9 +120,15 @@ const Registros = () => {
     pagination: {
       style: {
         backgroundColor: 'transparent',
-        color: 'var(--copy)',
-        borderTop: '1px solid var(--border)',
+        color: 'var(--text)',
+        borderTop: '1px solid var(--line-strong)',
+        '& button': { fill: 'var(--text)' },
+        '& button:disabled': { fill: 'var(--muted)' },
+        '& select': { color: 'var(--text)', backgroundColor: 'var(--records-paper)' },
       },
+    },
+    noData: {
+      style: { backgroundColor: 'transparent', color: 'var(--muted)' },
     },
   };
 
@@ -134,8 +137,7 @@ const Registros = () => {
       <div className="records-hero task-hero">
         <div className="task-hero-copy">
           <span className="eyebrow">Registros</span>
-          <h1>Historial de tareas</h1>
-          <p>Una vista completa para revisar movimientos, fechas y variaciones sin perder legibilidad.</p>
+          <h1>Historial de tareas</h1>          
         </div>
       </div>
 
@@ -154,8 +156,7 @@ const Registros = () => {
           <div>
             <span className="section-kicker">Vista de datos</span>
             <h2>Total de registros de tareas</h2>
-          </div>
-          <p>Tabla paginada con mejor contraste y lectura para seguir creciendo el proyecto.</p>
+          </div>          
         </div>
 
         <DataTable

@@ -18,7 +18,6 @@ import MedicationLiquidRoundedIcon from '@mui/icons-material/MedicationLiquidRou
 import AttachMoneyRoundedIcon from '@mui/icons-material/AttachMoneyRounded';
 import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
 import LoginRoundedIcon from '@mui/icons-material/LoginRounded';
-import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
 import KeyboardDoubleArrowLeftRoundedIcon from '@mui/icons-material/KeyboardDoubleArrowLeftRounded';
 import KeyboardDoubleArrowRightRoundedIcon from '@mui/icons-material/KeyboardDoubleArrowRightRounded';
 
@@ -64,7 +63,7 @@ const Navbar = () => {
           >
             {isCollapsed ? <KeyboardDoubleArrowRightRoundedIcon /> : <KeyboardDoubleArrowLeftRoundedIcon />}
           </IconButton>
-          <IconButton onClick={colorMode.toggleColorMode} className="theme-toggle">
+          <IconButton onClick={colorMode.toggleColorMode} className="theme-toggle mobile-theme-toggle" aria-label="Cambiar tema">
             {theme.palette.mode === 'dark' ? <DarkModeIcon /> : <LightModeIcon />}
           </IconButton>
           <IconButton
@@ -78,7 +77,7 @@ const Navbar = () => {
         </div>
 
         <nav className="links" aria-label="Navegacion principal">
-
+          <div className="nav-sections">
           {navItems.map((item) => (
             <NavLink
               key={item.to}
@@ -91,26 +90,27 @@ const Navbar = () => {
               <span className="nav-label">{item.label}</span>
             </NavLink>
           ))}
-
+          </div>
+          <div className="nav-account">
+          <IconButton onClick={colorMode.toggleColorMode} className="theme-toggle account-theme-toggle" aria-label="Cambiar tema">
+            {theme.palette.mode === 'dark' ? <DarkModeIcon /> : <LightModeIcon />}
+          </IconButton>
           <span className="user-pill">
             <PersonRoundedIcon fontSize="small" />
             <span className="nav-label">{currentUser?.username || 'Invitado'}</span>
           </span>
           {currentUser ? (
-            <span className="nav-pill nav-action" onClick={handleLogout}>
+            <button type="button" className="nav-pill nav-action" onClick={handleLogout}>
               <LoginRoundedIcon fontSize="small" />
               <span className="nav-label">Salir</span>
-            </span>
+            </button>
           ) : (
             <NavLink className={({ isActive }) => `link nav-pill nav-action ${isActive ? 'is-active' : ''}`} to="/login" onClick={closeMenu}>
               <LoginRoundedIcon fontSize="small" />
               <span className="nav-label">Login</span>
             </NavLink>
           )}
-          <Link className="link write" to="/add" onClick={closeMenu}>
-            <AddCircleOutlineRoundedIcon fontSize="small" />
-            <span className="nav-label">Nueva</span>
-          </Link>
+          </div>
         </nav>
       </div>
     </header>

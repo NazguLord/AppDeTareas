@@ -1,168 +1,106 @@
-import React from 'react'
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import Modal from '@mui/material/Modal';
-import { useState } from 'react';
-import {  Button,  IconButton,  TextField, Tooltip } from '@mui/material';
+import React from 'react';
+import { Alert, Box, Button, DialogActions, Modal, TextField, Typography, useTheme } from '@mui/material';
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 import Swal from 'sweetalert2';
-import DialogActions from '@mui/material/DialogActions';
 import api from '../api';
+import './TaskModal.scss';
 
+const phoneRegex = /^(?:(?:\(\+?\d{2,3}\)|\+?\d{2,3})\s*)?(?:\d{6}|\d{8}|\d{4}[*.\-\s]\d{4}|(?:\d{3}[*.\-\s]){2}\d{3}|(?:\d{2}[*.\-\s]){3}\d{2})$/;
 
-const BasicModal = ({ open, onClose, id }) => {
-      const [file, setFile]  = useState(null); 
-      const [name, setName] = useState(""); 
-      const [number, setNumber] = useState(""); 
-      const [email, setEmail] = useState("");    
+const validationSchema = Yup.object({
+  name: Yup.string().trim().min(4, 'Escribe al menos 4 caracteres.').required('El nombre es obligatorio.'),
+  number: Yup.string().trim().required('El número es obligatorio.').matches(phoneRegex, 'Ingresa un número válido, por ejemplo: (+504) 99190022.'),
+  email: Yup.string().trim().email('Ingresa un correo válido.').required('El correo es obligatorio.'),
+  file: Yup.mixed().nullable().required('Selecciona una imagen.'),
+});
 
-      const upload = async () => {
-        try {
-          const formData = new FormData();  
-          formData.append("file", file);
-          const res = await api.post("/upload", formData);
-          console.log(res.data);
-          return res.data;
-        } catch (err) {
-          console.log(err);
-        }
-      };
-
-
-    const handleClick = async (e, id) => {
-    e.preventDefault();
-    const numeroTelefono = /^[(]?[+]?(\d{2}|\d{3})[)]?[\s]?((\d{6}|\d{8})|(\d{3}[*.\-\s]){2}\d{3}|(\d{2}[*.\-\s]){3}\d{2}|(\d{4}[*.\-\s]){1}\d{4})|\d{8}$/; 
-    const ExpRegEmail = /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
- 
-      if(name.length === 0){
-        Swal.fire({
-          position: 'top-right',
-          icon: 'error',
-          title: 'Nombre no puede ser vacio',
-          showConfirmButton: false,
-          timer: 1500
-         })           
-        }
-        else if(name.length <= 3){
-          Swal.fire({
-            position: 'top-right',
-            icon: 'error',
-            title: 'Nombre no puede ser menor a 4 letras',
-            showConfirmButton: false,
-            timer: 1500
-          })           
-        }
-        else if(number.length === 0){
-          Swal.fire({
-            position: 'top-right',
-            icon: 'error',
-            title: 'Numero no puede ser vacio',
-            showConfirmButton: false,
-            timer: 1500
-          })    
-        }
-        else if( number.match(numeroTelefono) == null){
-          Swal.fire({
-            position: 'top-right',
-            icon: 'error',
-            title: 'Ingrese el estandar de numero',
-            showConfirmButton: false,
-            footer: '<a>Ejemplo: (+504) 99190022, 99190022</a>',
-            timer: 3500
-          })  
-        }
-        else if(email.length === 0){
-          Swal.fire({
-            position: 'top-right',
-            icon: 'error',
-            title: 'Email no puede ser vacio',
-            showConfirmButton: false,
-            timer: 1500
-          }) 
-        }
-        else if(email.match(ExpRegEmail) == null){
-          Swal.fire({
-            position: 'top-right',
-            icon: 'error',
-            title: 'Email no es valido',
-            showConfirmButton: false,
-            timer: 1500
-          })
-        }
-        else if(file === null){
-          Swal.fire({
-            position: 'top-right',
-            icon: 'error',
-            title: 'Por favor ingrese una imagen',
-            showConfirmButton: false,
-            timer: 1500
-          })
-        }
-
-       else{
-        const imgUrl = await upload();         
-        try {
-           const res = await api.post('/contactos', {
-              name,
-              number,
-              email,
-              image: file ? imgUrl : "",                       
-         });
-         console.log(res);
-         if(res.status === 200){
-          //alert("ingreso correcto");
-          Swal.fire({
-            position: 'top-end',
-            icon: 'success',
-            title: 'Contacto agregado',
-            showConfirmButton: false,
-            timer: 1500
-          })
-          onClose();
-         }             
-        } catch (err){
-          console.log(err);
-        }   
+const BasicModal = ({ open, onClose, onCreated }) => {
+  const theme = useTheme();
+  const formik = useFormik({
+    initialValues: { name: '', number: '', email: '', file: null },
+    validationSchema,
+    onSubmit: async (values, { resetForm, setStatus, setSubmitting }) => {
+      setStatus(null);
+      try {
+        const formData = new FormData();
+        formData.append('file', values.file);
+        const upload = await api.post('/upload', formData);
+        await api.post('/contactos', {
+          name: values.name.trim(),
+          number: values.number.trim(),
+          email: values.email.trim(),
+          image: upload.data,
+        });
+        resetForm();
+        onClose();
+        onCreated?.();
+        Swal.fire({ position: 'top-end', icon: 'success', title: 'Contacto agregado', showConfirmButton: false, timer: 1500 });
+      } catch (err) {
+        console.log(err);
+        setStatus('No se pudo guardar el contacto o subir la imagen. Inténtalo de nuevo.');
+      } finally {
+        setSubmitting(false);
       }
-   };    
-      
-    const style = {
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        width: 400,
-        bgcolor: 'background.paper',
-        border: '2px solid #000',
-        boxShadow: 24,
-        p: 4,
-        padding: '16px 32px 24px'
-      };
-        
+    },
+  });
+
+  const handleClose = () => {
+    if (formik.isSubmitting) return;
+    formik.resetForm();
+    onClose();
+  };
+
   return (
-     <Modal open={open} onClose={onClose}>      
-      <Box component="form" sx={style}>         
-        <Typography id="modal-modal-title" variant="h6" component="h2">
-            Agregar Nuevo Contacto
-        </Typography>
-        <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            Ingrese los datos del contacto:
-        </Typography>
-                      
-          <TextField name='name' onChange={(e) => {setName(e.target.value) }} variant="est?ndard" label="Nombre" />
-          <TextField style={{ float: 'right'}} id="est?ndard-multiline-flexible" placeholder="(+504) 99190924" label="Numero" multiline  maxRows={1}   name='number' 
-          onChange={(e) => {  setNumber(e.target.value) }} variant="est?ndard" />           
-          <TextField id="est?ndard-multiline-flexible"  label="Email"  name='email' onChange={((e) => setEmail(e.target.value))} variant="est?ndard" />
-          <Tooltip title="Subir imagen"><IconButton style={{  float: 'right',   padding: '12px', }} color="primary" aria-label="upload picture" component="label"><input hidden accept="image/*" type="file" id="file" name="file" onChange={(e) => setFile(e.target.files[0])} /><AddAPhotoIcon /></IconButton></Tooltip>         
-        <DialogActions>
-          <Button variant="contained" onClick={(e) => {handleClick(e);  }}>Agregar</Button>
-          <Button variant="outlined" color="error" autoFocus onClick={onClose}>Cancelar</Button>                   
-        </DialogActions>       
-        </Box>                           
-    </Modal>   
-  )
- 
-}
-export default BasicModal
+    <Modal open={open} onClose={handleClose} slotProps={{ backdrop: { sx: { backdropFilter: 'blur(8px)', backgroundColor: theme.palette.mode === 'dark' ? 'rgba(2, 6, 23, 0.72)' : 'rgba(28, 25, 23, 0.30)' } } }}>
+      <Box
+        component="form"
+        onSubmit={formik.handleSubmit}
+        className={`task-modal-form contact-create-form ${theme.palette.mode === 'dark' ? 'is-dark' : 'is-light'}`}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="contact-create-title"
+        sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 'min(720px, calc(100% - 24px))', maxHeight: 'calc(100vh - 32px)', overflowY: 'auto', outline: 'none' }}
+      >
+        <Box className="task-modal-header">
+          <Typography className="task-modal-kicker">Contactos</Typography>
+          <Typography id="contact-create-title" className="task-modal-title" component="h2">Agregar contacto</Typography>
+        </Box>
 
+        <Box className="contact-create-fields">
+          {formik.status && <Alert className="contact-create-wide" severity="error">{formik.status}</Alert>}
+          <Box>
+            <Typography component="label" htmlFor="contact-name" className="task-modal-label">Nombre</Typography>
+            <TextField id="contact-name" name="name" value={formik.values.name} onChange={formik.handleChange} onBlur={formik.handleBlur} error={formik.touched.name && Boolean(formik.errors.name)} helperText={formik.touched.name && formik.errors.name} placeholder="Nombre del contacto" fullWidth />
+          </Box>
+          <Box>
+            <Typography component="label" htmlFor="contact-number" className="task-modal-label">Número</Typography>
+            <TextField id="contact-number" name="number" value={formik.values.number} onChange={formik.handleChange} onBlur={formik.handleBlur} error={formik.touched.number && Boolean(formik.errors.number)} helperText={formik.touched.number && formik.errors.number} placeholder="(+504) 99190924" fullWidth />
+          </Box>
+          <Box className="contact-create-wide">
+            <Typography component="label" htmlFor="contact-email" className="task-modal-label">Email</Typography>
+            <TextField id="contact-email" name="email" value={formik.values.email} onChange={formik.handleChange} onBlur={formik.handleBlur} error={formik.touched.email && Boolean(formik.errors.email)} helperText={formik.touched.email && formik.errors.email} placeholder="correo@ejemplo.com" fullWidth />
+          </Box>
+          <Box className="contact-create-wide">
+            <Box className="contact-create-upload">
+              <Button component="label" variant="outlined" startIcon={<AddAPhotoIcon />}>
+                Seleccionar imagen
+                <input hidden accept="image/*" type="file" onChange={(e) => { formik.setFieldValue('file', e.target.files?.[0] || null); formik.setFieldTouched('file', true, false); }} aria-describedby={formik.touched.file && formik.errors.file ? 'contact-file-error' : undefined} />
+              </Button>
+              <span>{formik.values.file ? formik.values.file.name : 'Ninguna imagen seleccionada'}</span>
+            </Box>
+            {formik.touched.file && formik.errors.file && <Typography id="contact-file-error" className="contact-file-error" role="alert">{formik.errors.file}</Typography>}
+          </Box>
+        </Box>
 
+        <DialogActions className="task-modal-actions" sx={{ p: 0, justifyContent: 'flex-start', gap: 1.5, flexWrap: 'wrap' }}>
+          <Button type="submit" variant="contained" disabled={formik.isSubmitting}>{formik.isSubmitting ? 'Guardando…' : 'Agregar contacto'}</Button>
+          <Button variant="outlined" onClick={handleClose} disabled={formik.isSubmitting}>Cancelar</Button>
+        </DialogActions>
+      </Box>
+    </Modal>
+  );
+};
+
+export default BasicModal;

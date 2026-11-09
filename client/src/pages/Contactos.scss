@@ -1,1 +1,219 @@
-/* Estilos migrados a client/src/style.scss para mantener un solo sistema visual. */
+.app .contacts-page {
+  --contacts-paper: #f3eff6;
+  --contacts-panel: rgba(255, 253, 255, 0.78);
+  --contacts-accent: #704a87;
+  --contacts-wash: rgba(125, 85, 151, 0.15);
+  --contacts-cool: rgba(152, 131, 190, 0.2);
+
+  display: grid;
+  gap: clamp(18px, 2vw, 28px);
+  padding: clamp(20px, 3vw, 48px);
+  padding-top: 16px;
+  border: 1px solid var(--line);
+  background:
+    radial-gradient(ellipse at 100% 0%, var(--contacts-cool), transparent 38%),
+    radial-gradient(ellipse at 0% 30%, var(--contacts-wash), transparent 35%),
+    var(--contacts-paper);
+
+  .contacts-hero.task-hero {
+    min-height: 0;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    padding: 0 0 24px;
+    border: 0;
+    border-bottom: 1px solid var(--line-strong);
+    border-radius: 0;
+    background: transparent;
+    text-align: center;
+
+    .eyebrow {
+      color: var(--contacts-accent);
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin-top: 8px;
+      font-size: clamp(2.8rem, 6vw, 5.6rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    p {
+      max-width: 560px;
+      margin-inline: auto;
+      text-align: center;
+    }
+  }
+
+  .task-hero-actions {
+    justify-content: center;
+  }
+
+  .task-hero-actions .primary-cta.MuiButton-root {
+    min-height: 46px;
+    padding-inline: 22px;
+    border-radius: 2px;
+    color: var(--bg-soft);
+    background: var(--title);
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .task-chip.MuiChip-root {
+    color: var(--muted-strong);
+    border: 1px solid var(--line-strong);
+    border-radius: 2px;
+    background: transparent;
+  }
+
+  .contacts-stats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1px;
+    border: 1px solid var(--line-strong);
+    background: var(--line-strong);
+  }
+
+  .contacts-stats .metric-card {
+    min-width: 0;
+    padding: clamp(18px, 2vw, 28px);
+    border: 0;
+    border-radius: 0;
+    background: var(--contacts-paper);
+  }
+
+  .metric-icon {
+    width: auto;
+    height: auto;
+    margin-bottom: 16px;
+    color: var(--contacts-accent);
+    background: transparent;
+  }
+
+  .metric-label {
+    color: var(--muted-strong);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .metric-value {
+    overflow-wrap: anywhere;
+    font-size: clamp(1.4rem, 2vw, 2rem);
+  }
+
+  .metric-copy { font-size: 0.85rem; }
+
+  .contacts-section-head {
+    flex-direction: column;
+    align-items: center;
+    margin: 0;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--line-strong);
+    text-align: center;
+
+    .section-kicker {
+      color: var(--contacts-accent);
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    h2 {
+      margin-top: 10px;
+      font-size: clamp(1.5rem, 2.5vw, 2.4rem);
+      text-transform: uppercase;
+    }
+
+    p { text-align: center; }
+  }
+
+  .contact-card.MuiPaper-root {
+    min-width: 0;
+    border-color: var(--line-strong);
+    border-radius: 0;
+    background: var(--contacts-panel);
+  }
+
+  .contact-card-media-fallback {
+    display: grid;
+    place-items: center;
+    color: var(--muted);
+    background: var(--contacts-wash);
+  }
+
+  .contact-tag {
+    padding: 4px 0;
+    border-radius: 0;
+    color: var(--contacts-accent);
+    background: transparent;
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .contact-card-actions.MuiCardActions-root .MuiButton-root {
+    min-width: 0;
+    border: 1px solid var(--line-strong);
+    border-radius: 0;
+    color: var(--title);
+    background: transparent;
+    box-shadow: none;
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+
+    &:hover { border-color: var(--contacts-accent); }
+    &.MuiButton-colorError { color: var(--danger); }
+  }
+
+  .contacts-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    color: var(--muted-strong);
+    font-size: 0.85rem;
+    font-weight: 700;
+
+    .MuiButton-root {
+      min-height: 40px;
+      border-color: var(--line-strong);
+      border-radius: 2px;
+      color: var(--title);
+      background: transparent;
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+
+      &:hover { border-color: var(--contacts-accent); }
+      &.Mui-disabled { color: var(--muted); opacity: 0.5; }
+    }
+  }
+
+  @media (max-width: 600px) {
+    padding: 16px 20px 20px;
+
+    .contacts-stats { grid-template-columns: 1fr; }
+  }
+}
+
+.app.dark .contacts-page {
+  --contacts-paper: #191321;
+  --contacts-panel: rgba(34, 25, 43, 0.85);
+  --contacts-accent: #c8a3e4;
+  --contacts-wash: rgba(121, 70, 155, 0.2);
+  --contacts-cool: rgba(147, 111, 186, 0.24);
+
+  .contacts-hero.task-hero { background: transparent; }
+}

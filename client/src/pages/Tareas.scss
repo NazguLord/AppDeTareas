@@ -1,1 +1,282 @@
-/* Estilos centralizados en client/src/style.scss. */
+// Estilos exclusivos de la portada de tareas; los colores siguen el tema activo.
+.app .home-page {
+  --home-paper: #f3eff6;
+  --home-panel: rgba(255, 253, 255, 0.78);
+  --home-warm: #704a87;
+  --home-wash: rgba(125, 85, 151, 0.15);
+  --home-cool: rgba(152, 131, 190, 0.2);
+
+  gap: clamp(18px, 2vw, 28px);
+  padding: clamp(20px, 3vw, 48px);
+  border: 1px solid var(--line);
+  background:
+    radial-gradient(ellipse at 100% 0%, var(--home-cool), transparent 38%),
+    radial-gradient(ellipse at 0% 30%, var(--home-wash), transparent 35%),
+    var(--home-paper);
+
+  .home-hero {
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    min-height: 260px;
+    padding: 24px 0 36px;
+    border: 0;
+    border-bottom: 1px solid var(--line-strong);
+    border-radius: 0;
+    background: transparent;
+
+    .task-hero-copy {
+      text-align: center;
+    }
+
+    .eyebrow {
+      color: var(--home-warm);
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin-top: 18px;
+      font-size: clamp(2.8rem, 6vw, 5.6rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      text-transform: uppercase;
+      text-align: center;
+    }
+
+    p {
+      max-width: 560px;
+      margin-inline: auto;
+      text-align: center;
+    }
+  }
+
+  .task-hero-actions {
+    justify-content: center;
+  }
+
+  .task-hero-actions .MuiButton-root {
+    min-height: 46px;
+    padding-inline: 22px;
+    border-radius: 2px;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .task-hero-actions .primary-cta.MuiButton-root {
+    color: var(--bg-soft);
+    background: var(--title);
+  }
+
+  .task-hero-actions .secondary-cta.MuiButton-root {
+    border-color: var(--line-strong);
+    background: transparent;
+  }
+
+  .task-chip.MuiChip-root {
+    color: var(--muted-strong);
+    background: transparent;
+    border: 1px solid var(--line-strong);
+    border-radius: 2px;
+  }
+
+  .home-dashboard-grid {
+    gap: 1px;
+    background: var(--line-strong);
+    border: 1px solid var(--line-strong);
+  }
+
+  .home-metrics {
+    gap: 1px;
+  }
+
+  .home-metrics .metric-card {
+    min-width: 0;
+    padding: clamp(18px, 2vw, 28px);
+    border: 0;
+    border-radius: 0;
+    background: var(--home-paper);
+  }
+
+  .metric-icon {
+    width: auto;
+    height: auto;
+    margin-bottom: 16px;
+    color: var(--home-warm);
+    background: transparent;
+  }
+
+  .metric-label,
+  .total-label {
+    color: var(--muted-strong);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .metric-value {
+    overflow-wrap: anywhere;
+    font-size: clamp(1.4rem, 2vw, 2rem);
+  }
+
+  .metric-copy,
+  .total-copy {
+    font-size: 0.85rem;
+  }
+
+  .total-card {
+    padding: clamp(20px, 2vw, 28px);
+    border-radius: 0;
+    color: var(--title);
+    background: var(--home-paper);
+  }
+
+  .total-value {
+    color: var(--home-warm);
+    overflow-wrap: anywhere;
+  }
+
+  .total-copy {
+    color: var(--muted);
+    line-height: 1.55;
+    text-align: left;
+  }
+
+  .home-section-head {
+    margin: 24px 0 0;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--line-strong);
+    justify-content: center;
+    text-align: center;
+
+    .section-kicker {
+      color: var(--home-warm);
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    h2 {
+      margin-top: 10px;
+      font-size: clamp(1.5rem, 2.5vw, 2.4rem);
+      text-transform: uppercase;
+    }
+  }
+
+  .home-task-grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: clamp(16px, 2vw, 28px);
+  }
+
+  .home-task-grid .task-card.MuiPaper-root {
+    grid-column: span 2;
+    min-width: 0;
+    min-height: 260px;
+    border-color: var(--line-strong);
+    border-radius: 0;
+    background: var(--home-panel);
+  }
+
+  @media (min-width: 851px) {
+    .home-task-grid > :nth-last-child(2):nth-child(3n + 1) {
+      grid-column: 2 / span 2;
+    }
+
+    .home-task-grid > :last-child:nth-child(3n + 1) {
+      grid-column: 3 / span 2;
+    }
+  }
+
+  .home-task-grid .task-card-content {
+    gap: 18px;
+    padding: clamp(20px, 2vw, 28px);
+  }
+
+  .task-card-label {
+    padding: 0;
+    border-radius: 0;
+    color: var(--home-warm);
+    background: transparent;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .home-task-grid .task-card-title.MuiTypography-root {
+    font-size: clamp(1.2rem, 1.6vw, 1.7rem);
+    line-height: 1.2;
+    overflow-wrap: anywhere;
+  }
+
+  .task-card-amount.MuiTypography-root {
+    margin-top: auto;
+    overflow-wrap: anywhere;
+  }
+
+  .task-card-actions.MuiCardActions-root {
+    padding: 0 clamp(20px, 2vw, 28px) clamp(20px, 2vw, 28px);
+
+    .MuiButton-root {
+      min-width: 0;
+      border-color: var(--line-strong);
+      border-radius: 0;
+      background: transparent;
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .MuiButton-colorError {
+      color: var(--danger);
+    }
+  }
+
+  @media (max-width: 1100px) {
+    .home-dashboard-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 850px) {
+    .home-task-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .home-task-grid .task-card.MuiPaper-root {
+      grid-column: auto;
+    }
+  }
+
+  @media (max-width: 600px) {
+    padding: 20px;
+
+    .home-hero {
+      min-height: 0;
+    }
+
+    .home-metrics,
+    .home-task-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .home-task-grid .task-card.MuiPaper-root {
+      min-height: 220px;
+    }
+  }
+}
+
+.app.dark .home-page {
+  --home-paper: #191321;
+  --home-panel: rgba(34, 25, 43, 0.85);
+  --home-warm: #c8a3e4;
+  --home-wash: rgba(121, 70, 155, 0.2);
+  --home-cool: rgba(147, 111, 186, 0.24);
+
+  .home-hero {
+    background: transparent;
+  }
+}

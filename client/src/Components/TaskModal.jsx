@@ -14,6 +14,7 @@ import {
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import api from '../api';
+import './TaskModal.scss';
 
 const validationSchema = Yup.object({
   tituloTarea: Yup.string()
@@ -86,6 +87,10 @@ const TaskModal = ({ open, onClose, onCreated, task }) => {
     >
       <Box
         component="form"
+        className={`task-modal-form ${isDark ? 'is-dark' : 'is-light'}`}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="task-modal-title"
         onSubmit={formik.handleSubmit}
         sx={{
           position: 'absolute',
@@ -95,60 +100,40 @@ const TaskModal = ({ open, onClose, onCreated, task }) => {
           width: 'min(720px, calc(100% - 24px))',
           maxHeight: 'calc(100vh - 32px)',
           overflowY: 'auto',
-          p: { xs: 2.5, sm: 3.5 },
-          borderRadius: '28px',
-          border: '1px solid var(--line)',
-          background: isDark ? '#0f0f0f' : 'linear-gradient(135deg, rgba(255,255,255,0.98), rgba(249,245,238,0.95))',
-          boxShadow: 'var(--shadow)',
-          color: 'var(--text)',
           outline: 'none',
         }}
       >
         <Stack spacing={3}>
-          <Box>
+          <Box className="task-modal-header">
             <Typography
-              sx={{
-                mb: 1,
-                fontSize: '0.78rem',
-                letterSpacing: '0.22em',
-                textTransform: 'uppercase',
-                color: 'var(--accent)',
-              }}
+              className="task-modal-kicker"
             >
               {isEditing ? 'Editar tarea' : 'Nueva tarea'}
             </Typography>
             <Typography
               variant="h4"
               component="h2"
-              sx={{
-                mb: 1,
-                fontWeight: 800,
-                color: 'var(--title)',
-              }}
+              id="task-modal-title"
+              className="task-modal-title"
             >
               {isEditing ? 'Actualizar movimiento' : 'Agregar movimiento'}
             </Typography>
-            <Typography
-              sx={{
-                maxWidth: 560,
-                lineHeight: 1.7,
-                color: 'var(--muted)',
-              }}
-            >
-              {isEditing
-                ? 'Corrige la descripcion o el monto sin salir del panel principal.'
-                : 'Registra una descripcion clara y un monto para que luego se vea limpio en el dashboard y en registros.'}
-            </Typography>
+            {isEditing && (
+              <Typography className="task-modal-copy">
+                Corrige la descripcion o el monto sin salir del panel principal.
+              </Typography>
+            )}
           </Box>
 
           {formik.status && <Alert severity="error">{formik.status}</Alert>}
 
           <Stack spacing={2}>
             <Box>
-              <Typography sx={{ mb: 1, fontWeight: 700, color: 'var(--title)' }}>
+              <Typography component="label" htmlFor="task-description" className="task-modal-label">
                 Descripcion
               </Typography>
               <TextField
+                id="task-description"
                 multiline
                 minRows={6}
                 placeholder="Ejemplo: Pago adelantado, compra, salida o pendiente importante"
@@ -163,10 +148,11 @@ const TaskModal = ({ open, onClose, onCreated, task }) => {
             </Box>
 
             <Box sx={{ maxWidth: 280 }}>
-              <Typography sx={{ mb: 1, fontWeight: 700, color: 'var(--title)' }}>
+              <Typography component="label" htmlFor="task-amount" className="task-modal-label">
                 Cantidad
               </Typography>
               <TextField
+                id="task-amount"
                 type="number"
                 placeholder="Ejemplo: -360 o 15"
                 name="cantidad"
@@ -181,7 +167,7 @@ const TaskModal = ({ open, onClose, onCreated, task }) => {
             </Box>
           </Stack>
 
-          <DialogActions sx={{ p: 0, justifyContent: 'flex-start', gap: 1.5, flexWrap: 'wrap' }}>
+          <DialogActions className="task-modal-actions" sx={{ p: 0, justifyContent: 'flex-start', gap: 1.5, flexWrap: 'wrap' }}>
             <Button type="submit" variant="contained" className="primary-cta" disabled={formik.isSubmitting}>
               {formik.isSubmitting ? <CircularProgress size={20} color="inherit" /> : isEditing ? 'Guardar cambios' : 'Guardar tarea'}
             </Button>
