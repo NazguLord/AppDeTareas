@@ -1,1 +1,278 @@
-/* Estilos centralizados en client/src/style.scss. */
+.app .bootlegs-page {
+  --bootlegs-paper: #f3eff6;
+  --bootlegs-panel: rgba(255, 253, 255, 0.78);
+  --bootlegs-accent: #704a87;
+  --bootlegs-wash: rgba(125, 85, 151, 0.15);
+  --bootlegs-cool: rgba(152, 131, 190, 0.2);
+
+  display: grid;
+  gap: clamp(18px, 2vw, 28px);
+  padding: clamp(20px, 3vw, 48px);
+  padding-top: 16px;
+  border: 1px solid var(--line);
+  background:
+    radial-gradient(ellipse at 100% 0%, var(--bootlegs-cool), transparent 38%),
+    radial-gradient(ellipse at 0% 30%, var(--bootlegs-wash), transparent 35%),
+    var(--bootlegs-paper);
+
+  .bootlegs-hero.task-hero {
+    flex-direction: column;
+    align-items: center;
+    min-height: 0;
+    gap: 24px;
+    margin: 0;
+    padding: 0 0 24px;
+    border: 0;
+    border-bottom: 1px solid var(--line-strong);
+    border-radius: 0;
+    color: var(--text);
+    background: transparent;
+    text-align: center;
+
+    &::after { display: none; }
+
+    .eyebrow {
+      color: var(--bootlegs-accent);
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    .task-hero-copy h1 {
+      margin-top: 8px;
+      color: var(--title);
+      font-size: clamp(2.8rem, 6vw, 5.6rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .task-hero-copy p {
+      max-width: 660px;
+      margin-inline: auto;
+      color: var(--muted);
+      text-align: center;
+    }
+  }
+
+  .bootlegs-hero-strip {
+    justify-content: center;
+
+    span {
+      border-color: var(--line-strong);
+      border-radius: 2px;
+      color: var(--muted-strong);
+      background: transparent;
+      backdrop-filter: none;
+    }
+  }
+
+  .bootlegs-hero-panel {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 18px;
+    border: 1px solid var(--line-strong);
+    border-radius: 0;
+    background: var(--bootlegs-panel);
+    box-shadow: none;
+    backdrop-filter: none;
+  }
+
+  .bootlegs-equalizer {
+    width: 66px;
+    height: 42px;
+    gap: 5px;
+    margin: 0;
+
+    span {
+      border-radius: 2px 2px 0 0;
+      background: var(--bootlegs-accent);
+      box-shadow: none;
+    }
+  }
+
+  .bootlegs-hero-score {
+    margin: 0;
+    text-align: left;
+
+    span, p { color: var(--muted); }
+    strong { color: var(--bootlegs-accent); font-size: 2rem; }
+  }
+
+  .bootlegs-hero-actions {
+    flex: 1 1 460px;
+    justify-content: center;
+
+    .MuiButton-root {
+      flex: 0 1 auto;
+      min-height: 46px;
+      padding-inline: 16px;
+      border-color: var(--line-strong);
+      border-radius: 2px;
+      color: var(--title);
+      background: transparent;
+      box-shadow: none;
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .primary-cta.MuiButton-root {
+      color: var(--bg-soft);
+      background: var(--title);
+    }
+
+    p { color: var(--danger); }
+  }
+
+  .bootlegs-library-shell { margin: 0; }
+
+  .bootlegs-section-head {
+    flex-direction: column;
+    align-items: center;
+    margin: 0 0 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--line-strong);
+    text-align: center;
+
+    h2 {
+      margin-top: 10px;
+      font-size: clamp(1.5rem, 2.5vw, 2.4rem);
+      text-transform: uppercase;
+    }
+
+    p { text-align: center; }
+  }
+
+  .section-kicker {
+    color: var(--bootlegs-accent);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  .bootlegs-card.MuiPaper-root,
+  .bootlegs-panel {
+    border-color: var(--line-strong);
+    border-radius: 0;
+    background: var(--bootlegs-panel);
+  }
+
+  .bootlegs-card.MuiPaper-root:hover {
+    border-color: var(--bootlegs-accent);
+    box-shadow: none;
+  }
+
+  .bootlegs-card-tag {
+    padding: 0;
+    border-radius: 0;
+    color: var(--bootlegs-accent);
+    background: transparent;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .bootlegs-card-details span,
+  .bootlegs-mini-chip.MuiChip-root {
+    border-radius: 2px;
+    background: transparent;
+  }
+
+  .bootlegs-command-card { border-radius: 0; }
+  .bootlegs-command-card::after { background: var(--bootlegs-wash); }
+
+  .bootlegs-card-actions.MuiCardActions-root .MuiButton-root,
+  .bootlegs-panel .MuiButton-root {
+    min-width: 0;
+    border: 1px solid var(--line-strong);
+    border-radius: 0;
+    color: var(--title);
+    background: transparent;
+    box-shadow: none;
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+
+    &:hover { border-color: var(--bootlegs-accent); }
+  }
+
+  .bootlegs-stats.task-metrics {
+    gap: 1px;
+    border: 1px solid var(--line-strong);
+    background: var(--line-strong);
+  }
+
+  .bootlegs-stats .metric-card {
+    min-width: 0;
+    padding: clamp(18px, 2vw, 28px);
+    border: 0;
+    border-radius: 0;
+    background: var(--bootlegs-paper);
+  }
+
+  .bootlegs-stats .metric-icon,
+  .bootlegs-recent-icon,
+  .bootlegs-health-item > span {
+    color: var(--bootlegs-accent);
+    background: var(--bootlegs-wash);
+  }
+
+  .bootlegs-stats .metric-icon {
+    width: auto;
+    height: auto;
+    margin-bottom: 16px;
+    background: transparent;
+  }
+
+  .bootlegs-stats .metric-label {
+    color: var(--muted-strong);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .bootlegs-stats .metric-value {
+    overflow-wrap: anywhere;
+    font-size: clamp(1.4rem, 2vw, 2rem);
+  }
+
+  .bootlegs-stats .metric-copy { font-size: 0.85rem; }
+
+  .bootlegs-recent-item,
+  .bootlegs-health-item,
+  .bootlegs-empty-state {
+    border-radius: 0;
+    background: var(--bootlegs-paper);
+  }
+
+  .bootlegs-recent-item:hover {
+    border-color: var(--bootlegs-accent);
+    background: var(--bootlegs-paper);
+  }
+
+  @media (max-width: 900px) {
+    .bootlegs-hero-actions { flex-basis: auto; }
+  }
+
+  @media (max-width: 600px) {
+    padding: 16px 20px 20px;
+  }
+}
+
+.app.dark .bootlegs-page {
+  --bootlegs-paper: #191321;
+  --bootlegs-panel: rgba(34, 25, 43, 0.85);
+  --bootlegs-accent: #c8a3e4;
+  --bootlegs-wash: rgba(121, 70, 155, 0.2);
+  --bootlegs-cool: rgba(147, 111, 186, 0.24);
+
+  .bootlegs-hero.task-hero { background: transparent; }
+}
