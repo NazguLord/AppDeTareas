@@ -1,1 +1,140 @@
-/* Estilos centralizados en client/src/style.scss. */
+.app .bootleg-create-modal.bootleg-create-modal {
+  --bootleg-modal-bg: #f3eff6;
+  --bootleg-modal-surface: rgba(255, 253, 255, 0.8);
+  --bootleg-modal-text: #211b2a;
+  --bootleg-modal-muted: #63596a;
+  --bootleg-modal-accent: #704a87;
+  --bootleg-modal-line: rgba(65, 45, 76, 0.2);
+  --bootleg-modal-wash: rgba(152, 131, 190, 0.2);
+  --bootleg-modal-button-text: #fff;
+
+  .MuiDialog-paper {
+    border: 1px solid var(--bootleg-modal-line);
+    border-radius: 0;
+    color: var(--bootleg-modal-text);
+    background: radial-gradient(ellipse at 100% 0%, var(--bootleg-modal-wash), transparent 55%), var(--bootleg-modal-bg);
+    box-shadow: 0 24px 70px rgba(20, 12, 28, 0.25);
+  }
+
+  .bootleg-create-modal-close.MuiIconButton-root {
+    border: 1px solid var(--bootleg-modal-line);
+    border-radius: 2px;
+    color: var(--bootleg-modal-text);
+    background: var(--bootleg-modal-surface);
+    backdrop-filter: none;
+
+    &:hover { color: var(--bootleg-modal-accent); }
+  }
+
+  .bootleg-form-intro {
+    margin: 0 24px;
+    padding: 30px 44px 22px;
+    border-bottom: 1px solid var(--bootleg-modal-line);
+    color: var(--bootleg-modal-text);
+    background: transparent;
+    text-align: center;
+
+    &::after { display: none; }
+
+    .bootleg-form-title.MuiTypography-root {
+      max-width: none;
+      color: var(--bootleg-modal-text);
+      font-size: clamp(1.8rem, 4vw, 2.7rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      text-align: center;
+      text-transform: uppercase;
+    }
+  }
+
+  .bootleg-form-sections {
+    padding: 24px;
+  }
+
+  .bootleg-form-section {
+    border-color: var(--bootleg-modal-line);
+    border-radius: 0;
+    background: var(--bootleg-modal-surface);
+  }
+
+  .MuiOutlinedInput-root,
+  .bootleg-segment-control {
+    border-radius: 0;
+    color: var(--bootleg-modal-text);
+    background: var(--bootleg-modal-surface);
+  }
+
+  .MuiOutlinedInput-root {
+    .MuiOutlinedInput-notchedOutline { border-color: var(--bootleg-modal-line); }
+
+    &:hover .MuiOutlinedInput-notchedOutline,
+    &.Mui-focused .MuiOutlinedInput-notchedOutline { border-color: var(--bootleg-modal-accent); }
+
+    &.Mui-error .MuiOutlinedInput-notchedOutline { border-color: #d45463; }
+    input::placeholder, textarea::placeholder { color: var(--bootleg-modal-muted); opacity: 1; }
+  }
+
+  .MuiInputLabel-root,
+  .bootleg-segment-label { color: var(--bootleg-modal-muted); }
+  .MuiInputLabel-root.Mui-focused { color: var(--bootleg-modal-accent); }
+  .MuiInputLabel-root.Mui-error { color: #d45463; }
+
+  .MuiToggleButton-root {
+    border-color: var(--bootleg-modal-line) !important;
+    border-radius: 2px !important;
+    color: var(--bootleg-modal-text);
+  }
+
+  .MuiToggleButton-root.Mui-selected {
+    color: var(--bootleg-modal-accent);
+    background: var(--bootleg-modal-wash);
+  }
+
+  .bootleg-form-actions.MuiDialogActions-root {
+    padding: 16px 24px;
+    border-color: var(--bootleg-modal-line);
+    background: var(--bootleg-modal-bg);
+  }
+
+  .bootleg-form-actions .MuiButton-root {
+    min-height: 46px;
+    padding-inline: 22px;
+    border-radius: 2px;
+    box-shadow: none;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .bootleg-form-actions .MuiButton-contained:not(.Mui-disabled) {
+    color: var(--bootleg-modal-button-text);
+    background: var(--bootleg-modal-text);
+
+    &:hover { background: var(--bootleg-modal-accent); }
+  }
+
+  .bootleg-form-actions .MuiButton-outlined:not(.Mui-disabled) {
+    border-color: var(--bootleg-modal-line);
+    color: var(--bootleg-modal-text);
+    background: transparent;
+
+    &:hover { border-color: var(--bootleg-modal-accent); }
+  }
+
+  @media (max-width: 640px) {
+    .bootleg-form-intro { margin-inline: 16px; padding: 26px 34px 20px; }
+    .bootleg-form-sections { padding: 16px; }
+    .bootleg-form-actions.MuiDialogActions-root { padding: 14px 16px; }
+  }
+}
+
+.app.dark .bootleg-create-modal {
+  --bootleg-modal-bg: #191321;
+  --bootleg-modal-surface: #241c2c;
+  --bootleg-modal-text: #f7f2fa;
+  --bootleg-modal-muted: #c2b8c9;
+  --bootleg-modal-accent: #c8a3e4;
+  --bootleg-modal-line: rgba(228, 213, 237, 0.22);
+  --bootleg-modal-wash: rgba(147, 111, 186, 0.24);
+  --bootleg-modal-button-text: #191321;
+}
