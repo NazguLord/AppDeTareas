@@ -104,7 +104,7 @@ export default function Videos() {
     { icon: <CommentOutlinedIcon fontSize="small" />, label: 'Negociable', value: negotiableLabel(selected.negociable), alert: negotiableState(selected.negociable) === 'blocked' },
   ] : [];
 
-  return <section className="audio-page task-page">
+  return <section className="audio-page audios-library-page videos-library-page task-page">
     <div className="audio-hero task-hero"><div className="task-hero-copy"><span className="eyebrow">Bootlegs</span><h1>Vídeos bootlegs</h1><p>Consulta conciertos y grabaciones en DVD, Blu-ray y formatos digitales, y abre su ficha completa.</p><div className="audio-hero-inline-actions"><Button variant="contained" className="primary-cta" component={Link} to="/bootlegs">Volver a bootlegs</Button></div></div></div>
     <div className="audio-stats task-metrics">
       {[{ icon: <VideoLibraryOutlinedIcon fontSize="small" />, label: 'Bootlegs', value: videos.length, copy: 'Registros disponibles en la biblioteca de vídeo' }, { icon: <GroupsOutlinedIcon fontSize="small" />, label: 'Bandas', value: bandCount, copy: 'Proyectos o artistas representados en la colección' }, { icon: <AlbumOutlinedIcon fontSize="small" />, label: 'Multidisco', value: multiDisc, copy: `${formats.length} formatos en la colección` }].map((stat) => <div className="metric-card" key={stat.label}><span className="metric-icon">{stat.icon}</span><span className="metric-label">{stat.label}</span><strong className="metric-value">{stat.value}</strong><p className="metric-copy">{stat.copy}</p></div>)}

@@ -1,1 +1,371 @@
-/* Estilos centralizados en client/src/style.scss. */
+// Ficha y edición compartidas por los catálogos de audio y vídeo.
+.app .audio-detail-modal.audio-detail-modal {
+  --detail-bg: #f3eff6;
+  --detail-surface: rgba(255, 253, 255, 0.8);
+  --detail-text: #211b2a;
+  --detail-muted: #63596a;
+  --detail-accent: #704a87;
+  --detail-line: rgba(65, 45, 76, 0.2);
+  --detail-wash: rgba(152, 131, 190, 0.2);
+  --detail-button-text: #fff;
+
+  border: 1px solid var(--detail-line);
+  border-radius: 0;
+  color: var(--detail-text);
+  background: radial-gradient(ellipse at 100% 0%, var(--detail-wash), transparent 55%), var(--detail-bg);
+  box-shadow: 0 24px 70px rgba(20, 12, 28, 0.25);
+
+  .audio-detail-head {
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 0 0 22px;
+    border-bottom: 1px solid var(--detail-line);
+    text-align: center;
+  }
+
+  .audio-detail-kicker {
+    color: var(--detail-accent);
+  }
+
+  .audio-detail-title.MuiTypography-root {
+    color: var(--detail-text);
+    font-size: clamp(1.8rem, 4vw, 2.7rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    text-align: center;
+    text-transform: uppercase;
+    overflow-wrap: anywhere;
+  }
+
+  .audio-detail-heading-copy p {
+    color: var(--detail-muted);
+    text-align: center;
+  }
+
+  .audio-detail-badges {
+    justify-content: center;
+
+    .MuiChip-root {
+      border-color: var(--detail-line);
+      border-radius: 2px;
+      color: var(--detail-text);
+      background: var(--detail-surface);
+    }
+
+    .MuiChip-root:first-child {
+      color: var(--detail-accent);
+      background: var(--detail-wash);
+    }
+
+    .MuiChip-root.is-blocked {
+      color: #b42318;
+      border-color: rgba(185, 28, 28, 0.35);
+      background: rgba(239, 68, 68, 0.12);
+    }
+  }
+
+  .audio-detail-item {
+    border-color: var(--detail-line);
+    border-radius: 0;
+    background: var(--detail-surface);
+
+    small { color: var(--detail-accent); }
+    div > span { color: var(--detail-text); }
+    div > span.is-empty { color: var(--detail-muted); }
+    div > span.is-alert { color: #b42318; }
+  }
+
+  .audio-detail-icon {
+    border-radius: 2px;
+    color: var(--detail-accent);
+    background: var(--detail-wash);
+  }
+
+  .MuiOutlinedInput-root {
+    border-radius: 0;
+    color: var(--detail-text);
+    background: var(--detail-surface);
+
+    .MuiOutlinedInput-notchedOutline { border-color: var(--detail-line); }
+    &:hover .MuiOutlinedInput-notchedOutline,
+    &.Mui-focused .MuiOutlinedInput-notchedOutline { border-color: var(--detail-accent); }
+    &.Mui-error .MuiOutlinedInput-notchedOutline { border-color: #d45463; }
+    input::placeholder, textarea::placeholder { color: var(--detail-muted); opacity: 1; }
+  }
+
+  .MuiInputLabel-root { color: var(--detail-muted); }
+  .MuiInputLabel-root.Mui-focused { color: var(--detail-accent); }
+  .MuiInputLabel-root.Mui-error { color: #d45463; }
+
+  .audio-detail-footer { border-color: var(--detail-line); }
+
+  .audio-detail-actions.is-footer .MuiButton-root {
+    min-height: 46px;
+    padding-inline: 22px;
+    border-radius: 2px;
+    box-shadow: none;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .audio-detail-actions .MuiButton-contained:not(.Mui-disabled) {
+    color: var(--detail-button-text);
+    background: var(--detail-text);
+
+    &:hover { background: var(--detail-accent); }
+  }
+
+  .audio-detail-actions .MuiButton-outlined:not(.Mui-disabled) {
+    border-color: var(--detail-line);
+    color: var(--detail-text);
+    background: transparent;
+
+    &:hover { border-color: var(--detail-accent); }
+  }
+}
+
+.app .audio-detail-modal.is-dark {
+  --detail-bg: #191321;
+  --detail-surface: #241c2c;
+  --detail-text: #f7f2fa;
+  --detail-muted: #c2b8c9;
+  --detail-accent: #c8a3e4;
+  --detail-line: rgba(228, 213, 237, 0.22);
+  --detail-wash: rgba(147, 111, 186, 0.24);
+  --detail-button-text: #191321;
+
+  .audio-detail-badges .MuiChip-root.is-blocked,
+  .audio-detail-item div > span.is-alert { color: #fca5a5; }
+}
+
+.app .audios-library-page {
+  --audio-paper: #f3eff6;
+  --audio-panel: rgba(255, 253, 255, 0.78);
+  --audio-accent: #704a87;
+  --audio-wash: rgba(125, 85, 151, 0.15);
+  --audio-cool: rgba(152, 131, 190, 0.2);
+
+  display: grid;
+  gap: 16px;
+  padding: clamp(20px, 3vw, 48px);
+  padding-top: 16px;
+  border: 1px solid var(--line);
+  background:
+    radial-gradient(ellipse at 100% 0%, var(--audio-cool), transparent 38%),
+    radial-gradient(ellipse at 0% 30%, var(--audio-wash), transparent 35%),
+    var(--audio-paper);
+
+  .audio-hero.task-hero {
+    min-height: 0;
+    justify-content: center;
+    margin: 0;
+    padding: 0 0 20px;
+    border: 0;
+    border-bottom: 1px solid var(--line-strong);
+    border-radius: 0;
+    color: var(--text);
+    background: transparent;
+    text-align: center;
+
+    &::before, &::after { display: none; }
+
+    .eyebrow {
+      color: var(--audio-accent);
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    .task-hero-copy h1 {
+      margin-top: 8px;
+      color: var(--title);
+      font-size: clamp(2rem, 3.4vw, 3.3rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .task-hero-copy p {
+      margin: 8px auto 0;
+      color: var(--muted);
+      font-size: 1rem;
+      text-align: center;
+    }
+
+    .audio-hero-inline-actions { justify-content: center; margin-top: 12px; }
+    .primary-cta.MuiButton-root {
+      min-height: 40px;
+      border-radius: 2px;
+      color: var(--bg-soft);
+      background: var(--title);
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+  }
+
+  .audio-stats.task-metrics {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 1px;
+    border: 1px solid var(--line-strong);
+    background: var(--line-strong);
+  }
+
+  .audio-stats .metric-card {
+    min-width: 0;
+    min-height: 0;
+    padding: 14px 18px;
+    border: 0;
+    border-radius: 0;
+    background: var(--audio-paper);
+
+    &:hover { transform: none; box-shadow: none; }
+  }
+
+  .audio-summary-link {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 14px 18px;
+    color: var(--title);
+    background: var(--audio-paper);
+
+    strong { font-size: 1rem; }
+    > span:last-child {
+      margin-top: 8px;
+      color: var(--audio-accent);
+      font-size: 0.8rem;
+      font-weight: 800;
+    }
+
+    &:hover { background: var(--audio-wash); }
+  }
+
+  .metric-icon, .audio-insight-icon {
+    width: auto;
+    height: auto;
+    margin-bottom: 8px;
+    color: var(--audio-accent);
+    background: transparent;
+  }
+
+  .metric-label, .section-kicker {
+    color: var(--audio-accent);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .metric-value { overflow-wrap: anywhere; font-size: clamp(1.3rem, 2vw, 1.8rem); }
+  .metric-copy { margin-top: 6px; font-size: 0.85rem; }
+
+  .audio-table-shell {
+    min-width: 0;
+    padding: clamp(14px, 1.5vw, 20px);
+    border-color: var(--line-strong);
+    border-radius: 0;
+    background: var(--audio-panel);
+  }
+
+  .audio-table-head {
+    gap: 16px;
+    margin: 0 0 12px;
+    padding-bottom: 16px;
+    border-color: var(--line-strong);
+
+    h2 { text-transform: uppercase; }
+  }
+
+  .audio-search .MuiOutlinedInput-root {
+    border-radius: 2px;
+    color: var(--text);
+    background: var(--audio-panel);
+
+    .MuiOutlinedInput-notchedOutline { border-color: var(--line-strong); }
+    &:hover .MuiOutlinedInput-notchedOutline,
+    &.Mui-focused .MuiOutlinedInput-notchedOutline { border-color: var(--audio-accent); }
+  }
+
+  .audio-search-icon { color: var(--audio-accent); }
+
+  .audio-export-trigger.MuiButton-root,
+  .audio-detail-trigger.MuiButton-root {
+    min-height: 40px;
+    border: 1px solid var(--line-strong);
+    border-radius: 2px;
+    color: var(--title);
+    background: transparent;
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+
+    &:hover { border-color: var(--audio-accent); background: var(--audio-wash); }
+    &.Mui-disabled { color: var(--muted); opacity: 0.5; }
+  }
+
+  .audio-detail-trigger.is-alert.MuiButton-root { color: var(--danger); border-color: var(--danger); }
+  .audio-disc-pill, .audio-negotiable-chip.MuiChip-root { border-radius: 2px; }
+  .rdt_Pagination { color: var(--muted-strong); }
+  .rdt_Pagination button { fill: var(--muted-strong); }
+  .rdt_Pagination select { color: var(--text); background: var(--audio-paper); }
+
+  .audio-section-head {
+    justify-content: center;
+    margin: 12px 0 0;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--line-strong);
+    text-align: center;
+
+    h2 { text-transform: uppercase; }
+  }
+
+  .audio-insight-card {
+    min-height: 0;
+    border-color: var(--line-strong);
+    border-radius: 0;
+    background: var(--audio-panel);
+
+    &::after { display: none; }
+    &:hover { border-color: var(--audio-accent); box-shadow: none; }
+  }
+
+  .audio-insight-action { color: var(--audio-accent); }
+
+  @media (max-width: 900px) {
+    .audio-stats.task-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .audio-table-head { align-items: stretch; }
+    .audio-table-actions { width: 100%; flex-wrap: wrap; }
+  }
+
+  @media (max-width: 600px) {
+    padding: 16px 20px 20px;
+    .audio-stats.task-metrics, .audio-insight-grid { grid-template-columns: 1fr; }
+    .audio-search.MuiFormControl-root { flex-basis: 100%; min-width: 0; }
+  }
+}
+
+.app.dark .audios-library-page {
+  --audio-paper: #191321;
+  --audio-panel: rgba(34, 25, 43, 0.85);
+  --audio-accent: #c8a3e4;
+  --audio-wash: rgba(121, 70, 155, 0.2);
+  --audio-cool: rgba(147, 111, 186, 0.24);
+
+  .audio-hero.task-hero { background: transparent; }
+}
+
+.app .videos-library-page {
+  .audio-stats.task-metrics { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .audio-table-actions { width: 100%; flex-wrap: wrap; }
+
+  @media (max-width: 600px) {
+    .audio-stats.task-metrics { grid-template-columns: 1fr; }
+  }
+}

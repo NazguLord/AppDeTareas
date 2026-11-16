@@ -8,6 +8,7 @@ import GeoMap from '../Components/GeoMap';
 import CategoryBarChart from '../Components/CategoryBarChart';
 import api from '../api';
 import { countryToAlpha3 } from 'country-to-iso';
+import { getMapColor } from '../utils/mapColors';
 import './AudioCharts.scss';
 
 const COUNTRY_REGION_MAP = {
@@ -169,8 +170,15 @@ const Map = () => {
     [countrySummary, selectedCountryId, topCountry]
   );
   const topCountries = useMemo(
-    () => countrySummary.slice(0, 8).map((item) => ({ id: item.name || item.id, value: item.value })),
-    [countrySummary]
+    () => {
+      const maxValue = Math.max(1, ...mapData.map((item) => Number(item.value || 0)));
+      return countrySummary.slice(0, 8).map((item) => ({
+        id: item.name || item.id,
+        value: item.value,
+        color: getMapColor(item.value, maxValue),
+      }));
+    },
+    [countrySummary, mapData]
   );
   const topThreeCountries = useMemo(() => countrySummary.slice(0, 3), [countrySummary]);
   const regionSummary = useMemo(() => {
@@ -217,7 +225,7 @@ const Map = () => {
   );
 
   return (
-    <section className="audio-chart-page task-page">
+    <section className="audio-chart-page map-page task-page">
       <div className="audio-chart-hero task-hero">
         <div className="task-hero-copy">
           <span className="eyebrow">Analitica</span>
@@ -232,17 +240,6 @@ const Map = () => {
         </div>
       </div>
 
-      <div className="audio-chart-stats task-metrics">
-        {stats.map((stat) => (
-          <div className="metric-card" key={stat.label}>
-            <span className="metric-icon">{stat.icon}</span>
-            <span className="metric-label">{stat.label}</span>
-            <strong className="metric-value">{stat.value}</strong>
-            <p className="metric-copy">{stat.copy}</p>
-          </div>
-        ))}
-      </div>
-
       <div className="audio-chart-shell map-shell">
         <div className="audio-chart-shell-head task-section-head compact-head">
           <div>
@@ -253,22 +250,43 @@ const Map = () => {
         </div>
 
         <div className="map-dashboard-grid">
-          <div className="audio-chart-canvas audio-chart-panel map-side-panel">
-            <div className="audio-chart-panel-head">
-              <strong>Top paises</strong>
-              <span>Los destinos con mayor presencia dentro del archivo</span>
+          <div className="map-side-panel-stack">
+            <div className="audio-chart-canvas audio-chart-panel map-side-panel">
+              <div className="audio-chart-panel-head">
+                <strong>Top paises</strong>
+                <span>Los destinos con mayor presencia dentro del archivo</span>
+              </div>
+              <CategoryBarChart data={topCountries} preserveOrder minHeight={0} compact />
             </div>
-            <CategoryBarChart data={topCountries} preserveOrder minHeight={300} />
+            <div className="audio-chart-canvas audio-chart-panel map-overview">
+              <div className="audio-chart-panel-head"><strong>Resumen del mapa</strong></div>
+              {stats.map((stat) => (
+                <div className="map-overview-item" key={stat.label}>
+                  <span className="map-overview-icon">{stat.icon}</span>
+                  <div>
+                    <span className="metric-label">{stat.label}</span>
+                    <strong>{stat.value}</strong>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
 
           <div className="map-center-stack">
+            <p className="map-color-explainer">
+              Los colores indican la cantidad de registros por país; la escala aparece dentro del mapa. Selecciona un país para ver sus detalles.
+            </p>
             <div className="audio-chart-canvas map-view">
               <GeoMap data={mapData} totalRecords={totalMappedRecords} onCountrySelect={setSelectedCountryId} />
             </div>
 
             <div className="audio-chart-canvas audio-chart-panel map-focus-panel">
-              <div className="audio-chart-panel-head">
-                <strong>{selectedCountry ? `Detalle de ${selectedCountry.name}` : 'Lectura geografica'}</strong>
+              <div className="audio-chart-panel-head" aria-live="polite">
+                {selectedCountry && <span className="map-selected-label">País seleccionado</span>}
+                <strong className="map-selected-country">
+                  {selectedCountry && <span className="map-selected-swatch" aria-hidden="true" style={{ background: getMapColor(selectedCountry.value, Math.max(1, ...mapData.map((item) => Number(item.value || 0)))) }} />}
+                  {selectedCountry ? selectedCountry.name : 'Lectura geográfica'}
+                </strong>
                 <span>
                   {selectedCountry
                     ? 'Selecciona otro pais en el mapa para cambiar esta lectura'
@@ -276,7 +294,8 @@ const Map = () => {
                 </span>
               </div>
 
-              <div className="audio-chart-share-track" aria-label="Concentracion geografica del archivo">
+              <p className="map-share-caption">Concentración de los tres países principales</p>
+              <div className="audio-chart-share-track" aria-label={`Los tres países principales reúnen el ${topThreeShare}% de los registros mapeados`}>
                 <span className="audio-chart-share-segment is-top-five" style={{ width: `${topThreeShare}%` }} />
                 <span className="audio-chart-share-segment is-rest" style={{ width: `${restOfWorldShare}%` }} />
               </div>
@@ -365,7 +384,7 @@ const Map = () => {
                 <strong>Regiones</strong>
                 <span>Agrupacion resumida para leer mejor el mapa completo</span>
               </div>
-              <CategoryBarChart data={regionSummary} preserveOrder minHeight={200} />
+              <CategoryBarChart data={regionSummary} preserveOrder minHeight={0} compact />
             </div>
           </div>
         </div>

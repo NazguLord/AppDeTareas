@@ -28,7 +28,6 @@ import DiscFullOutlinedIcon from '@mui/icons-material/DiscFullOutlined';
 import GroupsOutlinedIcon from '@mui/icons-material/GroupsOutlined';
 import CommentOutlinedIcon from '@mui/icons-material/CommentOutlined';
 import NotesOutlinedIcon from '@mui/icons-material/NotesOutlined';
-import LaunchOutlinedIcon from '@mui/icons-material/LaunchOutlined';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
@@ -450,12 +449,12 @@ const Audios = () => {
     : [];
 
   return (
-    <section className="audio-page task-page">
+    <section className="audio-page audios-library-page task-page">
       <div className="audio-hero task-hero">
         <div className="task-hero-copy">
           <span className="eyebrow">Bootlegs</span>
           <h1>Audios bootlegs</h1>
-          <p>Consulta grabaciones, abre su ficha completa y salta a las vistas analiticas desde una sola pantalla mas clara.</p>
+          <p>Consulta grabaciones, abre su ficha completa y salta a las vistas analiticas</p>
           <div className="audio-hero-inline-actions">
             <Button variant="contained" className="primary-cta" component={Link} to="/bootlegs">
               Volver a bootlegs
@@ -472,6 +471,13 @@ const Audios = () => {
             <strong className="metric-value">{stat.value}</strong>
             <p className="metric-copy">{stat.copy}</p>
           </div>
+        ))}
+        {insightCards.map((item) => (
+          <Link className="audio-summary-link link" key={item.title} to={item.to}>
+            <span className="metric-icon">{item.icon}</span>
+            <strong>{item.title}</strong>
+            <span>{item.action} →</span>
+          </Link>
         ))}
       </div>
 
@@ -514,19 +520,6 @@ const Audios = () => {
           highlightOnHover
           customStyles={customStyles}
         />
-      </div>
-
-      <div className="audio-section-head task-section-head">
-        <div>
-          <span className="section-kicker">Analitica</span>
-          <h2>Explora la coleccion</h2>
-        </div>
-      </div>
-
-      <div className="audio-insight-grid">
-        {insightCards.map((item) => (
-          <CardLink key={item.title} {...item} />
-        ))}
       </div>
 
       <Modal
@@ -665,18 +658,6 @@ const Audios = () => {
     </section>
   );
 };
-
-const CardLink = ({ title, copy, to, icon, action }) => (
-  <Link className="audio-insight-card link" to={to}>
-    <span className="audio-insight-icon">{icon}</span>
-    <strong>{title}</strong>
-    <p>{copy}</p>
-    <span className="audio-insight-action">
-      {action}
-      <LaunchOutlinedIcon fontSize="small" />
-    </span>
-  </Link>
-);
 
 export default Audios;
 

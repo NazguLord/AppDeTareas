@@ -1,6 +1,6 @@
 ﻿import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Button, Chip, Tab, Tabs } from '@mui/material';
+import { Button, Tab, Tabs } from '@mui/material';
 import LibraryMusicOutlinedIcon from '@mui/icons-material/LibraryMusicOutlined';
 import PieChartOutlineOutlinedIcon from '@mui/icons-material/PieChartOutlineOutlined';
 import InsightsOutlinedIcon from '@mui/icons-material/InsightsOutlined';
@@ -109,7 +109,7 @@ const Pie = () => {
   const [genreChartData, setGenreChartData] = useState([]);
   const [yearChartData, setYearChartData] = useState([]);
   const [bandChartData, setBandChartData] = useState([]);
-  const [activeTab, setActiveTab] = useState('distribution');
+  const [activeTab, setActiveTab] = useState('overview');
 
   useEffect(() => {
     const fetchAllData = async () => {
@@ -217,6 +217,12 @@ const Pie = () => {
         copy: 'Total de audios',
       },
       {
+        icon: <PieChartOutlineOutlinedIcon fontSize="small" />,
+        label: 'Categoría principal',
+        value: typeStats[2]?.value || 'Sin datos',
+        copy: typeStats[2]?.copy || 'Sin lectura disponible',
+      },
+      {
         icon: <CategoryOutlinedIcon fontSize="small" />,
         label: 'Generos',
         value: `${genreChartData.length}`,
@@ -239,7 +245,7 @@ const Pie = () => {
   );
 
   return (
-    <section className="audio-chart-page task-page">
+    <section className="audio-chart-page analytics-page task-page">
       <div className="audio-chart-hero task-hero compact-hero">
         <div className="task-hero-copy">
           <span className="eyebrow">Analitica</span>
@@ -250,9 +256,6 @@ const Pie = () => {
           <Button variant="outlined" className="secondary-cta" component={Link} to="/audios">
             Volver a audios
           </Button>
-          <Chip label={`${typeChartData.length} tipos`} className="task-chip" />
-          <Chip label={`${genreChartData.length} generos`} className="task-chip" />
-          <Chip label={`${yearChartData.length} años`} className="task-chip" />
         </div>
       </div>
 
@@ -294,61 +297,6 @@ const Pie = () => {
                   <span className="section-kicker">Resumen</span>
                   <h2>Panorama general</h2>
                 </div>
-                <p>Usa las pestanias de arriba para saltar directo a la lectura que quieras sin bajar por toda la pagina.</p>
-              </div>
-
-              <div className="overview-layout">
-                <div className="overview-column">
-                  <div className="audio-chart-tags compact-overview-grid">
-                    <div className="audio-chart-tag">
-                      <span className="audio-chart-tag-label">Distribucion</span>
-                      <strong className="audio-chart-tag-value">Tipos y generos</strong>
-                      <span className="audio-chart-tag-copy">Compara la mezcla general del archivo por categoria y genero.</span>
-                    </div>
-                    <div className="audio-chart-tag">
-                      <span className="audio-chart-tag-label">Cronologia</span>
-                      <strong className="audio-chart-tag-value">Serie por año</strong>
-                      <span className="audio-chart-tag-copy">Revisa el comportamiento historico completo en una sola vista.</span>
-                    </div>
-                    <div className="audio-chart-tag">
-                      <span className="audio-chart-tag-label">Bandas</span>
-                      <strong className="audio-chart-tag-value">Ranking principal</strong>
-                      <span className="audio-chart-tag-copy">Detecta rapido que bandas dominan la biblioteca de audios.</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="overview-column">
-                  <div className="audio-chart-canvas audio-chart-panel overview-highlight-panel">
-                    <div className="audio-chart-panel-head">
-                      <strong>Focos actuales</strong>
-                      <span>Los datos mas fuertes que hoy resumen mejor el archivo</span>
-                    </div>
-
-                    <div className="audio-chart-tags overview-highlight-grid">
-                      <div className="audio-chart-tag">
-                        <span className="audio-chart-tag-label">Categoria lider</span>
-                        <strong className="audio-chart-tag-value">{typeStats[2]?.value || 'Sin datos'}</strong>
-                        <span className="audio-chart-tag-copy">{typeStats[2]?.copy || 'Sin lectura disponible'}</span>
-                      </div>
-                      <div className="audio-chart-tag">
-                        <span className="audio-chart-tag-label">Genero lider</span>
-                        <strong className="audio-chart-tag-value">{topGenre?.label || 'Sin datos'}</strong>
-                        <span className="audio-chart-tag-copy">{topGenre ? `${topGenre.value} conciertos registrados` : 'Sin lectura disponible'}</span>
-                      </div>
-                      <div className="audio-chart-tag">
-                        <span className="audio-chart-tag-label">Pico historico</span>
-                        <strong className="audio-chart-tag-value">{peakYear ? `${peakYear.label}` : 'Sin datos'}</strong>
-                        <span className="audio-chart-tag-copy">{peakYear ? `${peakYear.value} conciertos en el año mas alto` : 'Sin lectura disponible'}</span>
-                      </div>
-                      <div className="audio-chart-tag">
-                        <span className="audio-chart-tag-label">Banda lider</span>
-                        <strong className="audio-chart-tag-value">{leadingBand?.label || 'Sin datos'}</strong>
-                        <span className="audio-chart-tag-copy">{leadingBand ? `${leadingBand.value} bootlegs dentro del ranking principal` : 'Sin lectura disponible'}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
               </div>
 
               <div className="overview-preview-grid">
@@ -357,7 +305,7 @@ const Pie = () => {
                     <strong>Preview de distribucion</strong>
                     <span>Las cuatro categorias que mas pesan en el archivo</span>
                   </div>
-                  <CategoryBarChart data={topTypes} preserveOrder minHeight={220} />
+                  <CategoryBarChart data={topTypes} preserveOrder minHeight={0} compact />
                 </div>
 
                 <div className="audio-chart-canvas audio-chart-panel compact-bar-view">
@@ -365,7 +313,7 @@ const Pie = () => {
                     <strong>Preview historico</strong>
                     <span>{topDecade ? `${topDecade.label} domina el recorrido por decadas` : 'Lectura por bloques historicos'}</span>
                   </div>
-                  <CategoryBarChart data={decadeChartData} preserveOrder minHeight={220} />
+                  <CategoryBarChart data={decadeChartData} preserveOrder minHeight={0} compact />
                 </div>
 
                 <div className="audio-chart-canvas audio-chart-panel compact-bar-view">
@@ -373,7 +321,7 @@ const Pie = () => {
                     <strong>Preview de bandas</strong>
                     <span>{leadingBand ? `${leadingBand.label} abre el ranking actual` : 'Ranking rapido de presencia por banda'}</span>
                   </div>
-                  <CategoryBarChart data={topBands.slice(0, 5)} preserveOrder minHeight={220} />
+                  <CategoryBarChart data={topBands.slice(0, 5)} preserveOrder minHeight={0} compact />
                 </div>
               </div>
             </div>

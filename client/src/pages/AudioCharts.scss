@@ -1,1 +1,456 @@
-/* Estilos centralizados en client/src/style.scss. */
+.app .map-page {
+  --map-paper: #f3eff6;
+  --map-panel: rgba(255, 253, 255, 0.78);
+  --map-accent: #704a87;
+  --map-wash: rgba(125, 85, 151, 0.15);
+  --map-cool: rgba(152, 131, 190, 0.2);
+
+  display: grid;
+  gap: 14px;
+  padding: clamp(20px, 3vw, 48px);
+  padding-top: 16px;
+  border: 1px solid var(--line);
+  background:
+    radial-gradient(ellipse at 100% 0%, var(--map-cool), transparent 38%),
+    radial-gradient(ellipse at 0% 30%, var(--map-wash), transparent 35%),
+    var(--map-paper);
+
+  .audio-chart-hero.task-hero {
+    min-height: 0;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: 0;
+    padding: 0 0 12px;
+    border: 0;
+    border-bottom: 1px solid var(--line-strong);
+    border-radius: 0;
+    background: transparent;
+    text-align: center;
+
+    .eyebrow {
+      color: var(--map-accent);
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin-top: 8px;
+      font-size: clamp(2rem, 3.4vw, 3.3rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    p { margin: 8px auto 0; text-align: center; }
+  }
+
+  .task-hero-actions { justify-content: center; }
+
+  .task-hero-actions .MuiButton-root {
+    min-height: 38px;
+    padding-inline: 22px;
+    border-color: var(--line-strong);
+    border-radius: 2px;
+    color: var(--title);
+    background: transparent;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .task-chip.MuiChip-root {
+    border: 1px solid var(--line-strong);
+    border-radius: 2px;
+    color: var(--muted-strong);
+    background: transparent;
+  }
+
+  .audio-chart-stats.task-metrics {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1px;
+    border: 1px solid var(--line-strong);
+    background: var(--line-strong);
+  }
+
+  .audio-chart-stats .metric-card {
+    min-width: 0;
+    min-height: 0;
+    padding: 12px 18px;
+    border: 0;
+    border-radius: 0;
+    background: var(--map-paper);
+  }
+
+  .metric-icon {
+    width: auto;
+    height: auto;
+    margin-bottom: 8px;
+    color: var(--map-accent);
+    background: transparent;
+  }
+
+  .metric-label,
+  .audio-chart-tag-label,
+  .section-kicker {
+    color: var(--map-accent);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .metric-value {
+    overflow-wrap: anywhere;
+    font-size: clamp(1.4rem, 2vw, 2rem);
+  }
+
+  .metric-copy { margin-top: 6px; font-size: 0.85rem; }
+
+  .map-shell {
+    min-width: 0;
+    padding: clamp(14px, 1.5vw, 20px);
+    border-color: var(--line-strong);
+    border-radius: 0;
+    background: var(--map-panel);
+  }
+
+  .audio-chart-shell-head {
+    flex-direction: column;
+    align-items: center;
+    margin: 0 0 14px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--line-strong);
+    text-align: center;
+
+    h2 {
+      margin-top: 10px;
+      font-size: clamp(1.5rem, 2.5vw, 2.4rem);
+      text-transform: uppercase;
+    }
+
+    p { text-align: center; }
+  }
+
+  .audio-chart-canvas,
+  .audio-chart-tag {
+    min-width: 0;
+    border-color: var(--line-strong);
+    border-radius: 0;
+    background: transparent;
+  }
+
+  .map-view {
+    min-height: 360px;
+    height: 380px;
+  }
+
+  .map-dashboard-grid { gap: 12px; }
+
+  .map-side-panel,
+  .map-focus-panel,
+  .map-view {
+    border-color: var(--line);
+  }
+
+  .map-side-panel,
+  .map-focus-panel { padding: 12px; }
+
+  .map-overview {
+    padding: 12px;
+  }
+
+  .map-overview-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 0;
+    border-top: 1px solid var(--line);
+
+    > div { min-width: 0; }
+    strong {
+      display: block;
+      margin-top: 3px;
+      color: var(--title);
+      font-size: 1.1rem;
+      line-height: 1.2;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  .map-overview-icon {
+    display: inline-flex;
+    color: var(--map-accent);
+    flex-shrink: 0;
+  }
+
+  .map-center-stack,
+  .map-side-panel-stack { gap: 10px; }
+
+  .audio-chart-tag {
+    min-height: 0;
+    padding: 10px 12px;
+  }
+
+  .audio-chart-tag-value { margin-top: 5px; font-size: 1.15rem; }
+  .audio-chart-tag-copy { margin-top: 4px; font-size: 0.8rem; }
+
+  .map-color-explainer {
+    margin: 0;
+    color: var(--muted-strong);
+    font-size: 0.86rem;
+    line-height: 1.5;
+    text-align: left;
+  }
+
+  .audio-chart-panel-head .map-selected-label {
+    color: var(--map-accent);
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .audio-chart-panel-head .map-selected-country {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.35rem;
+    line-height: 1.2;
+    overflow-wrap: anywhere;
+  }
+
+  .map-selected-swatch {
+    flex: 0 0 14px;
+    width: 14px;
+    height: 14px;
+    border: 1px solid var(--line-strong);
+  }
+
+  .map-share-caption {
+    margin: 18px 0 8px;
+    color: var(--muted-strong);
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-align: left;
+  }
+
+  .audio-chart-panel-head strong { color: var(--title); }
+  .audio-chart-tag-value { overflow-wrap: anywhere; }
+
+  .geo-map-tooltip {
+    border-radius: 0;
+    background: var(--map-paper);
+  }
+
+  @media (max-width: 1180px) {
+    .map-center-stack { order: -1; }
+  }
+
+  @media (max-width: 600px) {
+    padding: 16px 20px 20px;
+    .audio-chart-stats.task-metrics { grid-template-columns: 1fr; }
+  }
+}
+
+.app.dark .map-page {
+  --map-paper: #191321;
+  --map-panel: rgba(34, 25, 43, 0.85);
+  --map-accent: #c8a3e4;
+  --map-wash: rgba(121, 70, 155, 0.2);
+  --map-cool: rgba(147, 111, 186, 0.24);
+
+  .audio-chart-hero.task-hero { background: transparent; }
+  .geo-map-tooltip { background: var(--map-paper); }
+}
+
+.app .analytics-page {
+  --analytics-paper: #f3eff6;
+  --analytics-panel: rgba(255, 253, 255, 0.78);
+  --analytics-accent: #704a87;
+  --analytics-wash: rgba(125, 85, 151, 0.15);
+  --analytics-cool: rgba(152, 131, 190, 0.2);
+
+  display: grid;
+  gap: 14px;
+  padding: clamp(20px, 3vw, 48px);
+  padding-top: 16px;
+  border: 1px solid var(--line);
+  background:
+    radial-gradient(ellipse at 100% 0%, var(--analytics-cool), transparent 38%),
+    radial-gradient(ellipse at 0% 30%, var(--analytics-wash), transparent 35%),
+    var(--analytics-paper);
+
+  .audio-chart-hero.task-hero {
+    min-height: 0;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: 0;
+    padding: 0 0 12px;
+    border: 0;
+    border-bottom: 1px solid var(--line-strong);
+    border-radius: 0;
+    background: transparent;
+    text-align: center;
+
+    .eyebrow {
+      color: var(--analytics-accent);
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin-top: 8px;
+      font-size: clamp(2rem, 3.4vw, 3.3rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    p { margin: 8px auto 0; text-align: center; }
+  }
+
+  .task-hero-actions { justify-content: center; }
+  .task-hero-actions .MuiButton-root {
+    min-height: 38px;
+    padding-inline: 22px;
+    border-color: var(--line-strong);
+    border-radius: 2px;
+    color: var(--title);
+    background: transparent;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .audio-chart-dashboard-shell {
+    min-width: 0;
+    padding: clamp(14px, 1.5vw, 20px);
+    border-color: var(--line-strong);
+    border-radius: 0;
+    background: var(--analytics-panel);
+  }
+
+  .audio-chart-tabs.MuiTabs-root {
+    min-height: 42px;
+    border-bottom: 1px solid var(--line-strong);
+  }
+
+  .audio-chart-tabs .MuiTabs-flexContainer {
+    justify-content: center;
+  }
+
+  @media (max-width: 600px) {
+    .audio-chart-tabs .MuiTabs-flexContainer {
+      justify-content: safe center;
+    }
+  }
+
+  .audio-chart-tabs .MuiTab-root {
+    min-height: 42px;
+    color: var(--muted-strong);
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+  }
+
+  .audio-chart-tabs .MuiTab-root.Mui-selected { color: var(--analytics-accent); }
+  .audio-chart-tabs .MuiTabs-indicator { background: var(--analytics-accent); }
+
+  .audio-chart-summary-strip {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 1px;
+    margin: 16px 0;
+    border: 1px solid var(--line-strong);
+    background: var(--line-strong);
+  }
+
+  .audio-chart-summary-card {
+    min-width: 0;
+    min-height: 0;
+    padding: 14px;
+    border: 0;
+    border-radius: 0;
+    background: var(--analytics-paper);
+  }
+
+  .audio-chart-summary-icon {
+    width: auto;
+    height: auto;
+    margin-bottom: 8px;
+    color: var(--analytics-accent);
+    background: transparent;
+  }
+
+  .audio-chart-summary-label,
+  .section-kicker {
+    color: var(--analytics-accent);
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .audio-chart-summary-value {
+    margin-top: 5px;
+    font-size: clamp(1.05rem, 1.4vw, 1.5rem);
+    overflow-wrap: anywhere;
+  }
+
+  .audio-chart-summary-copy { display: block; margin-top: 5px; font-size: 0.8rem; }
+
+  .overview-shell .audio-chart-shell-head {
+    justify-content: center;
+    margin: 0 0 14px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--line-strong);
+    text-align: center;
+
+    h2 { text-transform: uppercase; }
+  }
+
+  .overview-preview-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .overview-preview-grid .audio-chart-canvas {
+    min-width: 0;
+    max-height: none;
+    padding: 14px;
+    border-color: var(--line-strong);
+    border-radius: 0;
+    background: transparent;
+  }
+
+  .overview-preview-grid .audio-chart-panel-head { margin-bottom: 10px; }
+
+  @media (max-width: 1000px) {
+    .audio-chart-summary-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .overview-preview-grid { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 600px) {
+    padding: 16px 20px 20px;
+    .audio-chart-summary-strip { grid-template-columns: 1fr; }
+  }
+}
+
+.app.dark .analytics-page {
+  --analytics-paper: #191321;
+  --analytics-panel: rgba(34, 25, 43, 0.85);
+  --analytics-accent: #c8a3e4;
+  --analytics-wash: rgba(121, 70, 155, 0.2);
+  --analytics-cool: rgba(147, 111, 186, 0.24);
+
+  .audio-chart-hero.task-hero { background: transparent; }
+}

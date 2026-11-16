@@ -2,7 +2,7 @@
 
 const BAR_COLORS = ['#0f766e', '#1d4ed8', '#f97316', '#14b8a6', '#8b5cf6', '#f43f5e'];
 
-const CategoryBarChart = ({ data = [], preserveOrder = false, maxItems, minHeight = 460 }) => {
+const CategoryBarChart = ({ data = [], preserveOrder = false, maxItems, minHeight = 460, compact = false }) => {
   const theme = useTheme();
   const isDark = theme.palette.mode === 'dark';
   const textColor = isDark ? '#e2e8f0' : '#0f172a';
@@ -26,26 +26,26 @@ const CategoryBarChart = ({ data = [], preserveOrder = false, maxItems, minHeigh
         minHeight: resolvedMinHeight,
         display: 'flex',
         flexDirection: 'column',
-        gap: '14px',
+        gap: compact ? '6px' : '14px',
       }}
     >
       {visibleItems.map((item, index) => {
         const value = Number(item.value || 0);
         const width = Math.max((value / maxValue) * 100, value > 0 ? 2 : 0);
-        const color = BAR_COLORS[index % BAR_COLORS.length];
+        const color = item.color || BAR_COLORS[index % BAR_COLORS.length];
 
         return (
           <div
             key={item.id}
             style={{
               display: 'grid',
-              gridTemplateColumns: 'minmax(120px, 160px) minmax(0, 1fr) auto',
-              gap: '12px',
+              gridTemplateColumns: compact ? 'minmax(70px, 110px) minmax(0, 1fr) auto' : 'minmax(120px, 160px) minmax(0, 1fr) auto',
+              gap: compact ? '8px' : '12px',
               alignItems: 'center',
-              padding: '10px 12px',
-              borderRadius: '18px',
-              border: `1px solid ${borderColor}`,
-              background: isDark ? 'rgba(15, 23, 42, 0.38)' : 'rgba(255, 255, 255, 0.52)',
+              padding: compact ? '4px 0' : '10px 12px',
+              borderRadius: compact ? '0' : '18px',
+              border: compact ? '0' : `1px solid ${borderColor}`,
+              background: compact ? 'transparent' : isDark ? 'rgba(15, 23, 42, 0.38)' : 'rgba(255, 255, 255, 0.52)',
             }}
           >
             <div style={{ color: textColor, fontWeight: 700, lineHeight: 1.25, wordBreak: 'break-word' }}>
@@ -56,7 +56,7 @@ const CategoryBarChart = ({ data = [], preserveOrder = false, maxItems, minHeigh
               style={{
                 position: 'relative',
                 width: '100%',
-                height: '16px',
+                height: compact ? '10px' : '16px',
                 borderRadius: '999px',
                 background: trackColor,
                 overflow: 'hidden',
@@ -68,7 +68,7 @@ const CategoryBarChart = ({ data = [], preserveOrder = false, maxItems, minHeigh
                   minWidth: value > 0 ? '10px' : '0px',
                   height: '100%',
                   borderRadius: '999px',
-                  background: `linear-gradient(90deg, ${color}, ${color}CC)`,
+                  background: item.color ? color : `linear-gradient(90deg, ${color}, ${color}CC)`,
                   boxShadow: `0 0 0 1px ${color}33 inset`,
                 }}
               />

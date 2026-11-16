@@ -1,6 +1,7 @@
 ﻿import { ResponsiveChoropleth } from '@nivo/geo';
 import { useTheme } from '@mui/material';
 import { geoData } from '../state/geoData';
+import { MAP_COLORS } from '../utils/mapColors';
 
 const collectLatitudes = (coordinates, values = []) => {
   if (!Array.isArray(coordinates)) return values;
@@ -73,7 +74,7 @@ const GeoMap = ({ data = [], totalRecords = 0, onCountrySelect }) => {
   }
 
   return (
-    <div style={{ width: '100%', height: '100%', minHeight: '520px' }}>
+    <div style={{ width: '100%', height: '100%', minHeight: '360px' }}>
       <ResponsiveChoropleth
         data={data}
         features={geoData.features}
@@ -96,7 +97,7 @@ const GeoMap = ({ data = [], totalRecords = 0, onCountrySelect }) => {
           },
         }}
         margin={{ top: 12, right: 26, bottom: 42, left: 26 }}
-        colors="spectral"
+        colors={MAP_COLORS}
         domain={[0, maxValue]}
         unknownColor={isDark ? 'rgba(51, 65, 85, 0.85)' : '#d6d3d1'}
         label="properties.name"
