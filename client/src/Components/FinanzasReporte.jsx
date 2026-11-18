@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Button, Typography, useTheme } from '@mui/material';
+import { Button, Typography } from '@mui/material';
 import ExcelJS from 'exceljs';
 import PieChart from './PieChart';
 import CategoryBarChart from './CategoryBarChart';
@@ -16,8 +16,6 @@ const formatCurrency = (amount, currency) => {
 };
 
 const FinanzasReporte = ({ transacciones, resumen }) => {
-  const theme = useTheme();
-  const isDark = theme.palette.mode === 'dark';
 
   const ingresosVsEgresos = useMemo(() => {
     const totals = { Ingresos: 0, Egresos: 0 };
@@ -191,13 +189,13 @@ const FinanzasReporte = ({ transacciones, resumen }) => {
 
   const chartCard = {
     padding: '1.5rem',
-    borderRadius: '18px',
+    borderRadius: '0',
     border: '1px solid var(--line)',
-    background: isDark ? 'rgba(15, 23, 42, 0.38)' : 'rgba(255, 255, 255, 0.52)',
+    background: 'var(--finance-panel)',
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', marginTop: '1.5rem' }}>
+    <div className="finanzas-reporte" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
           <span className="section-kicker">Reporte</span>
@@ -210,7 +208,7 @@ const FinanzasReporte = ({ transacciones, resumen }) => {
         </Button>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))', gap: '1.5rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 380px), 1fr))', gap: '1rem' }}>
         <div style={chartCard}>
           <Typography sx={sectionTitle}>Ingresos vs Egresos</Typography>
           <Typography sx={{ fontSize: '0.85rem', color: 'var(--muted)', marginBottom: '1rem' }}>

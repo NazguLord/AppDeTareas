@@ -1,1 +1,377 @@
-/* Estilos migrados a client/src/style.scss para mantener un solo sistema visual. */
+.app .medicine-page {
+  --medicine-paper: #f3eff6;
+  --medicine-panel: rgba(255, 253, 255, 0.78);
+  --medicine-accent: #704a87;
+  --medicine-wash: rgba(125, 85, 151, 0.15);
+  --medicine-cool: rgba(152, 131, 190, 0.2);
+
+  display: grid;
+  gap: 16px;
+  padding: clamp(20px, 3vw, 48px);
+  padding-top: 16px;
+  border: 1px solid var(--line);
+  background:
+    radial-gradient(ellipse at 100% 0%, var(--medicine-cool), transparent 38%),
+    radial-gradient(ellipse at 0% 30%, var(--medicine-wash), transparent 35%),
+    var(--medicine-paper);
+
+  .medicine-hero.task-hero {
+    min-height: 0;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    margin: 0;
+    padding: 0 0 20px;
+    border: 0;
+    border-bottom: 1px solid var(--line-strong);
+    border-radius: 0;
+    background: transparent;
+    text-align: center;
+
+    .eyebrow {
+      color: var(--medicine-accent);
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin-top: 8px;
+      font-size: clamp(2rem, 3.4vw, 3.3rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    p { max-width: 660px; margin: 8px auto 0; text-align: center; }
+  }
+
+  .task-hero-actions { justify-content: center; }
+  .task-hero-actions .primary-cta.MuiButton-root {
+    min-height: 40px;
+    padding-inline: 22px;
+    border-radius: 2px;
+    color: var(--bg-soft);
+    background: var(--title);
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .task-chip.MuiChip-root {
+    border: 1px solid var(--line-strong);
+    border-radius: 2px;
+    color: var(--muted-strong);
+    background: transparent;
+  }
+
+  .medicine-stats.task-metrics {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1px;
+    border: 1px solid var(--line-strong);
+    background: var(--line-strong);
+  }
+
+  .medicine-stats .metric-card {
+    min-width: 0;
+    min-height: 0;
+    padding: 14px 18px;
+    border: 0;
+    border-radius: 0;
+    background: var(--medicine-paper);
+  }
+
+  .metric-icon {
+    width: auto;
+    height: auto;
+    margin-bottom: 8px;
+    color: var(--medicine-accent);
+    background: transparent;
+  }
+
+  .metric-label, .section-kicker {
+    color: var(--medicine-accent);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .metric-value { overflow-wrap: anywhere; font-size: clamp(1.3rem, 2vw, 1.8rem); }
+  .metric-copy { margin-top: 6px; font-size: 0.85rem; }
+
+  .medicine-shell-head {
+    flex-direction: column;
+    align-items: center;
+    margin: 0 0 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--line-strong);
+
+    > div:first-child { text-align: center; }
+    h2 { text-transform: uppercase; }
+  }
+
+  .medicine-search {
+    border-color: var(--line-strong);
+    border-radius: 2px;
+    background: var(--medicine-panel);
+    color: var(--medicine-accent);
+
+    &:focus-within { border-color: var(--medicine-accent); }
+  }
+
+  .medicine-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 14px;
+  }
+
+  .medicine-card.MuiPaper-root {
+    flex: 0 1 calc((100% - 42px) / 4);
+    width: calc((100% - 42px) / 4);
+    max-width: 300px;
+    height: auto;
+    border-color: var(--line-strong);
+    border-radius: 0;
+    background: var(--medicine-panel);
+  }
+
+  .medicine-quantity-pill {
+    border-radius: 2px;
+    color: var(--medicine-accent);
+    background: var(--medicine-wash);
+  }
+
+  .medicine-card-actions .MuiButton-root {
+    border-color: var(--line-strong);
+    border-radius: 0;
+    color: var(--title);
+    background: transparent;
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+
+    &:hover { border-color: var(--medicine-accent); background: var(--medicine-wash); }
+  }
+
+  .medicine-pagination {
+    padding: 8px 0;
+
+    .MuiPaginationItem-root {
+      border-color: var(--line-strong);
+      border-radius: 2px;
+      color: var(--title);
+    }
+
+    .MuiPaginationItem-root.Mui-selected {
+      border-color: var(--medicine-accent);
+      color: var(--medicine-accent);
+      background: var(--medicine-wash);
+    }
+  }
+
+  @media (max-width: 1100px) {
+    .medicine-card.MuiPaper-root { flex-basis: calc((100% - 28px) / 3); width: calc((100% - 28px) / 3); }
+  }
+
+  @media (max-width: 800px) {
+    .medicine-card.MuiPaper-root { flex-basis: calc((100% - 14px) / 2); width: calc((100% - 14px) / 2); }
+    .medicine-shell-head { align-items: stretch; }
+    .medicine-toolbar { align-items: stretch; }
+    .medicine-search { width: 100%; }
+  }
+
+  @media (max-width: 600px) {
+    padding: 16px 20px 20px;
+    .medicine-stats.task-metrics { grid-template-columns: 1fr; }
+    .medicine-card.MuiPaper-root { flex-basis: 100%; width: 100%; }
+  }
+}
+
+.app.dark .medicine-page {
+  --medicine-paper: #191321;
+  --medicine-panel: rgba(34, 25, 43, 0.85);
+  --medicine-accent: #c8a3e4;
+  --medicine-wash: rgba(121, 70, 155, 0.2);
+  --medicine-cool: rgba(147, 111, 186, 0.24);
+
+  .medicine-hero.task-hero { background: transparent; }
+}
+
+.app .medicine-detail-modal.medicine-detail-modal {
+  --medicine-detail-bg: #f3eff6;
+  --medicine-detail-surface: rgba(255, 253, 255, 0.8);
+  --medicine-detail-text: #211b2a;
+  --medicine-detail-muted: #63596a;
+  --medicine-detail-accent: #704a87;
+  --medicine-detail-line: rgba(65, 45, 76, 0.2);
+  --medicine-detail-wash: rgba(152, 131, 190, 0.2);
+  --medicine-detail-button-text: #fff;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(960px, calc(100vw - 28px));
+  max-height: calc(100vh - 28px);
+  overflow: auto;
+  padding: clamp(20px, 3vw, 32px);
+  border: 1px solid var(--medicine-detail-line);
+  border-radius: 0;
+  color: var(--medicine-detail-text);
+  background: radial-gradient(ellipse at 100% 0%, var(--medicine-detail-wash), transparent 55%), var(--medicine-detail-bg);
+  box-shadow: 0 24px 70px rgba(20, 12, 28, 0.25);
+  outline: none;
+
+  .medicine-detail-head {
+    flex-direction: column;
+    align-items: center;
+    padding: 0 0 20px;
+    border-bottom: 1px solid var(--medicine-detail-line);
+    text-align: center;
+
+    p { color: var(--medicine-detail-muted); text-align: center; }
+  }
+
+  .medicine-modal-kicker { color: var(--medicine-detail-accent); }
+  .medicine-modal-title.MuiTypography-root {
+    color: var(--medicine-detail-text);
+    font-size: clamp(1.8rem, 4vw, 2.7rem);
+    letter-spacing: -0.03em;
+    text-align: center;
+    text-transform: uppercase;
+    overflow-wrap: anywhere;
+  }
+
+  .task-chip.MuiChip-root {
+    border: 1px solid var(--medicine-detail-line);
+    border-radius: 2px;
+    color: var(--medicine-detail-accent);
+    background: var(--medicine-detail-wash);
+  }
+
+  .medicine-detail-media,
+  .medicine-detail-card,
+  .medicine-upload {
+    border-color: var(--medicine-detail-line);
+    border-radius: 0;
+    background: var(--medicine-detail-surface);
+  }
+
+  .medicine-detail-card {
+    small { color: var(--medicine-detail-accent); }
+    span { color: var(--medicine-detail-text); }
+    p { color: var(--medicine-detail-muted); }
+  }
+
+  .MuiOutlinedInput-root {
+    border-radius: 0;
+    color: var(--medicine-detail-text);
+    background: var(--medicine-detail-surface);
+
+    .MuiOutlinedInput-notchedOutline { border-color: var(--medicine-detail-line); }
+    &:hover .MuiOutlinedInput-notchedOutline,
+    &.Mui-focused .MuiOutlinedInput-notchedOutline { border-color: var(--medicine-detail-accent); }
+  }
+
+  .MuiInputLabel-root { color: var(--medicine-detail-muted); }
+  .MuiInputLabel-root.Mui-focused { color: var(--medicine-detail-accent); }
+  .medicine-upload-row strong { color: var(--medicine-detail-text); }
+  .medicine-upload-row p { color: var(--medicine-detail-muted); }
+  .medicine-upload .MuiIconButton-root { color: var(--medicine-detail-accent); }
+
+  .medicine-detail-footer {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-color: var(--medicine-detail-line);
+  }
+
+  .medicine-detail-footer-copy {
+    small { color: var(--medicine-detail-accent); }
+    p { color: var(--medicine-detail-muted); }
+  }
+
+  .medicine-detail-footer-actions .MuiButton-root {
+    min-height: 44px;
+    padding-inline: 20px;
+    border-radius: 2px;
+    box-shadow: none;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .medicine-detail-footer-actions .MuiButton-contained:not(.Mui-disabled) {
+    color: var(--medicine-detail-button-text);
+    background: var(--medicine-detail-text);
+    &:hover { background: var(--medicine-detail-accent); }
+  }
+
+  .medicine-detail-footer-actions .MuiButton-outlined:not(.Mui-disabled) {
+    border-color: var(--medicine-detail-line);
+    color: var(--medicine-detail-text);
+    background: transparent;
+    &:hover { border-color: var(--medicine-detail-accent); }
+  }
+}
+
+.app .medicine-detail-modal.is-dark {
+  --medicine-detail-bg: #191321;
+  --medicine-detail-surface: #241c2c;
+  --medicine-detail-text: #f7f2fa;
+  --medicine-detail-muted: #c2b8c9;
+  --medicine-detail-accent: #c8a3e4;
+  --medicine-detail-line: rgba(228, 213, 237, 0.22);
+  --medicine-detail-wash: rgba(147, 111, 186, 0.24);
+  --medicine-detail-button-text: #191321;
+}
+
+.app .medicine-create-modal.medicine-detail-modal {
+  .medicine-modal-head {
+    margin: 0 0 20px;
+    padding: 0 0 20px;
+    border-bottom: 1px solid var(--medicine-detail-line);
+    text-align: center;
+
+    p { color: var(--medicine-detail-muted); text-align: center; }
+  }
+
+  .medicine-upload-error { color: #d45463; }
+  .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline { border-color: #d45463; }
+  .MuiInputLabel-root.Mui-error { color: #d45463; }
+
+  .medicine-form-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding-top: 16px;
+    border-top: 1px solid var(--medicine-detail-line);
+
+    .MuiButton-root {
+      min-height: 44px;
+      padding-inline: 20px;
+      border-radius: 2px;
+      box-shadow: none;
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .MuiButton-contained {
+      color: var(--medicine-detail-button-text);
+      background: var(--medicine-detail-text);
+      &:hover { background: var(--medicine-detail-accent); }
+    }
+
+    .MuiButton-outlined {
+      border-color: var(--medicine-detail-line);
+      color: var(--medicine-detail-text);
+      background: transparent;
+      &:hover { border-color: var(--medicine-detail-accent); }
+    }
+  }
+}

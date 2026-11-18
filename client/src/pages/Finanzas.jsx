@@ -64,7 +64,7 @@ const Finanzas = () => {
   const [filtroAnio, setFiltroAnio] = useState('');
   const [showReporte, setShowReporte] = useState(false);
   const [page, setPage] = useState(1);
-  const itemsPerPage = 14;
+  const itemsPerPage = 16;
 
   const loadData = async () => {
     try {

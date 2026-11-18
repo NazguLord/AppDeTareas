@@ -17,7 +17,9 @@ import {
 } from '@mui/material';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import Swal from 'sweetalert2';
 import api from '../api';
+import './TaskModal.scss';
 
 const validationSchema = Yup.object({
   tipo: Yup.string()
@@ -66,6 +68,15 @@ const TransaccionModal = ({ open, onClose, onCreated, transaccion }) => {
         resetForm();
         onCreated?.();
         onClose?.();
+        if (isEditing) {
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Transacción actualizada',
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
       } catch (err) {
         console.log(err);
         setStatus('Ocurrio un error al guardar la transaccion. Intentalo de nuevo.');
@@ -103,6 +114,10 @@ const TransaccionModal = ({ open, onClose, onCreated, transaccion }) => {
     >
       <Box
         component="form"
+        className={`task-modal-form transaction-modal-form ${isDark ? 'is-dark' : 'is-light'}`}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="transaction-modal-title"
         onSubmit={formik.handleSubmit}
         sx={{
           position: 'absolute',
@@ -112,45 +127,26 @@ const TransaccionModal = ({ open, onClose, onCreated, transaccion }) => {
           width: 'min(720px, calc(100% - 24px))',
           maxHeight: 'calc(100vh - 32px)',
           overflowY: 'auto',
-          p: { xs: 2.5, sm: 3.5 },
-          borderRadius: '28px',
-          border: '1px solid var(--line)',
-          background: isDark ? '#0f0f0f' : 'linear-gradient(135deg, rgba(255,255,255,0.98), rgba(249,245,238,0.95))',
-          boxShadow: 'var(--shadow)',
-          color: 'var(--text)',
           outline: 'none',
         }}
       >
         <Stack spacing={3}>
-          <Box>
+          <Box className="task-modal-header">
             <Typography
-              sx={{
-                mb: 1,
-                fontSize: '0.78rem',
-                letterSpacing: '0.22em',
-                textTransform: 'uppercase',
-                color: 'var(--accent)',
-              }}
+              className="task-modal-kicker"
             >
               {isEditing ? 'Editar transaccion' : 'Nueva transaccion'}
             </Typography>
             <Typography
               variant="h4"
               component="h2"
-              sx={{
-                mb: 1,
-                fontWeight: 800,
-                color: 'var(--title)',
-              }}
+              id="transaction-modal-title"
+              className="task-modal-title"
             >
               {isEditing ? 'Actualizar movimiento' : 'Registrar movimiento'}
             </Typography>
             <Typography
-              sx={{
-                maxWidth: 560,
-                lineHeight: 1.7,
-                color: 'var(--muted)',
-              }}
+              className="task-modal-copy"
             >
               {isEditing
                 ? 'Corrige los datos de esta transaccion sin salir del panel principal.'
@@ -235,7 +231,7 @@ const TransaccionModal = ({ open, onClose, onCreated, transaccion }) => {
             </Box>
           </Stack>
 
-          <DialogActions sx={{ p: 0, justifyContent: 'flex-start', gap: 1.5, flexWrap: 'wrap' }}>
+          <DialogActions className="task-modal-actions" sx={{ p: 0, justifyContent: 'flex-start', gap: 1.5, flexWrap: 'wrap' }}>
             <Button type="submit" variant="contained" className="primary-cta" disabled={formik.isSubmitting}>
               {formik.isSubmitting ? <CircularProgress size={20} color="inherit" /> : isEditing ? 'Guardar cambios' : 'Guardar transaccion'}
             </Button>

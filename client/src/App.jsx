@@ -8,6 +8,7 @@ import Register from "./pages/Register";
 import Footer from "./Components/Footer";
 import Navbar from "./Components/Navbar";
 import './style.scss';
+import './sweetalert.scss';
 import Registros from "./pages/Registros";
 import Contactos from "./pages/Contactos";
 import EditContactos from "./Components/EditContactos";

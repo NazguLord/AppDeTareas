@@ -13,6 +13,7 @@ import {
 } from '@mui/material';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import Swal from 'sweetalert2';
 import api from '../api';
 import './TaskModal.scss';
 
@@ -50,6 +51,15 @@ const TaskModal = ({ open, onClose, onCreated, task }) => {
         resetForm();
         onCreated?.();
         onClose?.();
+        if (isEditing) {
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Tarea actualizada',
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
       } catch (err) {
         console.log(err);
         setStatus('Ocurrio un error al guardar la tarea. Intentalo de nuevo.');

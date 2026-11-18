@@ -165,3 +165,10 @@
     .contact-create-wide { grid-column: auto; }
   }
 }
+
+.transaction-modal-form {
+  .MuiInputLabel-root { color: var(--modal-muted); }
+  .MuiInputLabel-root.Mui-focused { color: var(--modal-accent); }
+  .MuiInputLabel-root.Mui-error { color: #d45463; }
+  .MuiSelect-icon { color: var(--modal-muted); }
+}

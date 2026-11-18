@@ -60,8 +60,8 @@ const checkoutSchema = yup.object().shape({
   dosisUnidad: yup.string().required('required'),
   imagen: yup
     .mixed()
-    .test('required', 'Please upload a Profile Photo', (value) => value != null)
-    .test('type', 'We only support jpeg and jpg format', (value) => value && (value.type === 'image/jpg' || value.type === 'image/jpeg' || value.type === 'image/png' || value.type === 'image/webp')),
+    .test('required', 'Por favor suba una imagen', (value) => value != null)
+    .test('type', 'Solo admitimos formatos jpeg y jpg', (value) => value && (value.type === 'image/jpg' || value.type === 'image/jpeg' || value.type === 'image/png' || value.type === 'image/webp')),
 });
 
 const getMedicineImage = (fileName) => {
@@ -97,7 +97,7 @@ const formatMedicineSummary = (medicamento) => {
   if (hasValue(getDosageCount(medicamento)) || hasValue(getDosageUnit(medicamento))) {
     parts.push(formatDosage(medicamento));
   }
-  return parts.length ? parts.join(' · ') : 'Sin datos';
+  return parts.length ? parts.join(' ï¿½ ') : 'Sin datos';
 };
 
 const getMedicineId = (medicamento) =>
@@ -127,7 +127,7 @@ const Medicamentos = () => {
   const [open, setOpen] = useState(false);
   const [medicamentos, setMedicamentos] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [cardsPerPage] = useState(12);
+  const cardsPerPage = 6;
   const [page, setPage] = useState(1);
   const [selectedMedicamento, setSelectedMedicamento] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -176,6 +176,11 @@ const Medicamentos = () => {
         .includes(term)
     );
   }, [medicamentos, searchTerm]);
+
+  useEffect(() => {
+    const lastPage = Math.max(1, Math.ceil(filteredMedicamentos.length / cardsPerPage));
+    setPage((current) => Math.min(current, lastPage));
+  }, [filteredMedicamentos.length]);
 
   const paginatedMedicamentos = useMemo(
     () => filteredMedicamentos.slice((page - 1) * cardsPerPage, page * cardsPerPage),
@@ -382,8 +387,7 @@ const Medicamentos = () => {
                 value={searchTerm}
                 onChange={(event) => setSearchTerm(event.target.value)}
               />
-            </div>
-            <p>Ahora la ficha separa la cantidad de piezas del medicamento y la dosis real de su contenido.</p>
+            </div>           
           </div>
         </div>
 
@@ -440,16 +444,18 @@ const Medicamentos = () => {
         </div>
       </div>
 
-      <Box py={3} display="flex" justifyContent="center">
-        <Pagination count={pageCount} page={page} onChange={(event, value) => setPage(value)} variant="outlined" shape="rounded" />
-      </Box>
+      {pageCount > 1 && (
+        <Box className="medicine-pagination" display="flex" justifyContent="center">
+          <Pagination count={pageCount} page={page} onChange={(event, value) => setPage(value)} variant="outlined" shape="rounded" aria-label="PaginaciÃ³n de medicamentos" />
+        </Box>
+      )}
 
-      <Modal open={open} onClose={handleClose}>
-        <Box className={`medicine-modal ${isDark ? 'is-dark' : 'is-light'}`}>
+      <Modal open={open} onClose={handleClose} container={() => document.querySelector('.app')}>
+        <Box className={`medicine-modal medicine-detail-modal medicine-create-modal ${isDark ? 'is-dark' : 'is-light'}`} role="dialog" aria-modal="true" aria-labelledby="medicine-create-title">
           <div className="medicine-modal-head">
             <div>
               <span className="medicine-modal-kicker">Nuevo registro</span>
-              <Typography component="h2" className="medicine-modal-title">
+              <Typography component="h2" id="medicine-create-title" className="medicine-modal-title">
                 Agregar medicamento
               </Typography>
               <p>Captura nombre, descripcion, piezas por empaque y dosis para que la ficha quede completa.</p>
@@ -502,14 +508,14 @@ const Medicamentos = () => {
         </Box>
       </Modal>
 
-      <Modal open={Boolean(selectedMedicamento)} onClose={closeMedicineDetail}>
-        <Box className={`medicine-detail-modal ${isDark ? 'is-dark' : 'is-light'}`}>
+      <Modal open={Boolean(selectedMedicamento)} onClose={closeMedicineDetail} container={() => document.querySelector('.app')}>
+        <Box className={`medicine-detail-modal ${isDark ? 'is-dark' : 'is-light'}`} role="dialog" aria-modal="true" aria-labelledby="medicine-detail-title">
           {selectedMedicamento && (
             <>
               <div className="medicine-detail-head">
                 <div>
                   <span className="medicine-modal-kicker">Ficha completa</span>
-                  <Typography component="h2" className="medicine-modal-title">{selectedMedicamento.nombreMedicamento}</Typography>
+                  <Typography component="h2" id="medicine-detail-title" className="medicine-modal-title">{selectedMedicamento.nombreMedicamento}</Typography>
                   <p>Descripcion ampliada para saber rapidamente para que sirve, cuantas piezas tiene y cual es su dosis.</p>
                 </div>
                 <div className="medicine-detail-actions">
@@ -638,4 +644,3 @@ const Medicamentos = () => {
 };
 
 export default Medicamentos;
-
