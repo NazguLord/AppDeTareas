@@ -1,10 +1,11 @@
-import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, Navigate, Outlet, RouterProvider, useLocation } from "react-router-dom";
+import { useContext } from 'react';
+import { AuthContext } from './context/authContext';
 import Tareas from "./pages/Tareas";
 import Total from "./pages/Total";
 import Update from "./pages/Update";
 import Add from './pages/Add';
 import Login from "./pages/Login";
-import Register from "./pages/Register";
 import Footer from "./Components/Footer";
 import Navbar from "./Components/Navbar";
 import './style.scss';
@@ -41,14 +42,23 @@ const Layout = () => {
   );
 };
 
+const RequireSession = () => {
+  const { currentUser, isCheckingSession, sessionError, refreshSession } = useContext(AuthContext);
+  const location = useLocation();
+
+  if (isCheckingSession) return <div className="auth"><p>Comprobando sesión...</p></div>;
+  if (sessionError) return <div className="auth"><p>No se pudo conectar con el servidor.</p><button onClick={refreshSession}>Reintentar</button></div>;
+  if (!currentUser) return <Navigate to="/login" replace state={{ from: location.pathname + location.search }} />;
+  return <Outlet />;
+};
+
 const router = createBrowserRouter([
   {
-    path: "/",
-    element: <Layout />,
+    element: <RequireSession />,
     children: [
+      { path: "/", element: <Layout />, children: [
       { path: "/", element: <Tareas /> },
       { path: "/registros", element: <Registros /> },
-      { path: "/register", element: <Register /> },
       { path: "/contactos", element: <Contactos /> },
       { path: "/contactos/:id/edit", element: <EditContactos /> },
       { path: "/total", element: <Total /> },
@@ -61,10 +71,12 @@ const router = createBrowserRouter([
       { path: "/form", element: <Form /> },
       { path: "/faq", element: <FAQ /> },
       { path: "/finanzas", element: <Finanzas /> },
+      ] },
+      { path: "/update/:id", element: <Update /> },
+      { path: "/add", element: <Add /> },
     ],
   },
-  { path: "/update/:id", element: <Update /> },
-  { path: "/add", element: <Add /> },
+  { path: "/register", element: <Navigate to="/login" replace /> },
   { path: "/login", element: <Login /> },
 ]);
 

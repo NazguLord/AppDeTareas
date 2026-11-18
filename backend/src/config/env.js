@@ -21,6 +21,7 @@ export const env = {
   port: Number(process.env.PORT || 8800),
   clientUrl: process.env.CLIENT_URL || "http://localhost:3000",
   jwtSecret: process.env.JWT_SECRET || "change-me",
+  allowedUsername: process.env.AUTH_ALLOWED_USER || "EEC",
   db: {
     host: process.env.DB_HOST || "127.0.0.1",
     user: process.env.DB_USER || "root",

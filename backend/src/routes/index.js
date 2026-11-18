@@ -8,15 +8,13 @@ import bootlegsRoutes from "./bootlegs.routes.js";
 import uploadRoutes from "./upload.routes.js";
 import finanzasRoutes from "./finanzas.routes.js";
 import videosRoutes from "./videos.routes.js";
+import { requireAuth } from "../middlewares/auth.js";
 
 const router = Router();
 
-router.get("/", (req, res) => {
-  res.json("Hola esta es el backend");
-});
-
-router.use(uploadRoutes);
 router.use(authRoutes);
+router.use(requireAuth);
+router.use(uploadRoutes);
 router.use("/contactos", contactosRoutes);
 router.use("/medicamentos", medicamentosRoutes);
 router.use(audiosRoutes);

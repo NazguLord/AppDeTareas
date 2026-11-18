@@ -28,13 +28,16 @@ export const loginUser = async ({ username, password }) => {
   }
 
   const user = users[0];
+  if (user.username !== env.allowedUsername) {
+    throw new AppError(401, "Usuario o contraseña incorrectos.");
+  }
   const isPasswordCorrect = bcrypt.compareSync(password, user.password);
 
   if (!isPasswordCorrect) {
     throw new AppError(400, "Usuario o password equivocado!");
   }
 
-  const token = jwt.sign({ id: user.id }, env.jwtSecret);
+  const token = jwt.sign({ id: user.id, username: user.username }, env.jwtSecret, { expiresIn: '7d' });
   const { password: _, ...other } = user;
 
   return { token, user: other };
